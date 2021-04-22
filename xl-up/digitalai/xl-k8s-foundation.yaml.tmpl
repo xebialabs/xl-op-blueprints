@@ -1,0 +1,143 @@
+{{- if  eq .K8sSetup "AwsEKS" }}
+apiVersion: xl-deploy/v1
+kind: Infrastructure
+spec:
+  - directory: Infrastructure/DIGITALAI
+    children:
+      - name: EKS-MASTER
+        type: k8s.Master
+        apiServerURL: !value K8sApiServerURL
+        skipTLS: true
+        isEKS: true
+        clusterName: !value EksClusterName
+        accessKey: !value AWSAccessKey
+        accessSecret: !value AWSAccessSecret
+        {{- if .UseCustomNamespace }}
+        children:
+        - name: {{.Namespace}}
+          type: k8s.Namespace
+          namespaceName: {{.Namespace}}
+        {{- end }}
+{{- else if  eq .K8sSetup "DockerDesktopK8s" }}
+apiVersion: xl-deploy/v1
+kind: Infrastructure
+spec:
+  - directory: Infrastructure/DIGITALAI
+    children:
+      - name: K8s-MASTER-LOCAL
+        type: k8s.Master
+        apiServerURL: !value K8sLocalApiServerURL
+        skipTLS: true
+        {{- if .UseKubeconfig }}
+        tlsCert: !value K8sClientCert
+        tlsPrivateKey: !value K8sClientKey
+        {{- else }}
+        tlsCert: !value K8sClientCertFile
+        tlsPrivateKey: !value K8sClientKeyFile
+        {{- end }}
+        {{- if .UseCustomNamespace }}
+        children:
+        - name: {{.Namespace }}
+          type: k8s.Namespace
+          namespaceName: {{.Namespace}}
+        {{- end }}
+{{- else }}
+apiVersion: xl-deploy/v1
+kind: Infrastructure
+spec:
+  - directory: Infrastructure/DIGITALAI
+    children:
+      - name: K8s-MASTER
+        type: k8s.Master
+        apiServerURL: !value K8sApiServerURL
+        skipTLS: true
+        {{- if .K8sToken}}
+        token: !value K8sToken
+        {{- else }}
+          {{- if eq .K8sClientCertFile "" }}
+        tlsCert: !value K8sClientCert
+        tlsPrivateKey: !value K8sClientKey
+          {{- else }}
+        tlsCert: !value K8sClientCertFile
+        tlsPrivateKey: !value K8sClientKeyFile
+          {{- end }}
+        {{- end }}
+        {{- if .UseCustomNamespace }}
+        children:
+        - name: {{.Namespace }}
+          type: k8s.Namespace
+          namespaceName: {{.Namespace}}
+          {{- end }}
+{{- end }}
+---
+apiVersion: xl-deploy/v1
+kind: Environments
+spec:
+  - directory: Environments/DIGITALAI
+    children:
+      - name: K8S
+        type: udm.Environment
+        members:
+          {{- if  eq .K8sSetup "AwsEKS" }}
+          - Infrastructure/DIGITALAI/EKS-MASTER
+          {{- if .UseCustomNamespace }}
+          - Infrastructure/DIGITALAI/EKS-MASTER/{{.Namespace}}
+          {{- end }}
+          {{- else if  eq .K8sSetup "DockerDesktopK8s" }}
+          - Infrastructure/DIGITALAI/K8s-MASTER-LOCAL
+          {{- if .UseCustomNamespace }}
+          - Infrastructure/DIGITALAI/K8s-MASTER-LOCAL/{{.Namespace}}
+          {{- end }}
+          {{- else }}
+          - Infrastructure/DIGITALAI/K8s-MASTER
+          {{- if .UseCustomNamespace }}
+          - Infrastructure/DIGITALAI/K8s-MASTER/{{.Namespace}}
+          {{- end }}
+          {{- end }}
+---
+apiVersion: xl-deploy/v1
+kind: Applications
+spec:
+  - directory: Applications/DIGITALAI
+    children:
+      - directory: XL-K8S-FOUNDATION
+        children:
+        {{- if not .UseCustomNamespace }}
+          - name: K8s-NameSpace
+            type: udm.Application
+            children:
+              - name: "1.0"
+                type: udm.DeploymentPackage
+                orchestrator:
+                  - sequential-by-dependency
+                deployables:
+                  - name: DIGITALAI
+                    type: k8s.NamespaceSpec
+                    namespaceName: {{ .Namespace }}
+        {{- end }}
+          - name: Answers-Configmap-Deployment
+            type: udm.Application
+            children:
+              - name: 10.0.0
+                type: udm.DeploymentPackage
+                orchestrator:
+                  - sequential-by-dependency
+                deployables:
+                  - name: answers-configmap-deployment
+                    readinessProbeRetry: 120
+                    type: k8s.ResourcesFile
+                    file: !file "answers.yaml"
+          {{- if .UseCustomRegistry}}
+          - name: K8s-Docker-Credentials
+            type: udm.Application
+            children:
+              - name: "v0.6"
+                type: udm.DeploymentPackage
+                orchestrator:
+                  - sequential-by-dependency
+                deployables:
+                  - name: dockercreds
+                    type: k8s.ResourcesFile
+                    readinessProbeRetry: 120
+                    file: !file kubernetes/xl-k8s-foundation/dockercred.yaml
+          {{- end }}

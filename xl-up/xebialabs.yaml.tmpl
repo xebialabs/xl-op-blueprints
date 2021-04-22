@@ -1,0 +1,12 @@
+apiVersion: xl/v1
+kind: Import
+metadata:
+  imports:
+    - digitalai/xl-k8s-foundation.yaml
+    {{- if eq .ServerType "daiDeploy"}}
+    - digitalai/dai-deploy-operator.yaml
+    {{- end}}
+    {{- if eq .ServerType "daiRelease"}}
+    - digitalai/dai-release-operator.yaml
+    {{- end}}
+    - digitalai/deployments.yaml

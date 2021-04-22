@@ -1,0 +1,43 @@
+{{- if not .UseCustomNamespace }}
+apiVersion: xl-deploy/v1
+kind: Deployment
+spec:
+  package: Applications/DIGITALAI/XL-K8S-FOUNDATION/K8s-NameSpace/1.0
+  environment: Environments/DIGITALAI/K8S
+---
+{{- end }}
+apiVersion: xl-deploy/v1
+kind: Deployment
+spec:
+  package: Applications/DIGITALAI/XL-K8S-FOUNDATION/Answers-Configmap-Deployment/10.0.0
+  environment: Environments/DIGITALAI/K8S
+  orchestrators:
+    - sequential-by-dependency
+{{- if eq .ServerType "daiDeploy"}}
+---
+apiVersion: xl-deploy/v1
+kind: Deployment
+spec:
+  {{- if .UseCustomRegistry}}
+  package: Applications/DIGITALAI/deploy-operator-app/{{.XldTag}}-{{.XLDVersionHash}}
+  {{- else}}
+  package: Applications/DIGITALAI/deploy-operator-app/{{ .ImageTag }}
+  {{- end}}
+  environment: Environments/DIGITALAI/K8S
+  orchestrators:
+    - sequential-by-dependency
+{{- end }}
+{{- if eq .ServerType "daiRelease"}}
+---
+apiVersion: xl-deploy/v1
+kind: Deployment
+spec:
+  {{- if .UseCustomRegistry}}
+  package: Applications/DIGITALAI/release-operator-app/{{.XlrTag}}-{{.XLRVersionHash}}
+  {{- else}}
+  package: Applications/DIGITALAI/release-operator-app/{{ .ImageTag }}
+  {{- end}}
+  environment: Environments/DIGITALAI/K8S
+  orchestrators:
+    - sequential-by-dependency
+{{- end }}

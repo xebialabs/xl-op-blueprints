@@ -1,0 +1,264 @@
+apiVersion: xl/v2
+kind: Blueprint
+metadata:
+  name: XL UP
+  description: |
+    This blueprint deploys DAI Deploy operator, DAI Release operator, and XL-k8s-foundation into an existing Kubernetes installation (local single-node Kubernetes, on-premises multi-node Kubernetes cluster, or Amazon EKS cluster).
+  author: Digital.ai
+  version: 1.0
+spec:
+  parameters:
+    - name: UseCustomRegistry
+      type: Confirm
+      prompt: "Do you want to use custom Docker Registry and custom images?"
+      default: false
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      description: "When running in a segregated network setup you may have downloaded the official Xebialabs docker containers and pushed them into your private docker registry. Another use case is when you have created a custom Xebialabs docker container for having additional plugins, extensions or java libraries, like jdbc drivers to connect to external databases, and pushed these custom container to your custom docker registry. It might be necessary to specify a custom internal Docker registry to pull the XebiaLabs Devops Platform images from."
+
+    - name: RegistryURL
+      type: Input
+      prompt: "Enter your Docker registry URL and organization:"
+      promptIf: !expr "UseCustomRegistry"
+      default: "docker.io/xebialabs"
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      description: "When using a custom Docker registry, enter the URL of that registry here. If the the docker registry you are using is Dockerhub then your registry url will look like: docker.io/MY_COMPANY. If you have an internal docker registry then it may look like: xl-docker.xebialabs.com"
+      validate: !expr "regex('[a-zA-Z0-9][a-zA-Z0-9-._/]*', RegistryURL)"
+
+    - name: DockerUser
+      type: Input
+      prompt: "Enter your Docker Registry username:"
+      promptIf: !expr "UseCustomRegistry"
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      allowEmpty: true
+      description: "When using a custom Docker registry that requires authentication, pass that username in here"
+
+    - name: DockerPass
+      type: SecretInput
+      prompt: "Enter your Docker Registry password:"
+      promptIf: !expr "UseCustomRegistry"
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      replaceAsIs: true
+      overrideDefault: true
+      allowEmpty: true
+      description: "When using a custom Docker registry that requires authentication, pass that password in here"
+
+    - name: ServerType
+      type: Select
+      prompt: "Select the server you want to install"
+      options:
+        - label: Digital.ai Release
+          value: daiRelease
+        - label: Digital.ai Deploy
+          value: daiDeploy
+      saveInXlvals: true
+      description: "Product server you want to install?"
+
+    - name: AdminPassword
+      type: SecretInput
+      prompt: "Enter the password that you want to use for the XL Deploy admin user:"
+      # promptIf: !expr "InstallXLD"
+      default: !expr "randPassword()"
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      revealOnSummary: true
+      replaceAsIs: true
+      description: "The password that you would like to use for the DAI Deploy admin user"
+
+    - name: ImageRepositoryDeploy
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Enter the image name of DAI Deploy to use"
+      promptIf: !expr "ServerType == 'daiDeploy'"
+      default: "xebialabs/xl-deploy"
+      description: "Deploy Image that is to be used"
+    
+    - name: ImageRepositoryRelease
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Enter the image name of DAI Deploy to use"
+      promptIf: !expr "ServerType == 'daiRelease'"
+      default: "xebialabs/xl-release"
+      description: "Release Image that is to be used"
+
+    - name: ImageTag
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Enter the image tag"
+      default: 10.0.0
+      description: "Enter the image tag to use"
+
+    - name: StorageClass
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Enter the storage class to use"
+      default: nfs-client
+      description: "Enter the storage class to use"
+
+    - name: OperatorImageDeploy
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Operator image to use"
+      promptIf: !expr "ServerType == 'daiDeploy'"
+      default: dapurva/xld-operator:haproxy
+      description: "Operator image to use"
+    
+    - name: OperatorImageRelease
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Operator image to use"
+      promptIf: !expr "ServerType == 'daiRelease'"
+      default: xebialabsunsupported/xlr-operator-nginx:0.0.1
+      description: "Operator image to use"
+
+    - name: DeployLic
+      type: SecretFile
+      prompt: "Enter the full path to the DAI Deploy license file:"
+      promptIf: !expr "ServerType == 'daiDeploy'"
+      replaceAsIs: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      description: "The local path to an DAI Deploy license file"
+
+    - name: ReleaseLic
+      type: SecretFile
+      prompt: "Enter the full path to the DAI Release license file:"
+      promptIf: !expr "ServerType == 'daiRelease'"
+      replaceAsIs: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      description: "The local path to an DAI Release license file"
+    
+    - name: KeyStore
+      type: SecretFile
+      prompt: "Enter the full path to your Digital.ai keystore:"
+      replaceAsIs: true
+      ignoreIfSkipped: true
+      description: "The local path to a JCEKS keystore to use in the Digital.ai Devops Platform. This facilitates encryption of passwords and secrets in DAI Deploy or DAI Release. You can use keytool to generate a keystore, for example: keytool -genseckey -alias deployit-passsword-key -keyalg aes -keysize 128 -keypass deployit -keystore /tmp/repository-keystore.jceks -storetype jceks -storepass test123"
+    
+    - name: KeyStorePass
+      type: SecretInput
+      prompt: "Enter your Digital.ai keystore password:"
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      replaceAsIs: true
+      description: "The password of the provided keystore"
+
+    - name: IngressHost
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "DNS name for accessing UI of Digital.ai Platform"
+      default: kublove-kn1.xebialabs.com
+      description: "DNS name for accessing UI of Digital.ai Platform"
+
+    - name: MasterCount
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Enter the master count for DAI Deploy"
+      promptIf: !expr "ServerType == 'daiDeploy'"
+      default: 3
+      description: "Master count in cluster"
+
+    - name: WorkerCount
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Enter the master count for DAI Deploy"
+      promptIf: !expr "ServerType == 'daiDeploy'"
+      default: 3
+      description: "Worker count in cluster"
+
+    - name: replicaCount
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Enter the replicaCount for DAI Release"
+      promptIf: !expr "ServerType == 'daiRelease'"
+      default: 3
+      description: "Replicas in cluster"
+
+  files:
+    # k8s-foundation
+    - path: digitalai/xl-k8s-foundation.yaml.tmpl
+    
+    # files to write if server to deploy is Deploy
+    - path: digitalai/dai-deploy/template/cluster-role-digital-proxy-role.yaml
+      writeIf: !expr "ServerType == 'daiDeploy'"
+    - path: digitalai/dai-deploy/template/cluster-role-manager-role.yaml
+      writeIf: !expr "ServerType == 'daiDeploy'"
+    - path: digitalai/dai-deploy/template/cluster-role-metrics-reader.yaml
+      writeIf: !expr "ServerType == 'daiDeploy'"
+    - path: digitalai/dai-deploy/template/controller-manager-metrics-service.yaml
+      writeIf: !expr "ServerType == 'daiDeploy'"
+    - path: digitalai/dai-deploy/template/custom-resource-definition.yaml
+      writeIf: !expr "ServerType == 'daiDeploy'"
+    - path: digitalai/dai-deploy/template/leader-election-role.yaml
+      writeIf: !expr "ServerType == 'daiDeploy'"
+    - path: digitalai/dai-deploy/template/leader-election-rolebinding.yaml
+      writeIf: !expr "ServerType == 'daiDeploy'"
+    - path: digitalai/dai-deploy/template/manager-rolebinding.yaml
+      writeIf: !expr "ServerType == 'daiDeploy'"
+    - path: digitalai/dai-deploy/template/proxy-rolebinding.yaml
+      writeIf: !expr "ServerType == 'daiDeploy'"
+    - path: digitalai/dai-deploy/daideploy_cr.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiDeploy'"
+    - path: digitalai/dai-deploy/template/deployment.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiDeploy'"
+    - path: digitalai/dai-deploy-operator.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiDeploy'"
+
+    # files to write if server to deploy is Release
+    - path: digitalai/dai-release/template/cluster-role-digital-proxy-role.yaml
+      writeIf: !expr "ServerType == 'daiRelease'"
+    - path: digitalai/dai-release/template/cluster-role-manager-role.yaml
+      writeIf: !expr "ServerType == 'daiRelease'"
+    - path: digitalai/dai-release/template/cluster-role-metrics-reader.yaml
+      writeIf: !expr "ServerType == 'daiRelease'"
+    - path: digitalai/dai-release/template/controller-manager-metrics-service.yaml
+      writeIf: !expr "ServerType == 'daiRelease'"
+    - path: digitalai/dai-release/template/custom-resource-definition.yaml
+      writeIf: !expr "ServerType == 'daiRelease'"
+    - path: digitalai/dai-release/template/leader-election-role.yaml
+      writeIf: !expr "ServerType == 'daiRelease'"
+    - path: digitalai/dai-release/template/leader-election-rolebinding.yaml
+      writeIf: !expr "ServerType == 'daiRelease'"
+    - path: digitalai/dai-release/template/manager-rolebinding.yaml
+      writeIf: !expr "ServerType == 'daiRelease'"
+    - path: digitalai/dai-release/template/proxy-rolebinding.yaml
+      writeIf: !expr "ServerType == 'daiRelease'"
+    - path: digitalai/dai-release/dairelease_cr.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiRelease'"
+    - path: digitalai/dai-release-operator.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiRelease'"
+    - path: digitalai/dai-release/template/deployment.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiRelease'"
+
+    - path: digitalai/common.yaml.tmpl
+    - path: digitalai/deployments.yaml.tmpl
+    - path: digitalai/answers.yaml.tmpl   
+    - path: generated_answers.yaml.tmpl
+    - path: xebialabs.yaml.tmpl
