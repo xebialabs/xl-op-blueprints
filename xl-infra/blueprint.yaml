@@ -3,14 +3,14 @@ kind: Blueprint
 metadata:
   name: XL UP
   description: |
-    This blueprint deploys XL Deploy, XL Release, and XL-k8s-foundation into an existing Kubernetes installation (local single-node Kubernetes, on-premises multi-node Kubernetes cluster, Google Kubernetes Engine cluster, or Amazon EKS cluster).
-  author: XebiaLabs
+    This blueprint deploys DAI Deploy operator, DAI Release operator, and XL-k8s-foundation into an existing Kubernetes installation (local single-node Kubernetes, on-premises multi-node Kubernetes cluster, Google Kubernetes Engine cluster, or Amazon EKS cluster).
+  author: digitalai
   version: 1.0
 spec:
   parameters:
     - name: K8sSetup
       type: Select
-      prompt: "Select the Kubernetes setup where the XebiaLabs Devops Platform will be installed or uninstalled:"
+      prompt: "Select the Kubernetes setup where the digitalai Devops Platform will be installed or uninstalled:"
       options:
         - label: Local K8s from Docker Desktop for Mac/Windows
           value: DockerDesktopK8s
@@ -25,7 +25,7 @@ spec:
         - label: Plain multi-node K8s cluster
           value: PlainK8SCluster
       saveInXlvals: true
-      description: "The flavour of Kubernetes to deploy or undeploy the XebiaLabs Devops Platform to. Only the listed options are supported"
+      description: "The flavour of Kubernetes to deploy or undeploy the digitalai Devops Platform to. Only the listed options are supported"
 
     - name: UseKubeconfig
       type: Confirm

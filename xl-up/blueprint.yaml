@@ -62,14 +62,13 @@ spec:
 
     - name: AdminPassword
       type: SecretInput
-      prompt: "Enter the password that you want to use for the XL Deploy admin user:"
-      # promptIf: !expr "InstallXLD"
+      prompt: "Enter the password that you want to use for the Sever admin user:"
       default: !expr "randPassword()"
       saveInXlvals: true
       ignoreIfSkipped: true
       revealOnSummary: true
       replaceAsIs: true
-      description: "The password that you would like to use for the DAI Deploy admin user"
+      description: "The password that you would like to use for the Server admin user"
 
     - name: ImageRepositoryDeploy
       type: Input
@@ -220,9 +219,9 @@ spec:
       writeIf: !expr "ServerType == 'daiDeploy'"
     - path: digitalai/dai-deploy/template/leader-election-rolebinding.yaml
       writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: digitalai/dai-deploy/template/manager-rolebinding.yaml
+    - path: digitalai/dai-deploy/template/manager-rolebinding.yaml.tmpl
       writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: digitalai/dai-deploy/template/proxy-rolebinding.yaml
+    - path: digitalai/dai-deploy/template/proxy-rolebinding.yaml.tmpl
       writeIf: !expr "ServerType == 'daiDeploy'"
     - path: digitalai/dai-deploy/daideploy_cr.yaml.tmpl
       writeIf: !expr "ServerType == 'daiDeploy'"
@@ -246,9 +245,9 @@ spec:
       writeIf: !expr "ServerType == 'daiRelease'"
     - path: digitalai/dai-release/template/leader-election-rolebinding.yaml
       writeIf: !expr "ServerType == 'daiRelease'"
-    - path: digitalai/dai-release/template/manager-rolebinding.yaml
+    - path: digitalai/dai-release/template/manager-rolebinding.yaml.tmpl
       writeIf: !expr "ServerType == 'daiRelease'"
-    - path: digitalai/dai-release/template/proxy-rolebinding.yaml
+    - path: digitalai/dai-release/template/proxy-rolebinding.yaml.tmpl
       writeIf: !expr "ServerType == 'daiRelease'"
     - path: digitalai/dai-release/dairelease_cr.yaml.tmpl
       writeIf: !expr "ServerType == 'daiRelease'"
