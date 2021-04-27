@@ -202,62 +202,62 @@ spec:
 
   files:
     # k8s-foundation
-    - path: digitalai/xl-k8s-foundation.yaml.tmpl
+    - path: xebialabs/xl-k8s-foundation.yaml.tmpl
     
     # files to write if server to deploy is Deploy
-    - path: digitalai/dai-deploy/template/cluster-role-digital-proxy-role.yaml
+    - path: xebialabs/dai-deploy/template/cluster-role-digital-proxy-role.yaml
       writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: digitalai/dai-deploy/template/cluster-role-manager-role.yaml
+    - path: xebialabs/dai-deploy/template/cluster-role-manager-role.yaml
       writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: digitalai/dai-deploy/template/cluster-role-metrics-reader.yaml
+    - path: xebialabs/dai-deploy/template/cluster-role-metrics-reader.yaml
       writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: digitalai/dai-deploy/template/controller-manager-metrics-service.yaml
+    - path: xebialabs/dai-deploy/template/controller-manager-metrics-service.yaml
       writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: digitalai/dai-deploy/template/custom-resource-definition.yaml
+    - path: xebialabs/dai-deploy/template/custom-resource-definition.yaml
       writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: digitalai/dai-deploy/template/leader-election-role.yaml
+    - path: xebialabs/dai-deploy/template/leader-election-role.yaml
       writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: digitalai/dai-deploy/template/leader-election-rolebinding.yaml
+    - path: xebialabs/dai-deploy/template/leader-election-rolebinding.yaml
       writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: digitalai/dai-deploy/template/manager-rolebinding.yaml.tmpl
+    - path: xebialabs/dai-deploy/template/manager-rolebinding.yaml.tmpl
       writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: digitalai/dai-deploy/template/proxy-rolebinding.yaml.tmpl
+    - path: xebialabs/dai-deploy/template/proxy-rolebinding.yaml.tmpl
       writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: digitalai/dai-deploy/daideploy_cr.yaml.tmpl
+    - path: xebialabs/dai-deploy/daideploy_cr.yaml.tmpl
       writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: digitalai/dai-deploy/template/deployment.yaml.tmpl
+    - path: xebialabs/dai-deploy/template/deployment.yaml.tmpl
       writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: digitalai/dai-deploy-operator.yaml.tmpl
+    - path: xebialabs/dai-deploy-operator.yaml.tmpl
       writeIf: !expr "ServerType == 'daiDeploy'"
 
     # files to write if server to deploy is Release
-    - path: digitalai/dai-release/template/cluster-role-digital-proxy-role.yaml
+    - path: xebialabs/dai-release/template/cluster-role-digital-proxy-role.yaml
       writeIf: !expr "ServerType == 'daiRelease'"
-    - path: digitalai/dai-release/template/cluster-role-manager-role.yaml
+    - path: xebialabs/dai-release/template/cluster-role-manager-role.yaml
       writeIf: !expr "ServerType == 'daiRelease'"
-    - path: digitalai/dai-release/template/cluster-role-metrics-reader.yaml
+    - path: xebialabs/dai-release/template/cluster-role-metrics-reader.yaml
       writeIf: !expr "ServerType == 'daiRelease'"
-    - path: digitalai/dai-release/template/controller-manager-metrics-service.yaml
+    - path: xebialabs/dai-release/template/controller-manager-metrics-service.yaml
       writeIf: !expr "ServerType == 'daiRelease'"
-    - path: digitalai/dai-release/template/custom-resource-definition.yaml
+    - path: xebialabs/dai-release/template/custom-resource-definition.yaml
       writeIf: !expr "ServerType == 'daiRelease'"
-    - path: digitalai/dai-release/template/leader-election-role.yaml
+    - path: xebialabs/dai-release/template/leader-election-role.yaml
       writeIf: !expr "ServerType == 'daiRelease'"
-    - path: digitalai/dai-release/template/leader-election-rolebinding.yaml
+    - path: xebialabs/dai-release/template/leader-election-rolebinding.yaml
       writeIf: !expr "ServerType == 'daiRelease'"
-    - path: digitalai/dai-release/template/manager-rolebinding.yaml.tmpl
+    - path: xebialabs/dai-release/template/manager-rolebinding.yaml.tmpl
       writeIf: !expr "ServerType == 'daiRelease'"
-    - path: digitalai/dai-release/template/proxy-rolebinding.yaml.tmpl
+    - path: xebialabs/dai-release/template/proxy-rolebinding.yaml.tmpl
       writeIf: !expr "ServerType == 'daiRelease'"
-    - path: digitalai/dai-release/dairelease_cr.yaml.tmpl
+    - path: xebialabs/dai-release/dairelease_cr.yaml.tmpl
       writeIf: !expr "ServerType == 'daiRelease'"
-    - path: digitalai/dai-release-operator.yaml.tmpl
+    - path: xebialabs/dai-release-operator.yaml.tmpl
       writeIf: !expr "ServerType == 'daiRelease'"
-    - path: digitalai/dai-release/template/deployment.yaml.tmpl
+    - path: xebialabs/dai-release/template/deployment.yaml.tmpl
       writeIf: !expr "ServerType == 'daiRelease'"
 
-    - path: digitalai/common.yaml.tmpl
-    - path: digitalai/deployments.yaml.tmpl
-    - path: digitalai/answers.yaml.tmpl   
+    - path: xebialabs/common.yaml.tmpl
+    - path: xebialabs/deployments.yaml.tmpl
+    - path: xebialabs/answers.yaml.tmpl   
     - path: generated_answers.yaml.tmpl
     - path: xebialabs.yaml.tmpl
