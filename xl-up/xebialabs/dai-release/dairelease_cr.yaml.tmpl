@@ -25,10 +25,27 @@ spec:
   # https://docs.xebialabs.com/v.9.8/release/how-to/update-the-xl-release-digital-certificate/#view-the-certificate
   # Convert keystore.jks files content to base64 ( cat keystore.jks | base64 -w 0 ) and put the output here
   RepositoryKeystore: {{ .KeyStore | b64enc }}
+  {{- if .UseExistingDB }}
+  UseExistingDB:
+    Enabled: true
+    XL_DB_PASSWORD: {{ .XLDBPassword }}
+    XL_DB_URL: {{ .XLDBURL }}
+    XL_DB_USERNAME: {{ .XLDBUserName }}
+  {{- else }}
   UseExistingDB:
     Enabled: false
+  {{- end }}
+  {{- if .UseExistingMQ }}
+  UseExistingMQ:
+    Enabled: true
+    XLD_TASK_QUEUE_DRIVER_CLASS_NAME: {{ .XLDTaskQueueDriverClassName }}
+    XLD_TASK_QUEUE_PASSWORD: {{ .XLDTaskQueuePassword }}
+    XLD_TASK_QUEUE_URL: {{ .XLDTaskQueueURL }}
+    XLD_TASK_QUEUE_USERNAME: {{ .XLDTaskQueueUsername }}
+  {{- else }}
   UseExistingMQ:
     Enabled: false
+  {{- end }}
   affinity: {}
   haproxy-ingress:
     controller:
@@ -454,7 +471,7 @@ spec:
       repository: bitnami/postgresql
       tag: 11.9.0-debian-10-r48
     initdbScriptsSecret: postgresql-init-sql-xlr
-    install: true
+    install: {{ not .UseExistingDB}}
     ldap:
       baseDN: ""
       bindDN: ""
@@ -772,7 +789,7 @@ spec:
       secrets: []
       tls: false
     initContainers: {}
-    install: true
+    install: {{ not .UseExistingMQ}}
     ldap:
       enabled: false
       port: "389"

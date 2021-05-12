@@ -199,6 +199,80 @@ spec:
       promptIf: !expr "ServerType == 'daiRelease'"
       default: 3
       description: "Replicas in cluster"
+    
+    # Use of existing Database
+    - name: UseExistingDB
+      type: Confirm
+      prompt: "Do you want to use any existing database?"
+      default: false
+      saveInXlvals: true
+      description: ""
+
+    - name: XLDBUserName
+      type: Input
+      saveInXlvals: true
+      prompt: "Enter the database username for database"
+      promptIf: !expr "UseExistingDB"
+      description: "Database Username for exisiting database"
+
+    - name: XLDBPassword
+      type: SecretInput
+      default: !expr "randPassword()"
+      ignoreIfSkipped: true
+      revealOnSummary: true
+      replaceAsIs: true
+      saveInXlvals: true
+      prompt: "Enter the database password for database"
+      promptIf: !expr "UseExistingDB"
+      description: "Database Password for exisiting database"
+
+    - name: XLDBURL
+      type: Input
+      saveInXlvals: true
+      prompt: "Enter the database connection string for database"
+      promptIf: !expr "UseExistingDB"
+      description: "Database connection string for exisiting database example: jdbc:postgresql://postgres-ext-postgresql.default.svc.cluster.local:5432/xlddb"
+
+    # Use of existing Messaging queue
+    - name: UseExistingMQ
+      type: Confirm
+      prompt: "Do you want to use any existing Messaging queue?"
+      default: false
+      saveInXlvals: true
+      description: "test"
+
+    - name: XLDTaskQueueDriverClassName
+      type: Input
+      saveInXlvals: true
+      prompt: "Enter the task queue driver class name"
+      promptIf: !expr "UseExistingMQ"
+      description: "Please enter the task queue driver class name example: com.rabbitmq.jms.admin.RMQConnectionFactory"
+
+    - name: XLDTaskQueuePassword
+      type: SecretInput
+      default: !expr "randPassword()"
+      ignoreIfSkipped: true
+      revealOnSummary: true
+      replaceAsIs: true
+      saveInXlvals: true
+      prompt: "Enter the task queue password"
+      promptIf: !expr "UseExistingMQ"
+      description: "Please enter the task queue password"
+    
+    - name: XLDTaskQueueURL
+      type: Input
+      saveInXlvals: true
+      prompt: "Enter the task queue URL"
+      promptIf: !expr "UseExistingMQ"
+      description: "Please enter the task queue URL example: amqp://rabbitmq-ext.default.svc.cluster.local:5672"
+    
+    - name: XLDTaskQueueUsername
+      type: Input
+      saveInXlvals: true
+      prompt: "Enter the task queue Username"
+      promptIf: !expr "UseExistingMQ"
+      description: "Please enter the task queue user name"
+
 
   files:
     # k8s-foundation
