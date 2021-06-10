@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     control-plane: controller-manager
-  name: digitalai-controller-manager-metrics-service
+  name: operator-controller-manager-metrics-service
 spec:
   ports:
   - name: https

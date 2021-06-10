@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: digitalai-manager-role
+  name: operator-manager-role
 rules:
 - apiGroups:
   - ""
@@ -22,11 +22,11 @@ rules:
   verbs:
   - create
 - apiGroups:
-  - xld.my.domain
+  - xld.digital.ai
   resources:
-  - xldeployhelmcharts
-  - xldeployhelmcharts/status
-  - xldeployhelmcharts/finalizers
+  - xldeployops
+  - xldeployops/status
+  - xldeployops/finalizers
   verbs:
   - create
   - delete
@@ -43,15 +43,23 @@ rules:
   verbs:
   - '*'
 - apiGroups:
-  - networking.k8s.io
+  - rbac.authorization.k8s.io
   resources:
-  - ingresses
+  - rolebindings
+  - roles
   verbs:
   - '*'
 - apiGroups:
-  - policy
+  - apps
   resources:
-  - poddisruptionbudgets
+  - deployments
+  - statefulsets
+  verbs:
+  - '*'
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses
   verbs:
   - '*'
 - apiGroups:
@@ -65,16 +73,8 @@ rules:
   verbs:
   - '*'
 - apiGroups:
-  - rbac.authorization.k8s.io
+  - policy
   resources:
-  - rolebindings
-  - roles
-  verbs:
-  - '*'
-- apiGroups:
-  - apps
-  resources:
-  - daemonsets
-  - statefulsets
+  - poddisruptionbudgets
   verbs:
   - '*'

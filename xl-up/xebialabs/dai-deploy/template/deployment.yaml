@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     control-plane: controller-manager
-  name: digitalai-controller-manager
+  name: operator-controller-manager
 spec:
   replicas: 1
   selector:
@@ -28,8 +28,8 @@ spec:
       - args:
         - --metrics-addr=127.0.0.1:8080
         - --enable-leader-election
-        - --leader-election-id=digitalai
-        image: {{ .OperatorImageDeploy }}
+        - --leader-election-id=operator
+        image: xebialabsunsupported/xld-operator-nginx:0.0.1
         livenessProbe:
           httpGet:
             path: /readyz
