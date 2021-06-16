@@ -1,2 +1,3 @@
-# operators-blueprint
-Blueprint for operator deployments
+# operators-upgrade-blueprint
+## Blueprint for operator to operator upgrade
+## Blueprint for helm to operator upgrade

@@ -8,87 +8,16 @@ metadata:
   version: 1.0
 spec:
   parameters:
-    - name: UseCustomRegistry
-      type: Confirm
-      prompt: "Do you want to use custom Docker Registry and custom images?"
-      default: false
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      description: "When running in a segregated network setup you may have downloaded the official Xebialabs docker containers and pushed them into your private docker registry. Another use case is when you have created a custom Xebialabs docker container for having additional plugins, extensions or java libraries, like jdbc drivers to connect to external databases, and pushed these custom container to your custom docker registry. It might be necessary to specify a custom internal Docker registry to pull the XebiaLabs Devops Platform images from."
-
-    - name: RegistryURL
-      type: Input
-      prompt: "Enter your Docker registry URL and organization:"
-      promptIf: !expr "UseCustomRegistry"
-      default: "docker.io/xebialabs"
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      description: "When using a custom Docker registry, enter the URL of that registry here. If the the docker registry you are using is Dockerhub then your registry url will look like: docker.io/MY_COMPANY. If you have an internal docker registry then it may look like: xl-docker.xebialabs.com"
-      validate: !expr "regex('[a-zA-Z0-9][a-zA-Z0-9-._/]*', RegistryURL)"
-
-    - name: DockerUser
-      type: Input
-      prompt: "Enter your Docker Registry username:"
-      promptIf: !expr "UseCustomRegistry"
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      allowEmpty: true
-      description: "When using a custom Docker registry that requires authentication, pass that username in here"
-
-    - name: DockerPass
-      type: SecretInput
-      prompt: "Enter your Docker Registry password:"
-      promptIf: !expr "UseCustomRegistry"
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      replaceAsIs: true
-      overrideDefault: true
-      allowEmpty: true
-      description: "When using a custom Docker registry that requires authentication, pass that password in here"
-
     - name: ServerType
       type: Select
-      prompt: "Select the server you want to install"
+      prompt: "Product server you want to perform upgrade for"
       options:
         - label: Digital.ai Release
           value: daiRelease
         - label: Digital.ai Deploy
           value: daiDeploy
       saveInXlvals: true
-      description: "Product server you want to install?"
-
-    - name: AdminPassword
-      type: SecretInput
-      prompt: "Enter the password that you want to use for the Sever admin user:"
-      default: !expr "randPassword()"
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      revealOnSummary: true
-      replaceAsIs: true
-      description: "The password that you would like to use for the Server admin user"
-
-    - name: ImageRepositoryDeploy
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      prompt: "Enter the image name of DAI Deploy to use"
-      promptIf: !expr "ServerType == 'daiDeploy'"
-      default: "xebialabs/xl-deploy"
-      description: "Deploy Image that is to be used"
-    
-    - name: ImageRepositoryRelease
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      prompt: "Enter the image name of DAI Deploy to use"
-      promptIf: !expr "ServerType == 'daiRelease'"
-      default: "xebialabs/xl-release"
-      description: "Release Image that is to be used"
+      description: "Product server you want to perform upgrade for?"
 
     - name: ImageTag
       type: Input
@@ -98,25 +27,6 @@ spec:
       prompt: "Enter the image tag"
       default: 10.0.0
       description: "Enter the image tag to use"
-
-    - name: StorageClass
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      prompt: "Enter the storage class to use"
-      default: nfs-client
-      description: "Enter the storage class to use"
-
-    - name: OperatorImageDeploy
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      prompt: "Operator image to use"
-      promptIf: !expr "ServerType == 'daiDeploy'"
-      default: dapurva/xld-operator:haproxy
-      description: "Operator image to use"
     
     - name: OperatorImageRelease
       type: Input
@@ -128,151 +38,43 @@ spec:
       default: xebialabsunsupported/xlr-operator-nginx:0.0.1
       description: "Operator image to use"
 
-    - name: DeployLic
-      type: SecretFile
-      prompt: "Enter the full path to the DAI Deploy license file:"
-      promptIf: !expr "ServerType == 'daiDeploy'"
-      replaceAsIs: true
+    - name: UpgradeType
+      type: Select
+      prompt: "Select the type of upgrade you want."
+      options:
+        - label: Operator to Operator
+          value: operatorToOperator
+        - label: Helm to Operator
+          value: helmToOperator
+      saveInXlvals: true
+      description: "Type of upgrade you want?"
+      
+    - name: CrName
+      type: Input
+      saveInXlvals: true
+      promptIf: !expr "UpgradeType == 'operatorToOperator'"
+      prompt: "Enter the name of custom resource."
       ignoreIfSkipped: true
       overrideDefault: true
-      description: "The local path to an DAI Deploy license file"
-
-    - name: ReleaseLic
-      type: SecretFile
-      prompt: "Enter the full path to the DAI Release license file:"
-      promptIf: !expr "ServerType == 'daiRelease'"
-      replaceAsIs: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      description: "The local path to an DAI Release license file"
+      description: "The name of your custom resource"
     
-    - name: KeyStore
-      type: SecretFile
-      prompt: "Enter the full path to your Digital.ai keystore:"
-      replaceAsIs: true
-      ignoreIfSkipped: true
-      description: "The local path to a JCEKS keystore to use in the Digital.ai Devops Platform. This facilitates encryption of passwords and secrets in DAI Deploy or DAI Release. You can use keytool to generate a keystore, for example: keytool -genseckey -alias deployit-passsword-key -keyalg aes -keysize 128 -keypass deployit -keystore /tmp/repository-keystore.jceks -storetype jceks -storepass test123"
-    
-    - name: KeyStorePass
-      type: SecretInput
-      prompt: "Enter your Digital.ai keystore password:"
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      replaceAsIs: true
-      description: "The password of the provided keystore"
-
-    - name: IngressHost
+    - name: CrdName
       type: Input
       saveInXlvals: true
+      promptIf: !expr "UpgradeType == 'operatorToOperator'"
+      prompt: "Enter the name of custom resource definition."
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "DNS name for accessing UI of Digital.ai Platform"
-      default: kublove-kn1.xebialabs.com
-      description: "DNS name for accessing UI of Digital.ai Platform"
-
-    - name: MasterCount
+      description: "The name of your custom resource definition."
+    
+    - name: ReleaseName
       type: Input
       saveInXlvals: true
+      promptIf: !expr "UpgradeType == 'helmToOperator'"
+      prompt: "Enter the helm release name."
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Enter the master count for DAI Deploy"
-      promptIf: !expr "ServerType == 'daiDeploy'"
-      default: 3
-      description: "Master count in cluster"
-
-    - name: WorkerCount
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      prompt: "Enter the master count for DAI Deploy"
-      promptIf: !expr "ServerType == 'daiDeploy'"
-      default: 3
-      description: "Worker count in cluster"
-
-    - name: replicaCount
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      prompt: "Enter the replicaCount for DAI Release"
-      promptIf: !expr "ServerType == 'daiRelease'"
-      default: 3
-      description: "Replicas in cluster"
-    
-    # Use of existing Database
-    - name: UseExistingDB
-      type: Confirm
-      prompt: "Do you want to use any existing database?"
-      default: false
-      saveInXlvals: true
-      description: ""
-
-    - name: XLDBUserName
-      type: Input
-      saveInXlvals: true
-      prompt: "Enter the database username for database"
-      promptIf: !expr "UseExistingDB"
-      description: "Database Username for exisiting database"
-
-    - name: XLDBPassword
-      type: SecretInput
-      default: !expr "randPassword()"
-      ignoreIfSkipped: true
-      revealOnSummary: true
-      replaceAsIs: true
-      saveInXlvals: true
-      prompt: "Enter the database password for database"
-      promptIf: !expr "UseExistingDB"
-      description: "Database Password for exisiting database"
-
-    - name: XLDBURL
-      type: Input
-      saveInXlvals: true
-      prompt: "Enter the database connection string for database"
-      promptIf: !expr "UseExistingDB"
-      description: "Database connection string for exisiting database example: jdbc:postgresql://postgres-ext-postgresql.default.svc.cluster.local:5432/xlddb"
-
-    # Use of existing Messaging queue
-    - name: UseExistingMQ
-      type: Confirm
-      prompt: "Do you want to use any existing Messaging queue?"
-      default: false
-      saveInXlvals: true
-      description: "test"
-
-    - name: XLDTaskQueueDriverClassName
-      type: Input
-      saveInXlvals: true
-      prompt: "Enter the task queue driver class name"
-      promptIf: !expr "UseExistingMQ"
-      description: "Please enter the task queue driver class name example: com.rabbitmq.jms.admin.RMQConnectionFactory"
-
-    - name: XLDTaskQueuePassword
-      type: SecretInput
-      default: !expr "randPassword()"
-      ignoreIfSkipped: true
-      revealOnSummary: true
-      replaceAsIs: true
-      saveInXlvals: true
-      prompt: "Enter the task queue password"
-      promptIf: !expr "UseExistingMQ"
-      description: "Please enter the task queue password"
-    
-    - name: XLDTaskQueueURL
-      type: Input
-      saveInXlvals: true
-      prompt: "Enter the task queue URL"
-      promptIf: !expr "UseExistingMQ"
-      description: "Please enter the task queue URL example: amqp://rabbitmq-ext.default.svc.cluster.local:5672"
-    
-    - name: XLDTaskQueueUsername
-      type: Input
-      saveInXlvals: true
-      prompt: "Enter the task queue Username"
-      promptIf: !expr "UseExistingMQ"
-      description: "Please enter the task queue user name"
-
+      description: "The name of your custom resource definition."
 
   files:
     # k8s-foundation
@@ -296,8 +98,6 @@ spec:
     - path: xebialabs/dai-deploy/template/manager-rolebinding.yaml.tmpl
       writeIf: !expr "ServerType == 'daiDeploy'"
     - path: xebialabs/dai-deploy/template/proxy-rolebinding.yaml.tmpl
-      writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: xebialabs/dai-deploy/daideploy_cr.yaml.tmpl
       writeIf: !expr "ServerType == 'daiDeploy'"
     - path: xebialabs/dai-deploy/template/deployment.yaml.tmpl
       writeIf: !expr "ServerType == 'daiDeploy'"
@@ -323,8 +123,6 @@ spec:
       writeIf: !expr "ServerType == 'daiRelease'"
     - path: xebialabs/dai-release/template/proxy-rolebinding.yaml.tmpl
       writeIf: !expr "ServerType == 'daiRelease'"
-    - path: xebialabs/dai-release/dairelease_cr.yaml.tmpl
-      writeIf: !expr "ServerType == 'daiRelease'"
     - path: xebialabs/dai-release-operator.yaml.tmpl
       writeIf: !expr "ServerType == 'daiRelease'"
     - path: xebialabs/dai-release/template/deployment.yaml.tmpl
@@ -332,6 +130,6 @@ spec:
 
     - path: xebialabs/common.yaml.tmpl
     - path: xebialabs/deployments.yaml.tmpl
-    - path: xebialabs/answers.yaml.tmpl   
     - path: generated_answers.yaml.tmpl
+    - path: xebialabs/answers.yaml.tmpl
     - path: xebialabs.yaml.tmpl

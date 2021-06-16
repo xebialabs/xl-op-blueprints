@@ -184,7 +184,7 @@ spec:
       type: Input
       promptIf: !expr "UseCustomNamespace"
       prompt: "Enter the name of the existing Kubernetes namespace where the XebiaLabs DevOps Platform will be installed, updated or undeployed:"
-      default: digitalai
+      default: default
       saveInXlvals: true
       ignoreIfSkipped: true
       description: "The existing Kubernetes namespace to install, update or undeploy the XebiaLabs Devops Platform "
