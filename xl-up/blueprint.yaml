@@ -85,7 +85,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Enter the image name of DAI Deploy to use"
+      prompt: "Enter the image name of DAI Release to use"
       promptIf: !expr "ServerType == 'daiRelease'"
       default: "xebialabs/xl-release"
       description: "Release Image that is to be used"
@@ -232,6 +232,31 @@ spec:
       prompt: "Enter the database connection string for database"
       promptIf: !expr "UseExistingDB"
       description: "Database connection string for exisiting database example: jdbc:postgresql://postgres-ext-postgresql.default.svc.cluster.local:5432/xlddb"
+
+    - name: XLRRREPORTDBURL
+      type: Input
+      saveInXlvals: true
+      prompt: "Enter the database connection url string for report database"
+      promptIf: !expr "UseExistingDB && ServerType == 'daiRelease'"
+      description: "Database connection string for report database example: jdbc:postgresql://postgres-ext-postgresql.default.svc.cluster.local:5432/xlddb"
+
+    - name: XLRREPORTDBUSER
+      type: Input
+      saveInXlvals: true
+      prompt: "Enter the database username for report database"
+      promptIf: !expr "UseExistingDB && ServerType == 'daiRelease'"
+      description: "Database Username for report database"
+    
+    - name: XLRREPORTDBPASS
+      type: SecretInput
+      default: !expr "randPassword()"
+      ignoreIfSkipped: true
+      revealOnSummary: true
+      replaceAsIs: true
+      saveInXlvals: true
+      prompt: "Enter the database password for report database"
+      promptIf: !expr "UseExistingDB && ServerType == 'daiRelease'"
+      description: "Database Password for report database"
 
     # Use of existing Messaging queue
     - name: UseExistingMQ

@@ -31,6 +31,9 @@ spec:
     XL_DB_PASSWORD: {{ .XLDBPassword }}
     XL_DB_URL: {{ .XLDBURL }}
     XL_DB_USERNAME: {{ .XLDBUserName }}
+    XLR_REPORT_DB_URL: {{ .XLRRREPORTDBURL}}
+    XLR_REPORT_DB_USER: {{ .XLRREPORTDBUSER}}
+    XLR_REPORT_DB_PASS: {{ .XLRREPORTDBPASS}}
   {{- else }}
   UseExistingDB:
     Enabled: false

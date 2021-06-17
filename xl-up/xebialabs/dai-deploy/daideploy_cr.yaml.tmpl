@@ -548,48 +548,48 @@ spec:
     extraSecrets:
       xld-load-definition:
         xld-load_definition.json: |
-        {
-        "users": [
           {
-              "name": "{{`{{ .Values.auth.username }}`}}",
-              "password": "{{`{{ .Values.auth.password }}`}}",
-              "tags": "administrator"
-          }
-          ],
-        "vhosts": [
-          {
-            "name": "/"
-          }
-          ],
-          "permissions": [
-          {
-            "user": "{{`{{ .Values.auth.username }}`}}",
-            "vhost": "/",
-            "configure": ".*",
-            "write": ".*",
-            "read": ".*"
-          }
-          ],
-        "global_parameters": [
-          {
-            "name": "cluster_name",
-            "value": ""
-          }
-          ],
-         "policies": [
+          "users": [
             {
-              "name": "ha-all",
-              "apply-to": "all",
-              "pattern": ".*",
-              "vhost": "/",
-              "definition": {
-                "ha-mode": "all",
-                "ha-sync-mode": "automatic",
-                "ha-sync-batch-size": 1
-              }
+                "name": "{{`{{ .Values.auth.username }}`}}",
+                "password": "{{`{{ .Values.auth.password }}`}}",
+                "tags": "administrator"
             }
-          ]
-        }
+            ],
+          "vhosts": [
+            {
+              "name": "/"
+            }
+            ],
+            "permissions": [
+            {
+              "user": "{{`{{ .Values.auth.username }}`}}",
+              "vhost": "/",
+              "configure": ".*",
+              "write": ".*",
+              "read": ".*"
+            }
+            ],
+          "global_parameters": [
+            {
+              "name": "cluster_name",
+              "value": ""
+            }
+            ],
+          "policies": [
+              {
+                "name": "ha-all",
+                "apply-to": "all",
+                "pattern": ".*",
+                "vhost": "/",
+                "definition": {
+                  "ha-mode": "all",
+                  "ha-sync-mode": "automatic",
+                  "ha-sync-batch-size": 1
+                }
+              }
+            ]
+          }
     extraVolumeMounts: []
     extraVolumes: []
     global: {}
