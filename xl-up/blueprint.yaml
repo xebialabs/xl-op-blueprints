@@ -28,14 +28,13 @@ spec:
       default: 10.0.0
       description: "Enter the image tag to use"
     
-    - name: OperatorImageRelease
+    - name: OperatorImageDeploy
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Operator image to use"
-      promptIf: !expr "ServerType == 'daiRelease'"
-      default: xebialabsunsupported/xlr-operator-nginx:0.0.1
+      default: xebialabs/xl-deploy:10.1.2
       description: "Operator image to use"
 
     - name: UpgradeType
@@ -48,6 +47,16 @@ spec:
           value: helmToOperator
       saveInXlvals: true
       description: "Type of upgrade you want?"
+
+    - name: OperatorImageRelease
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Operator image to use"
+      promptIf: !expr "ServerType == 'daiRelease'"
+      default: xebialabsunsupported/xlr-operator-nginx:0.0.1
+      description: "Operator image to use"
       
     - name: CrName
       type: Input
