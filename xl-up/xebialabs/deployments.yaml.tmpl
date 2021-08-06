@@ -9,7 +9,7 @@ spec:
 apiVersion: xl-deploy/v1
 kind: Deployment
 spec:
-  package: Applications/DIGITALAI/XL-K8S-FOUNDATION/Answers-Configmap-Deployment/10.0.0
+  package: Applications/DIGITALAI/XL-K8S-FOUNDATION/Answers-Configmap-Deployment/{{ .ImageTag }}
   environment: Environments/DIGITALAI/K8S
   orchestrators:
     - sequential-by-dependency

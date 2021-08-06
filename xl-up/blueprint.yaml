@@ -34,7 +34,8 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Operator image to use"
-      default: xebialabs/xl-deploy:10.1.2
+      promptIf: !expr "ServerType == 'daiDeploy'"
+      default: rprasaddigitalai/xld-operator:v1.0.0
       description: "Operator image to use"
 
     - name: UpgradeType

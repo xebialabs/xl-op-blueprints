@@ -118,7 +118,7 @@ spec:
           - name: Answers-Configmap-Deployment
             type: udm.Application
             children:
-              - name: 10.0.0
+              - name: {{ .ImageTag }}
                 type: udm.DeploymentPackage
                 orchestrator:
                   - sequential-by-dependency

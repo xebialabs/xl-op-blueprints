@@ -1,21 +1,20 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: digitalaideploys.xld.my.domain
+  name: digitalaideployocps.xldoc.digital.ai
 spec:
-  group: xld.my.domain
+  group: xldoc.digital.ai
   names:
-    kind: DigitalaiDeploy
-    listKind: DigitalaiDeployList
-    plural: digitalaideploys
-    singular: digitalaideploy
+    kind: DigitalaiDeployOcp
+    listKind: DigitalaiDeployOcpList
+    plural: digitalaideployocps
+    singular: digitalaideployocps
   scope: Namespaced
   versions:
-  - name: v1
+  - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: DigitalaiDeploy is the Schema for the digitalaideploys API
+        description: xlDeployOp is the Schema for the digitalaideployocps API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -30,11 +29,11 @@ spec:
           metadata:
             type: object
           spec:
-            description: Spec defines the desired state of DigitalaiDeploy
+            description: Spec defines the desired state of xlDeployOp
             type: object
             x-kubernetes-preserve-unknown-fields: true
           status:
-            description: Status defines the observed state of DigitalaiDeploy
+            description: Status defines the observed state of xlDeployOp
             type: object
             x-kubernetes-preserve-unknown-fields: true
         type: object
@@ -42,4 +41,3 @@ spec:
     storage: true
     subresources:
       status: {}
-

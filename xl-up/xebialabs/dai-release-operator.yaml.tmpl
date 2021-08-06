@@ -92,9 +92,9 @@ spec:
         mergePatchType: strategic
         propagationPolicy: Foreground
         updateMethod: patch
-        createOrder: "1"
+        createOrder: "3"
         modifyOrder: "2"
-        destroyOrder: "3"
+        destroyOrder: "1"
         file: !file "dai-release/template/custom-resource-definition.yaml"
       - name: cluster-role-digital-proxy-role
         type: k8s.ResourcesFile
