@@ -24,7 +24,7 @@ spec:
           value: GoogleGKE
         - label: Plain multi-node K8s cluster
           value: PlainK8SCluster
-        - label: Openshift Aws Cluster
+        - label: Aws openshift
           value: openshift
       saveInXlvals: true
       description: "The flavour of Kubernetes to deploy or undeploy the digitalai Devops Platform to. Only the listed options are supported"

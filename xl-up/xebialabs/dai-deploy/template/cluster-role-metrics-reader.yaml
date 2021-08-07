@@ -4,6 +4,6 @@ metadata:
   name: operator-metrics-reader
 rules:
 - nonResourceURLs:
-  - /metrics
+  - "/metrics"
   verbs:
   - get

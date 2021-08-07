@@ -14,7 +14,7 @@ rules:
   resources:
   - secrets
   verbs:
-  - '*'
+  - "*"
 - apiGroups:
   - ""
   resources:
@@ -22,11 +22,11 @@ rules:
   verbs:
   - create
 - apiGroups:
-  - xldoc.digital.ai
+  - xld.digital.ai
   resources:
-  - digitalaideployocps
-  - digitalaideployocps/status
-  - digitalaideployocps/finalizers
+  - digitalaideploys
+  - digitalaideploys/status
+  - digitalaideploys/finalizers
   verbs:
   - create
   - delete
@@ -35,60 +35,43 @@ rules:
   - patch
   - update
   - watch
-- apiGroups:
-  - rbac.authorization.k8s.io
+- verbs:
+  - "*"
+  apiGroups:
+  - "rbac.authorization.k8s.io"
   resources:
-  - clusterrolebindings
-  - clusterroles
-  verbs:
-  - '*'
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
-  - rolebindings
-  - roles
-  verbs:
-  - '*'
-- apiGroups:
-  - apps
-  resources:
-  - deployments
-  - statefulsets
-  - daemonsets
-  verbs:
-  - '*'
-- apiGroups:
-  - networking.k8s.io
-  resources:
-  - ingresses
-  verbs:
-  - '*'
-- apiGroups:
+  - "clusterrolebindings"
+  - "clusterroles"
+- verbs:
+  - "*"
+  apiGroups:
   - ""
   resources:
-  - configmaps
-  - persistentvolumeclaims
-  - secrets
-  - serviceaccounts
-  - services
-  verbs:
-  - '*'
-- apiGroups:
-  - policy
+  - "configmaps"
+  - "persistentvolumeclaims"
+  - "secrets"
+  - "serviceaccounts"
+  - "services"
+- verbs:
+  - "*"
+  apiGroups:
+  - "rbac.authorization.k8s.io"
   resources:
-  - poddisruptionbudgets
-  verbs:
-  - '*'
-- apiGroups:
-  - route.openshift.io
+  - "rolebindings"
+  - "roles"
+- verbs:
+  - "*"
+  apiGroups:
+  - "apps"
   resources:
-  - '*'
-  verbs:
-  - '*'
-- apiGroups:
-  - security.openshift.io
+  - "deployments"
+  - "statefulsets"
+  - "daemonsets"
+- verbs:
+  - "*"
+  apiGroups:
+  - "networking.k8s.io"
   resources:
-  - securitycontextconstraints
-  verbs:
-  - '*'
+  - "ingresses"
 
+#+kubebuilder:scaffold:rules
