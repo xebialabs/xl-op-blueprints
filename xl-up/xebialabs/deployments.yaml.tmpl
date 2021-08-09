@@ -6,13 +6,6 @@ spec:
   environment: Environments/DIGITALAI/K8S
 ---
 {{- end }}
-apiVersion: xl-deploy/v1
-kind: Deployment
-spec:
-  package: Applications/DIGITALAI/XL-K8S-FOUNDATION/Answers-Configmap-Deployment/{{ .ImageTag }}
-  environment: Environments/DIGITALAI/K8S
-  orchestrators:
-    - sequential-by-dependency
 {{- if eq .ServerType "daiDeploy"}}
 ---
 apiVersion: xl-deploy/v1

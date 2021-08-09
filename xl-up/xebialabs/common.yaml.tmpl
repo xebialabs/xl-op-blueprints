@@ -29,6 +29,29 @@ spec:
         clusterName: !value EksClusterName
         accessKey: !value AWSAccessKey
         accessSecret: !value AWSAccessSecret
+{{- else if eq .K8sSetup "openshift"}}
+apiVersion: xl-deploy/v1
+kind: Infrastructure
+spec:
+  - directory: Infrastructure/DIGITALAI
+    children:
+      - name: K8s-MASTER
+        type: openshift.Server
+        serverUrl: !value K8sApiServerURL
+        {{- if .K8sToken}}
+        openshiftToken: !value K8sToken
+          {{- else if eq .K8sClientCertFile "" }}
+        tlsCert: !value K8sClientCert
+        tlsPrivateKey: !value K8sClientKey
+          {{- else}}
+        tlsCert: !value K8sClientCertFile
+        tlsPrivateKey: !value K8sClientKeyFile
+          {{- end}}
+        verifyCertificates: false
+        children:
+        - name: default
+          type: openshift.Project
+          projectName: default
 {{- else}}
 apiVersion: xl-deploy/v1
 kind: Infrastructure

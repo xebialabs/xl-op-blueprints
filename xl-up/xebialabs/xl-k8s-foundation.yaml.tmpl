@@ -18,7 +18,7 @@ spec:
           type: k8s.Namespace
           namespaceName: {{.Namespace}}
         {{- end }}
-{{- else if  eq .K8sSetup "DockerDesktopK8s" }}
+{{- else if eq .K8sSetup "DockerDesktopK8s" }}
 apiVersion: xl-deploy/v1
 kind: Infrastructure
 spec:
@@ -115,18 +115,6 @@ spec:
                     type: k8s.NamespaceSpec
                     namespaceName: {{ .Namespace }}
         {{- end }}
-          - name: Answers-Configmap-Deployment
-            type: udm.Application
-            children:
-              - name: {{ .ImageTag }}
-                type: udm.DeploymentPackage
-                orchestrator:
-                  - sequential-by-dependency
-                deployables:
-                  - name: answers-configmap-deployment
-                    readinessProbeRetry: 120
-                    type: k8s.ResourcesFile
-                    file: !file "answers.yaml"
           {{- if .UseCustomRegistry}}
           - name: K8s-Docker-Credentials
             type: udm.Application

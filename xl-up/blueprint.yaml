@@ -90,56 +90,104 @@ spec:
     # k8s-foundation
     - path: xebialabs/xl-k8s-foundation.yaml.tmpl
     
-    # files to write if server to deploy is Deploy
-    - path: xebialabs/dai-deploy/template/cluster-role-digital-proxy-role.yaml
-      writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: xebialabs/dai-deploy/template/cluster-role-manager-role.yaml
-      writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: xebialabs/dai-deploy/template/cluster-role-metrics-reader.yaml
-      writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: xebialabs/dai-deploy/template/controller-manager-metrics-service.yaml
-      writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: xebialabs/dai-deploy/template/custom-resource-definition.yaml
-      writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: xebialabs/dai-deploy/template/leader-election-role.yaml
-      writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: xebialabs/dai-deploy/template/leader-election-rolebinding.yaml
-      writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: xebialabs/dai-deploy/template/manager-rolebinding.yaml.tmpl
-      writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: xebialabs/dai-deploy/template/proxy-rolebinding.yaml.tmpl
-      writeIf: !expr "ServerType == 'daiDeploy'"
-    - path: xebialabs/dai-deploy/template/deployment.yaml.tmpl
-      writeIf: !expr "ServerType == 'daiDeploy'"
+    # files to write if server to deploy is Deploy and kubernetes setup is docker desktop
+    - path: xebialabs/dai-deploy/template-onprem/cluster-role-digital-proxy-role.yaml
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-deploy/template-onprem/cluster-role-manager-role.yaml
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-deploy/template-onprem/cluster-role-metrics-reader.yaml
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-deploy/template-onprem/controller-manager-metrics-service.yaml
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-deploy/template-onprem/custom-resource-definition.yaml
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-deploy/template-onprem/leader-election-role.yaml
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-deploy/template-onprem/leader-election-rolebinding.yaml
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-deploy/template-onprem/manager-rolebinding.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-deploy/template-onprem/proxy-rolebinding.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-deploy/template-onprem/deployment.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'PlainK8SCluster'"
     - path: xebialabs/dai-deploy-operator.yaml.tmpl
-      writeIf: !expr "ServerType == 'daiDeploy'"
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'PlainK8SCluster'"
 
-    # files to write if server to deploy is Release
-    - path: xebialabs/dai-release/template/cluster-role-digital-proxy-role.yaml
-      writeIf: !expr "ServerType == 'daiRelease'"
-    - path: xebialabs/dai-release/template/cluster-role-manager-role.yaml
-      writeIf: !expr "ServerType == 'daiRelease'"
-    - path: xebialabs/dai-release/template/cluster-role-metrics-reader.yaml
-      writeIf: !expr "ServerType == 'daiRelease'"
-    - path: xebialabs/dai-release/template/controller-manager-metrics-service.yaml
-      writeIf: !expr "ServerType == 'daiRelease'"
-    - path: xebialabs/dai-release/template/custom-resource-definition.yaml
-      writeIf: !expr "ServerType == 'daiRelease'"
-    - path: xebialabs/dai-release/template/leader-election-role.yaml
-      writeIf: !expr "ServerType == 'daiRelease'"
-    - path: xebialabs/dai-release/template/leader-election-rolebinding.yaml
-      writeIf: !expr "ServerType == 'daiRelease'"
-    - path: xebialabs/dai-release/template/manager-rolebinding.yaml.tmpl
-      writeIf: !expr "ServerType == 'daiRelease'"
-    - path: xebialabs/dai-release/template/proxy-rolebinding.yaml.tmpl
-      writeIf: !expr "ServerType == 'daiRelease'"
+    # files to write if server to deploy is Release and kubernetes environment is docker desktop
+    - path: xebialabs/dai-release/template-onprem/cluster-role-digital-proxy-role.yaml
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-release/template-onprem/cluster-role-manager-role.yaml
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-release/template-onprem/cluster-role-metrics-reader.yaml
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-release/template-onprem/controller-manager-metrics-service.yaml
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-release/template-onprem/custom-resource-definition.yaml
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-release/template-onprem/leader-election-role.yaml
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-release/template-onprem/leader-election-rolebinding.yaml
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-release/template-onprem/manager-rolebinding.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-release/template-onprem/proxy-rolebinding.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'PlainK8SCluster'"
     - path: xebialabs/dai-release-operator.yaml.tmpl
-      writeIf: !expr "ServerType == 'daiRelease'"
-    - path: xebialabs/dai-release/template/deployment.yaml.tmpl
-      writeIf: !expr "ServerType == 'daiRelease'"
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'PlainK8SCluster'"
+    - path: xebialabs/dai-release/template-onprem/deployment.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'PlainK8SCluster'"
+
+    # files to write if server to deploy is Deploy and kubernetes setup is openshift
+    - path: xebialabs/dai-deploy/template-openshift/cluster-role-digital-proxy-role.yaml
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-deploy/template-openshift/cluster-role-manager-role.yaml
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-deploy/template-openshift/cluster-role-metrics-reader.yaml
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-deploy/template-openshift/controller-manager-metrics-service.yaml
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-deploy/template-openshift/custom-resource-definition.yaml
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-deploy/template-openshift/leader-election-role.yaml
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-deploy/template-openshift/leader-election-rolebinding.yaml
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-deploy/template-openshift/manager-rolebinding.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-deploy/template-openshift/proxy-rolebinding.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-deploy/template-openshift/deployment.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-deploy-operator.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'openshift'"
+
+    # files to write if server to deploy is Release and kubernetes environment is openshift
+    - path: xebialabs/dai-release/template-openshift/cluster-role-digital-proxy-role.yaml
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-release/template-openshift/cluster-role-manager-role.yaml
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-release/template-openshift/cluster-role-metrics-reader.yaml
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-release/template-openshift/controller-manager-metrics-service.yaml
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-release/template-openshift/custom-resource-definition.yaml
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-release/template-openshift/leader-election-role.yaml
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-release/template-openshift/leader-election-rolebinding.yaml
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-release/template-openshift/manager-rolebinding.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-release/template-openshift/proxy-rolebinding.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-release-operator.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'openshift'"
+    - path: xebialabs/dai-release/template-openshift/deployment.yaml.tmpl
+      writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'openshift'"
+
 
     - path: xebialabs/common.yaml.tmpl
     - path: xebialabs/deployments.yaml.tmpl
     - path: generated_answers.yaml.tmpl
-    - path: xebialabs/answers.yaml.tmpl
     - path: xebialabs.yaml.tmpl

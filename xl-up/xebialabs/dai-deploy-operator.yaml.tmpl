@@ -1,4 +1,5 @@
 ---
+{{ if  eq .K8sSetup "DockerDesktopK8s" }}
 apiVersion: xl-deploy/v1
 kind: Applications
 spec:
@@ -18,7 +19,7 @@ spec:
         createOrder: "22"
         modifyOrder: "23"
         destroyOrder: "24"
-        file: !file "dai-deploy/template/manager-rolebinding.yaml"
+        file: !file "dai-deploy/template-onprem/manager-rolebinding.yaml"
       - name: cluster-role-metrics-reader
         type: k8s.ResourcesFile
         fileEncodings:
@@ -29,7 +30,7 @@ spec:
         createOrder: "13"
         modifyOrder: "14"
         destroyOrder: "15"
-        file: !file "dai-deploy/template/cluster-role-metrics-reader.yaml"
+        file: !file "dai-deploy/template-onprem/cluster-role-metrics-reader.yaml"
       - name: leader-election-rolebinding
         type: k8s.ResourcesFile
         fileEncodings:
@@ -40,7 +41,7 @@ spec:
         createOrder: "19"
         modifyOrder: "20"
         destroyOrder: "21"
-        file: !file "dai-deploy/template/leader-election-rolebinding.yaml"
+        file: !file "dai-deploy/template-onprem/leader-election-rolebinding.yaml"
       - name: controller-manager-metrics-service
         type: k8s.ResourcesFile
         fileEncodings:
@@ -51,7 +52,7 @@ spec:
         createOrder: "28"
         modifyOrder: "29"
         destroyOrder: "30"
-        file: !file "dai-deploy/template/controller-manager-metrics-service.yaml"
+        file: !file "dai-deploy/template-onprem/controller-manager-metrics-service.yaml"
       - name: deployment
         type: k8s.ResourcesFile
         fileEncodings:
@@ -62,7 +63,7 @@ spec:
         createOrder: "31"
         modifyOrder: "32"
         destroyOrder: "33"
-        file: !file "dai-deploy/template/deployment.yaml"
+        file: !file "dai-deploy/template-onprem/deployment.yaml"
       - name: leader-election-role
         type: k8s.ResourcesFile
         fileEncodings:
@@ -73,7 +74,7 @@ spec:
         createOrder: "7"
         modifyOrder: "8"
         destroyOrder: "9"
-        file: !file "dai-deploy/template/leader-election-role.yaml"
+        file: !file "dai-deploy/template-onprem/leader-election-role.yaml"
       - name: cluster-role-manager-role
         type: k8s.ResourcesFile
         fileEncodings:
@@ -84,7 +85,7 @@ spec:
         createOrder: "10"
         modifyOrder: "11"
         destroyOrder: "12"
-        file: !file "dai-deploy/template/cluster-role-manager-role.yaml"
+        file: !file "dai-deploy/template-onprem/cluster-role-manager-role.yaml"
       - name: custom-resource-definition
         type: k8s.ResourcesFile
         fileEncodings:
@@ -95,7 +96,7 @@ spec:
         createOrder: "1"
         modifyOrder: "2"
         destroyOrder: "3"
-        file: !file "dai-deploy/template/custom-resource-definition.yaml"
+        file: !file "dai-deploy/template-onprem/custom-resource-definition.yaml"
       - name: cluster-role-digital-proxy-role
         type: k8s.ResourcesFile
         fileEncodings:
@@ -106,7 +107,7 @@ spec:
         createOrder: "16"
         modifyOrder: "17"
         destroyOrder: "18"
-        file: !file "dai-deploy/template/cluster-role-digital-proxy-role.yaml"
+        file: !file "dai-deploy/template-onprem/cluster-role-digital-proxy-role.yaml"
       - name: proxy-rolebinding
         type: k8s.ResourcesFile
         fileEncodings:
@@ -117,7 +118,7 @@ spec:
         createOrder: "25"
         modifyOrder: "26"
         destroyOrder: "27"
-        file: !file "dai-deploy/template/proxy-rolebinding.yaml"
+        file: !file "dai-deploy/template-onprem/proxy-rolebinding.yaml"
 ---
 apiVersion: xl-deploy/v1
 kind: Applications
@@ -140,3 +141,288 @@ spec:
       modifyOrder: "50"
       destroyOrder: "40"
       file: !file "dai-deploy/daideploy_cr.yaml"
+{{ else if eq .K8sSetup "openshift" }}
+apiVersion: xl-deploy/v1
+kind: Applications
+spec:
+  - name: Applications/DIGITALAI/deploy-operator-app
+    type: udm.Application
+    children:
+    - name: {{ .ImageTag }}
+      type: udm.DeploymentPackage
+      deployables:
+      - name: manager-rolebinding
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "22"
+        modifyOrder: "23"
+        destroyOrder: "24"
+        file: !file "dai-deploy/template-openshift/manager-rolebinding.yaml"
+      - name: cluster-role-metrics-reader
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "13"
+        modifyOrder: "14"
+        destroyOrder: "15"
+        file: !file "dai-deploy/template-openshift/cluster-role-metrics-reader.yaml"
+      - name: leader-election-rolebinding
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "19"
+        modifyOrder: "20"
+        destroyOrder: "21"
+        file: !file "dai-deploy/template-openshift/leader-election-rolebinding.yaml"
+      - name: controller-manager-metrics-service
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "28"
+        modifyOrder: "29"
+        destroyOrder: "30"
+        file: !file "dai-deploy/template-openshift/controller-manager-metrics-service.yaml"
+      - name: deployment
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "31"
+        modifyOrder: "32"
+        destroyOrder: "33"
+        file: !file "dai-deploy/template-openshift/deployment.yaml"
+      - name: leader-election-role
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "7"
+        modifyOrder: "8"
+        destroyOrder: "9"
+        file: !file "dai-deploy/template-openshift/leader-election-role.yaml"
+      - name: cluster-role-manager-role
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "10"
+        modifyOrder: "11"
+        destroyOrder: "12"
+        file: !file "dai-deploy/template-openshift/cluster-role-manager-role.yaml"
+      - name: custom-resource-definition
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "1"
+        modifyOrder: "2"
+        destroyOrder: "3"
+        file: !file "dai-deploy/template-openshift/custom-resource-definition.yaml"
+      - name: cluster-role-digital-proxy-role
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "16"
+        modifyOrder: "17"
+        destroyOrder: "18"
+        file: !file "dai-deploy/template-openshift/cluster-role-digital-proxy-role.yaml"
+      - name: proxy-rolebinding
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "25"
+        modifyOrder: "26"
+        destroyOrder: "27"
+        file: !file "dai-deploy/template-openshift/proxy-rolebinding.yaml"
+---
+apiVersion: xl-deploy/v1
+kind: Applications
+spec:
+- name: Applications/DIGITALAI/dai-deploy-cr
+  type: udm.Application
+  children:
+  - name: {{ .ImageTag }}
+    type: udm.DeploymentPackage
+    deployables:
+    - name: cr-file
+      type: k8s.ResourcesFile
+      scanPlaceholders: false
+      fileEncodings:
+        ".+\\.properties": ISO-8859-1
+      mergePatchType: strategic
+      propagationPolicy: Foreground
+      updateMethod: patch
+      createOrder: "60"
+      modifyOrder: "50"
+      destroyOrder: "40"
+      file: !file "dai-deploy/daideploy_cr.yaml"
+{{ else if  eq .K8sSetup "PlainK8SCluster" }}
+apiVersion: xl-deploy/v1
+kind: Applications
+spec:
+  - name: Applications/DIGITALAI/deploy-operator-app
+    type: udm.Application
+    children:
+    - name: {{ .ImageTag }}
+      type: udm.DeploymentPackage
+      deployables:
+      - name: manager-rolebinding
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "22"
+        modifyOrder: "23"
+        destroyOrder: "24"
+        file: !file "dai-deploy/template-onprem/manager-rolebinding.yaml"
+      - name: cluster-role-metrics-reader
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "13"
+        modifyOrder: "14"
+        destroyOrder: "15"
+        file: !file "dai-deploy/template-onprem/cluster-role-metrics-reader.yaml"
+      - name: leader-election-rolebinding
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "19"
+        modifyOrder: "20"
+        destroyOrder: "21"
+        file: !file "dai-deploy/template-onprem/leader-election-rolebinding.yaml"
+      - name: controller-manager-metrics-service
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "28"
+        modifyOrder: "29"
+        destroyOrder: "30"
+        file: !file "dai-deploy/template-onprem/controller-manager-metrics-service.yaml"
+      - name: deployment
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "31"
+        modifyOrder: "32"
+        destroyOrder: "33"
+        file: !file "dai-deploy/template-onprem/deployment.yaml"
+      - name: leader-election-role
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "7"
+        modifyOrder: "8"
+        destroyOrder: "9"
+        file: !file "dai-deploy/template-onprem/leader-election-role.yaml"
+      - name: cluster-role-manager-role
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "10"
+        modifyOrder: "11"
+        destroyOrder: "12"
+        file: !file "dai-deploy/template-onprem/cluster-role-manager-role.yaml"
+      - name: custom-resource-definition
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "1"
+        modifyOrder: "2"
+        destroyOrder: "3"
+        file: !file "dai-deploy/template-onprem/custom-resource-definition.yaml"
+      - name: cluster-role-digital-proxy-role
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "16"
+        modifyOrder: "17"
+        destroyOrder: "18"
+        file: !file "dai-deploy/template-onprem/cluster-role-digital-proxy-role.yaml"
+      - name: proxy-rolebinding
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "25"
+        modifyOrder: "26"
+        destroyOrder: "27"
+        file: !file "dai-deploy/template-onprem/proxy-rolebinding.yaml"
+---
+apiVersion: xl-deploy/v1
+kind: Applications
+spec:
+- name: Applications/DIGITALAI/dai-deploy-cr
+  type: udm.Application
+  children:
+  - name: {{ .ImageTag }}
+    type: udm.DeploymentPackage
+    deployables:
+    - name: cr-file
+      type: k8s.ResourcesFile
+      scanPlaceholders: false
+      fileEncodings:
+        ".+\\.properties": ISO-8859-1
+      mergePatchType: strategic
+      propagationPolicy: Foreground
+      updateMethod: patch
+      createOrder: "60"
+      modifyOrder: "50"
+      destroyOrder: "40"
+      file: !file "dai-deploy/daideploy_cr.yaml"
+{{ end }}
