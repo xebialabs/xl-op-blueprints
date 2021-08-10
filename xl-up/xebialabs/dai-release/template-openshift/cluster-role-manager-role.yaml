@@ -1,32 +1,42 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: operator-manager-role
+  name: manager-role
 rules:
+##
+## Base operator rules
+##
+# We need to get namespaces so the operator can read namespaces to ensure they exist
 - apiGroups:
   - ""
   resources:
   - namespaces
   verbs:
   - get
+# We need to manage Helm release secrets
 - apiGroups:
   - ""
   resources:
   - secrets
   verbs:
-  - '*'
+  - "*"
+# We need to create events on CRs about things happening during reconciliation
 - apiGroups:
   - ""
   resources:
   - events
   verbs:
   - create
+
+##
+## Rules for xlroc.digital.ai/v1alpha1, Kind: DigitalaiReleaseOcp
+##
 - apiGroups:
-  - xlr.digital.ai
+  - xlroc.digital.ai
   resources:
-  - xlreleaseops
-  - xlreleaseops/status
-  - xlreleaseops/finalizers
+  - digitalaireleaseocps
+  - digitalaireleaseocps/status
+  - digitalaireleaseocps/finalizers
   verbs:
   - create
   - delete
@@ -35,6 +45,7 @@ rules:
   - patch
   - update
   - watch
+
 - apiGroups:
   - rbac.authorization.k8s.io
   resources:
@@ -54,6 +65,7 @@ rules:
   resources:
   - deployments
   - statefulsets
+  - daemonsets
   verbs:
   - '*'
 - apiGroups:
@@ -72,3 +84,23 @@ rules:
   - services
   verbs:
   - '*'
+- apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - '*'
+- apiGroups:
+  - route.openshift.io
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - security.openshift.io
+  resources:
+  - securitycontextconstraints
+  verbs:
+  - '*'
+
+#+kubebuilder:scaffold:rules
