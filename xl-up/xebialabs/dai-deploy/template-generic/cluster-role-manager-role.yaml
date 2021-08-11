@@ -22,11 +22,11 @@ rules:
   verbs:
   - create
 - apiGroups:
-  - xlrocp.digital.ai
+  - xld.digital.ai
   resources:
-  - digitalaireleaseocps
-  - digitalaireleaseocps/status
-  - digitalaireleaseocps/finalizers
+  - digitalaideploys
+  - digitalaideploys/status
+  - digitalaideploys/finalizers
   verbs:
   - create
   - delete
@@ -38,9 +38,24 @@ rules:
 - verbs:
   - "*"
   apiGroups:
-  - "security.openshift.io"
+  - "rbac.authorization.k8s.io"
   resources:
-  - "securitycontextconstraints"
+  - "clusterrolebindings"
+  - "clusterroles"
+- verbs:
+  - "*"
+  apiGroups:
+  - "apps"
+  resources:
+  - "deployments"
+  - "statefulsets"
+  - "daemonsets"
+- verbs:
+  - "*"
+  apiGroups:
+  - "networking.k8s.io"
+  resources:
+  - "ingresses"
 - verbs:
   - "*"
   apiGroups:
@@ -58,43 +73,10 @@ rules:
   resources:
   - "rolebindings"
   - "roles"
-- verbs:
-  - "*"
-  apiGroups:
-  - "apps"
-  resources:
-  - "deployments"
-  - "statefulsets"
-  - "daemonsets"
-- verbs:
-  - "*"
-  apiGroups:
-  - "route.openshift.io"
-  resources:
-  - "routes"
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
-  - clusterrolebindings
-  - clusterroles
-  verbs:
-  - '*'
-- apiGroups:
-  - networking.k8s.io
-  resources:
-  - ingresses
-  verbs:
-  - '*'
 - apiGroups:
   - policy
   resources:
   - poddisruptionbudgets
-  verbs:
-  - '*'
-- apiGroups:
-  - route.openshift.io
-  resources:
-  - '*'
   verbs:
   - '*'
 

@@ -12,20 +12,12 @@ spec:
       type: Select
       prompt: "Select the Kubernetes setup where the digitalai Devops Platform will be installed or uninstalled:"
       options:
-        - label: Local K8s from Docker Desktop for Mac/Windows
-          value: DockerDesktopK8s
-        - label: Local K8s from Minikube
-          value: MinikubeK8s
-        - label: AWS EKS
-          value: AwsEKS
         - label: Azure AKS
           value: AzureAKS
-        - label: Google Kubernetes Engine
-          value: GoogleGKE
         - label: Plain multi-node K8s cluster
           value: PlainK8SCluster
-        - label: Aws openshift
-          value: openshift
+        - label: Openshift
+          value: Openshift
       saveInXlvals: true
       description: "The flavour of Kubernetes to deploy or undeploy the digitalai Devops Platform to. Only the listed options are supported"
 

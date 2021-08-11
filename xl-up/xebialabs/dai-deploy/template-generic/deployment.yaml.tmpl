@@ -3,6 +3,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    control-plane: controller-manager
   name: operator-controller-manager
 spec:
   replicas: 1
@@ -31,7 +33,7 @@ spec:
         - "--metrics-bind-address=127.0.0.1:8080"
         - "--leader-elect"
         - "--leader-election-id=operator"
-        image: {{ .OperatorImageRelease }}
+        image: {{ .OperatorImageDeploy }}
         livenessProbe:
           httpGet:
             path: /readyz

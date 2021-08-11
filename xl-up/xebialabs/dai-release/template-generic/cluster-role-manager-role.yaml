@@ -22,11 +22,11 @@ rules:
   verbs:
   - create
 - apiGroups:
-  - xld.digital.ai
+  - xlr.digital.ai
   resources:
-  - digitalaideploys
-  - digitalaideploys/status
-  - digitalaideploys/finalizers
+  - digitalaireleases
+  - digitalaireleases/status
+  - digitalaireleases/finalizers
   verbs:
   - create
   - delete
@@ -73,5 +73,11 @@ rules:
   - "networking.k8s.io"
   resources:
   - "ingresses"
+- apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - '*'
 
 #+kubebuilder:scaffold:rules

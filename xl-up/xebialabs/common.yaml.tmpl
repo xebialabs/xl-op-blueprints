@@ -29,7 +29,7 @@ spec:
         clusterName: !value EksClusterName
         accessKey: !value AWSAccessKey
         accessSecret: !value AWSAccessSecret
-{{- else if eq .K8sSetup "openshift"}}
+{{- else if eq .K8sSetup "Openshift"}}
 apiVersion: xl-deploy/v1
 kind: Infrastructure
 spec:
