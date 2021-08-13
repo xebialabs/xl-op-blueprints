@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     control-plane: controller-manager
-  name: operator-controller-manager-metrics-service
+  name: xld-operator-controller-manager-metrics-service
 spec:
   ports:
   - name: https
