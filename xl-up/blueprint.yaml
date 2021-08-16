@@ -57,16 +57,6 @@ spec:
       default: 10.0.0
       description: "Enter the image tag to use"
 
-    - name: OperatorImageDeploy
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      prompt: "Operator image to use"
-      promptIf: !expr "ServerType == 'daiDeploy'"
-      default: rprasaddigitalai/xld-operator-mgr:v1.0.0
-      description: "Operator image to use"
-
     - name: UpgradeType
       type: Select
       prompt: "Select the type of upgrade you want."
@@ -78,14 +68,44 @@ spec:
       saveInXlvals: true
       description: "Type of upgrade you want?"
 
-    - name: OperatorImageRelease
+    - name: OperatorImageDeployGeneric
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Operator image to use"
-      promptIf: !expr "ServerType == 'daiRelease'"
-      default: rprasaddigitalai/xlr-ocp-operator-mgr:v1.0.0
+      promptIf: !expr "ServerType == 'daiDeploy' && K8sSetup != 'Openshift'"
+      default: xebialabs/deploy-operator:1.0.0
+      description: "Operator image to use"
+
+    - name: OperatorImageDeployOpenshift
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Operator image to use"
+      promptIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'Openshift'"
+      default: xebialabs/deploy-operator:1.0.0-openshift
+      description: "Operator image to use"
+
+    - name: OperatorImageReleaseGeneric
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Operator image to use"
+      promptIf: !expr "ServerType == 'daiRelease' && K8sSetup != 'Openshift'"
+      default: xebialabs/release-operator:1.0.0
+      description: "Operator image to use"
+
+    - name: OperatorImageReleaseOpenshift
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Operator image to use"
+      promptIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'Openshift'"
+      default: xebialabs/release-operator:1.0.0-openshift
       description: "Operator image to use"
       
     - name: CrName

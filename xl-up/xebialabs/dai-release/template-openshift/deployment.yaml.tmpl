@@ -3,7 +3,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: operator-controller-manager
+  labels:
+    control-plane: controller-manager
+  name: xlr-operator-controller-manager
 spec:
   replicas: 1
   selector:
@@ -30,26 +32,25 @@ spec:
         - "--health-probe-bind-address=:8081"
         - "--metrics-bind-address=127.0.0.1:8080"
         - "--leader-elect"
-        - "--leader-election-id=operator"
-        image: {{ .OperatorImageRelease }}
+        - "--leader-election-id=xlr-operator-controller-manager"
+        image: {{ .OperatorImageReleaseOpenshift }}
         livenessProbe:
           httpGet:
             path: /readyz
             port: 8081
           initialDelaySeconds: 15
           periodSeconds: 20
-        name: manager
         readinessProbe:
           httpGet:
             path: /healthz
             port: 8081
-          initialDelaySeconds: 5
-          periodSeconds: 10
+          initialDelaySeconds: 15
+          periodSeconds: 20
         resources:
           limits:
-            cpu: 100m
-            memory: 90Mi
+            cpu: 200m
+            memory: 500Mi
           requests:
-            cpu: 100m
-            memory: 60Mi
+            cpu: 200m
+            memory: 400Mi
       terminationGracePeriodSeconds: 10
