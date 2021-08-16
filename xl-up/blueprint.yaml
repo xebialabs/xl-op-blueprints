@@ -56,7 +56,7 @@ spec:
       prompt: "Enter the image tag(eg: <repositoryName>/<imageName>:<tagName>)"
       default: 10.0.0
       description: "Enter the image tag to use"
-    
+
     - name: OperatorImageDeploy
       type: Input
       saveInXlvals: true
