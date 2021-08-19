@@ -12,10 +12,6 @@ spec:
       type: Select
       prompt: "Select the Kubernetes setup where the digitalai Devops Platform will be installed or uninstalled:"
       options:
-        - label: Azure AKS
-          value: AzureAKS
-        - label: Plain multi-node K8s cluster
-          value: PlainK8SCluster
         - label: Openshift
           value: Openshift
         - label: AWS EKS
