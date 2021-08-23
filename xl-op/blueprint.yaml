@@ -75,7 +75,7 @@ spec:
       overrideDefault: true
       prompt: "Operator image to use"
       promptIf: !expr "ServerType == 'daiDeploy' && K8sSetup != 'Openshift'"
-      default: xebialabs/deploy-operator:1.0.0
+      default: xebialabs/deploy-operator:1.1.0
       description: "Operator image to use"
 
     - name: OperatorImageDeployOpenshift
@@ -85,7 +85,7 @@ spec:
       overrideDefault: true
       prompt: "Operator image to use"
       promptIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'Openshift'"
-      default: xebialabs/deploy-operator:1.0.0-openshift
+      default: xebialabs/deploy-operator:1.1.0-openshift
       description: "Operator image to use"
 
     - name: OperatorImageReleaseGeneric
@@ -95,7 +95,7 @@ spec:
       overrideDefault: true
       prompt: "Operator image to use"
       promptIf: !expr "ServerType == 'daiRelease' && K8sSetup != 'Openshift'"
-      default: xebialabs/release-operator:1.0.0
+      default: xebialabs/release-operator:1.1.0
       description: "Operator image to use"
 
     - name: OperatorImageReleaseOpenshift
@@ -105,7 +105,7 @@ spec:
       overrideDefault: true
       prompt: "Operator image to use"
       promptIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'Openshift'"
-      default: xebialabs/release-operator:1.0.0-openshift
+      default: xebialabs/release-operator:1.1.0-openshift
       description: "Operator image to use"
       
     - name: CrName
