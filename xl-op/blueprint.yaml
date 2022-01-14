@@ -107,7 +107,22 @@ spec:
       promptIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'Openshift'"
       default: xebialabs/release-operator:1.1.0-openshift
       description: "Operator image to use"
-      
+
+    - name: InstallAndEnableKeycloak
+      type: Confirm
+      default: true
+      saveInXlvals: true
+      prompt: "Do you want to install and enable Keycloak?"
+      description: "In case of yes, keycloak will be installed and configured in your k8s cluster."
+
+    - name: KeycloakHost
+      type: Input
+      default: 'keycloak.example.com'
+      saveInXlvals: true
+      promptIf: !expr "InstallAndEnableKeycloak"
+      prompt: "Do you want to install and enable Keycloak?"
+      description: "The API URL of your Keycloak installation. For example you can make it as a subdomain to master domain."
+
     - name: CrName
       type: Input
       saveInXlvals: true
@@ -116,7 +131,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       description: "The name of your custom resource"
-    
+
     - name: CrdName
       type: Input
       saveInXlvals: true
@@ -125,7 +140,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       description: "The name of your custom resource definition."
-    
+
     - name: ReleaseName
       type: Input
       saveInXlvals: true
@@ -138,7 +153,7 @@ spec:
   files:
     # k8s-foundation
     - path: xebialabs/xl-k8s-foundation.yaml.tmpl
-    
+
     # files to write if server to deploy is Deploy and kubernetes setup is docker desktop
     - path: xebialabs/dai-deploy/template-generic/cluster-role-digital-proxy-role.yaml
       writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup != 'Openshift'"
