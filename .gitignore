@@ -1,2 +1,5 @@
 *.lic
 *.jceks
+
+.idea/
+*.iml
