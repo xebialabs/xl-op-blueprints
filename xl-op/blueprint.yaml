@@ -110,12 +110,12 @@ spec:
 
     - name: UseOperatorZipDeploy
       type: Confirm
-      prompt: "Do you want to use custom operator zip file?"
+      prompt: "Do you want to use custom operator zip file for Deploy?"
       promptIf: !expr "ServerType == 'daiDeploy' && UpgradeType == 'operatorToOperator'"
       default: true
       saveInXlvals: true
       ignoreIfSkipped: true
-      description: "Use current custom resource from cluster or use the custom one custom resource from the zip."
+      description: "Use current custom resource from cluster or use the custom one custom resource from the Deploy operator zip."
 
     - name: OperatorZipDeploy
       type: Input
@@ -123,9 +123,28 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       default: ""
-      prompt: "Operator zip to use (absolute path or URL to the zip)"
+      prompt: "Deploy operator zip to use (absolute path or URL to the zip)"
       promptIf: !expr "UseOperatorZipDeploy"
-      description: "Operator zip to use, specify URL to the zip or absolute path"
+      description: "Deploy operator zip to use, specify URL to the zip (check https://dist.xebialabs.com/customer/operator/deploy/) or absolute path"
+
+    - name: UseOperatorZipRelease
+      type: Confirm
+      prompt: "Do you want to use custom operator zip file for Release?"
+      promptIf: !expr "ServerType == 'daiRelease' && UpgradeType == 'operatorToOperator'"
+      default: true
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      description: "Use current custom resource from cluster or use the custom one custom resource from the Release operator zip."
+
+    - name: OperatorZipRelease
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      default: ""
+      prompt: "Release operator zip to use (absolute path or URL to the zip)"
+      promptIf: !expr "UseOperatorZipRelease"
+      description: "Release operator zip to use, specify URL to the zip (check https://dist.xebialabs.com/customer/operator/release/) or absolute path"
 
     - name: CrName
       type: Input
@@ -147,33 +166,75 @@ spec:
 
     - name: PreserveCrValuesDeploy
       type: Editor
-      prompt: "Edit list of custom resource keys that will migrate to new CR"
+      prompt: "Edit list of custom resource keys that will migrate to the new Deploy CR"
       promptIf: !expr "UseOperatorZipDeploy"
       saveInXlvals: true
       ignoreIfSkipped: true
-      description: "For all matched expressions in the cluster CR, the values will be migrated to the upgraded CR"
+      description: "For all matched expressions in the cluster CR, the values will be migrated to the upgraded Deploy CR"
       default: |-
         .spec.XldMasterCount
         .spec.XldWorkerCount
-        .spec.Persistence.XldMasterPvcSize
-        .spec.Persistence.XldWorkerPvcSize
+        .spec.UseExistingDB.Enabled
+        .spec.UseExistingMQ.Enabled
         .spec.ingress.hosts
         .spec.KeystorePassphrase
         .spec.Persistence.StorageClass
+        .spec.Persistence.XldMasterPvcSize
+        .spec.Persistence.XldWorkerPvcSize
         .spec.RepositoryKeystore
         .spec.postgresql.persistence.size
         .spec.postgresql.persistence.storageClass
         .spec.postgresql.postgresqlMaxConnections
+        .spec.keycloak.postgresql.persistence.size
         .spec.keycloak.postgresql.postgresqlMaxConnections
+        .spec.haproxy-ingress.install
         .spec.keycloak.install
+        .spec.nginx-ingress-controller.install
+        .spec.postgresql.install
+        .spec.rabbitmq.install
         .spec.oidc.enabled
         .spec.rabbitmq.persistence.storageClass
-        .spec.oidc.enabled
         .spec.rabbitmq.persistence.size
         .spec.rabbitmq.replicaCount
         .spec.rabbitmq.persistence.replicaCount
         .spec.route.hosts
         .spec.xldLicense
+
+    - name: PreserveCrValuesRelease
+      type: Editor
+      prompt: "Edit list of custom resource keys that will migrate to the new Release CR"
+      promptIf: !expr "UseOperatorZipRelease"
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      description: "For all matched expressions in the cluster CR, the values will be migrated to the upgraded Release CR"
+      default: |-
+        .spec.replicaCount
+        .spec.UseExistingDB.Enabled
+        .spec.UseExistingMQ.Enabled
+        .spec.ingress.hosts
+        .spec.KeystorePassphrase
+        .spec.Persistence.Size
+        .spec.Persistence.StorageClass
+        .spec.RepositoryKeystore
+        .spec.postgresql.persistence.size
+        .spec.postgresql.persistence.storageClass
+        .spec.postgresql.postgresqlMaxConnections
+        .spec.keycloak.postgresql.persistence.size
+        .spec.keycloak.postgresql.postgresqlMaxConnections
+        .spec.haproxy-ingress.install
+        .spec.rabbitmq.install
+        .spec.keycloak.install
+        .spec.nginx-ingress-controller.install
+        .spec.postgresql.install
+        .spec.rabbitmq.install
+        .spec.oidc.enabled
+        .spec.rabbitmq.persistence.storageClass
+        .spec.rabbitmq.persistence.size
+        .spec.rabbitmq.replicaCount
+        .spec.rabbitmq.persistence.replicaCount
+        .spec.rabbitmq.persistence.storageClass
+        .spec.route.hosts
+        .spec.xlrLicense        
 
     - name: ReleaseName
       type: Input
