@@ -115,7 +115,7 @@ spec:
       default: true
       saveInXlvals: true
       ignoreIfSkipped: true
-      description: "Use the currently custom resource from cluster or use the custom one from the zip."
+      description: "Use current custom resource from cluster or use the custom one custom resource from the zip."
 
     - name: OperatorZipDeploy
       type: Input
