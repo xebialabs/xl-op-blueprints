@@ -124,7 +124,7 @@ spec:
       overrideDefault: true
       default: ""
       prompt: "Deploy operator zip to use (absolute path or URL to the zip)"
-      promptIf: !expr "UseOperatorZipDeploy"
+      promptIf: !expr "ServerType == 'daiDeploy' && UpgradeType == 'operatorToOperator' && UseOperatorZipDeploy"
       description: "Deploy operator zip to use, specify URL to the zip (check https://dist.xebialabs.com/customer/operator/deploy/) or absolute path"
 
     - name: UseOperatorZipRelease
@@ -143,7 +143,7 @@ spec:
       overrideDefault: true
       default: ""
       prompt: "Release operator zip to use (absolute path or URL to the zip)"
-      promptIf: !expr "UseOperatorZipRelease"
+      promptIf: !expr "ServerType == 'daiRelease' && UpgradeType == 'operatorToOperator' && UseOperatorZipRelease"
       description: "Release operator zip to use, specify URL to the zip (check https://dist.xebialabs.com/customer/operator/release/) or absolute path"
 
     - name: CrName
@@ -167,7 +167,7 @@ spec:
     - name: PreserveCrValuesDeploy
       type: Editor
       prompt: "Edit list of custom resource keys that will migrate to the new Deploy CR"
-      promptIf: !expr "UseOperatorZipDeploy"
+      promptIf: !expr "ServerType == 'daiDeploy' && UpgradeType == 'operatorToOperator' && UseOperatorZipDeploy"
       saveInXlvals: true
       ignoreIfSkipped: true
       description: "For all matched expressions in the cluster CR, the values will be migrated to the upgraded Deploy CR"
@@ -203,7 +203,7 @@ spec:
     - name: PreserveCrValuesRelease
       type: Editor
       prompt: "Edit list of custom resource keys that will migrate to the new Release CR"
-      promptIf: !expr "UseOperatorZipRelease"
+      promptIf: !expr "ServerType == 'daiRelease' && UpgradeType == 'operatorToOperator' && UseOperatorZipRelease"
       saveInXlvals: true
       ignoreIfSkipped: true
       description: "For all matched expressions in the cluster CR, the values will be migrated to the upgraded Release CR"
