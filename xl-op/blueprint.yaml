@@ -108,15 +108,24 @@ spec:
       default: xebialabs/release-operator:1.1.0-openshift
       description: "Operator image to use"
 
+    - name: UseOperatorZipDeploy
+      type: Confirm
+      prompt: "Do you want to use custom operator zip file?"
+      promptIf: !expr "ServerType == 'daiDeploy' && UpgradeType == 'operatorToOperator'"
+      default: true
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      description: "Use the currently custom resource from cluster or use the custom one from the zip."
+
     - name: OperatorZipDeploy
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
+      default: ""
       prompt: "Operator zip to use (absolute path or URL to the zip)"
-      promptIf: !expr "ServerType == 'daiDeploy' && UpgradeType == 'operatorToOperator'"
-      default: deploy-operator.zip
-      description: "Operator zip to use, if not set reuse CR from cluster"
+      promptIf: !expr "UseOperatorZipDeploy"
+      description: "Operator zip to use, specify URL to the zip or absolute path"
 
     - name: CrName
       type: Input
@@ -139,9 +148,10 @@ spec:
     - name: PreserveCrValuesDeploy
       type: Editor
       prompt: "Edit list of custom resource keys that will migrate to new CR"
-      promptIf: !expr "ServerType == 'daiDeploy' && UpgradeType == 'operatorToOperator' && OperatorZipDeploy != ''"
+      promptIf: !expr "UseOperatorZipDeploy"
       saveInXlvals: true
       ignoreIfSkipped: true
+      description: "For all matched expressions in the cluster CR, the values will be migrated to the upgraded CR"
       default: |-
         .spec.XldMasterCount
         .spec.XldWorkerCount
