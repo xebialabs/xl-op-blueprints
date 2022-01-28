@@ -34,9 +34,9 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "ServerType == 'daiDeploy'"
-      prompt: "Enter the image name(eg: <repositoryName>/<imageName>:<tagName>)"
+      prompt: "Enter the deploy server image name(eg: <repositoryName>/<imageName>:<tagName>)"
       default: xl-deploy
-      description: "Enter the image tag to use"
+      description: "Enter the deploy server image name to use"
 
     - name: ImageNameRelease
       type: Input
@@ -56,6 +56,16 @@ spec:
       prompt: "Enter the image tag(eg: <repositoryName>/<imageName>:<tagName>)"
       default: 10.0.0
       description: "Enter the image tag to use"
+
+    - name: ImageNameDeployTaskEngine
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      promptIf: !expr "ServerType == 'daiDeploy' && ImageTag.startsWith('10.')"
+      prompt: "Enter the deploy task engine image name for version 22 and above (eg: <repositoryName>/<imageName>:<tagName>)"
+      default: deploy-task-engine
+      description: "Enter the deploy task engine image name to use"
 
     - name: UpgradeType
       type: Select
