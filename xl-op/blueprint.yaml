@@ -62,7 +62,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      promptIf: !expr "ServerType == 'daiDeploy' && ImageTag.startsWith('10.')"
+      promptIf: !expr "ServerType == 'daiDeploy' && regex('10.*', ImageTag)"
       prompt: "Enter the deploy task engine image name for version 22 and above (eg: <repositoryName>/<imageName>:<tagName>)"
       default: deploy-task-engine
       description: "Enter the deploy task engine image name to use"
