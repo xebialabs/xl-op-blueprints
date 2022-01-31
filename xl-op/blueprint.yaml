@@ -199,6 +199,14 @@ spec:
         .spec.rabbitmq.persistence.replicaCount
         .spec.route.hosts
         .spec.xldLicense
+        .spec.centralConfiguration.image.repository
+        .spec.centralConfiguration.image.tag
+        .spec.centralConfiguration.image.pullPolicy
+        .spec.centralConfiguration.persistence.enabled
+        .spec.centralConfiguration.persistence.storageClass        
+        .spec.centralConfiguration.persistence.pvcSize
+        .spec.centralConfiguration.migrateFromEmbedded
+        .spec.CentralConfigEncryptKey
 
     - name: PreserveCrValuesRelease
       type: Editor
