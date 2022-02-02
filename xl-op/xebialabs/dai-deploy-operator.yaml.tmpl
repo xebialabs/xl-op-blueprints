@@ -6,7 +6,7 @@ spec:
   - name: Applications/DIGITALAI/deploy-operator-app
     type: udm.Application
     children:
-    - name: {{ .ImageTag }}
+    - name: "{{ .ImageTag }}"
       type: udm.DeploymentPackage
       deployables:
       - name: manager-rolebinding
@@ -126,7 +126,7 @@ spec:
 - name: Applications/DIGITALAI/dai-deploy-cr
   type: udm.Application
   children:
-  - name: {{ .ImageTag }}
+  - name: "{{ .ImageTag }}"
     type: udm.DeploymentPackage
     deployables:
     - name: cr-file
@@ -148,7 +148,7 @@ spec:
   - name: Applications/DIGITALAI/deploy-operator-app
     type: udm.Application
     children:
-    - name: {{ .ImageTag }}
+    - name: "{{ .ImageTag }}"
       type: udm.DeploymentPackage
       deployables:
       - name: manager-rolebinding
@@ -268,7 +268,7 @@ spec:
 - name: Applications/DIGITALAI/dai-deploy-cr
   type: udm.Application
   children:
-  - name: {{ .ImageTag }}
+  - name: "{{ .ImageTag }}"
     type: udm.DeploymentPackage
     deployables:
     - name: cr-file
