@@ -1,6 +1,6 @@
-K8sSetup: {{.K8sSetup}}
-UseKubeconfig: {{.UseKubeconfig}}
-K8sApiServerURL: {{.K8sApiServerURL}}
+K8sSetup: {{ .K8sSetup }}
+UseKubeconfig: {{ .UseKubeconfig }}
+K8sApiServerURL: {{ .K8sApiServerURL }}
 {{- if or (and (not .UseKubeconfig) (ne .K8sSetup "AwsEKS")) (eq .K8sSetup "GoogleGKE")}}
 K8sAuthentication: {{ .K8sAuthentication }}
 {{- end}}
@@ -34,9 +34,11 @@ UseInternalLoadBalancer: {{ .UseInternalLoadBalancer }}
 IsAKS: {{eq .K8sSetup "AzureAKS"}}
 UseInternalLoadBalancer: {{ .UseInternalLoadBalancer }}
 {{- end }}
-Namespace: {{.Namespace}}
-UseCustomNamespace: {{.UseCustomNamespace}}
-UseCustomRegistry: {{.UseCustomRegistry}}
+Namespace: {{ .Namespace }}
+UseEmbeddedKeycloak: {{ .UseEmbeddedKeycloak }}
+KeycloakUrl: {{ .KeycloakUrl }}
+UseCustomNamespace: {{ .UseCustomNamespace }}
+UseCustomRegistry: {{ .UseCustomRegistry }}
 InstallXLD: {{ .InstallXLD }}
 {{- if .UseCustomRegistry }}
 XldVersion: {{ .XldVersion }}
