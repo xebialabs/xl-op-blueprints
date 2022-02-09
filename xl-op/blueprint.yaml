@@ -76,7 +76,7 @@ spec:
     saveInXlvals: true
     ignoreIfSkipped: true
     overrideDefault: true
-    promptIf: !expr "UseEmbeddedKeycloak == 'true'"
+    promptIf: !expr "UseEmbeddedKeycloak == true"
     prompt: "Enter Keycloak public URL"
     description: Enter the deploy task engine image name to use
   - name: UpgradeType
