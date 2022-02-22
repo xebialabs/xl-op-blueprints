@@ -75,7 +75,7 @@ spec:
       promptIf: !expr "K8sSetup != 'AwsEKS' && K8sAuthentication == 'Token'"
       default: !expr "(UseKubeconfig && k8sConfig('IsUserTokenAvailable')) ? k8sConfig('UserToken') : ''"
       saveInXlvals: true
-      ignoreIfSkipped: true
+      ignoreIfSkipped: !expr "(UseKubeconfig && k8sConfig('IsUserTokenAvailable')) ? false : true"
       replaceAsIs: true
       description: "Provide an authentication token for a service account that you have previously configured in your cluster. The service account for which the token is provided should be able to create/modify resources in the Kubernetes cluster"
 
