@@ -62,9 +62,7 @@ spec:
         type: k8s.Master
         apiServerURL: !value K8sApiServerURL
         skipTLS: true
-        {{- if .K8sToken}}
-        token: !value K8sToken
-        {{- else}}
+        {{- if eq .K8sToken ""}}
           {{- if eq .K8sClientCertFile "" }}
         tlsCert: !value K8sClientCert
         tlsPrivateKey: !value K8sClientKey
@@ -72,5 +70,7 @@ spec:
         tlsCert: !value K8sClientCertFile
         tlsPrivateKey: !value K8sClientKeyFile
           {{- end}}
+        {{- else}}
+        token: !value K8sToken
         {{- end}}
 {{- end}}
