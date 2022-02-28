@@ -62,14 +62,14 @@ spec:
       \ <repositoryName>/<imageName>:<tagName>)"
     default: deploy-task-engine
     description: Enter the deploy task engine image name to use
-  - name: DeployImageForUpgrader
-    type: Input
+  - name: DeployImageVersionForUpgrader
+    type: Select
     saveInXlvals: true
     ignoreIfSkipped: true
-    overrideDefault: true
-    prompt: "Enter the DAI Deploy image for Upgrader setup of operator"
-    default: xebialabs/xl-deploy:latest
-    description: DAI Deploy image for upgrader setup for operator
+    prompt: "Choose the version of the XL Deploy for Upgrader setup of operator"
+    options:
+      - !expr "version('_showapplicableversions', 'xld')"
+    description: "The version of XL Deploy you would like to install for upgrader"
   - name: UseEmbeddedKeycloak
     type: Input
     saveInXlvals: true
