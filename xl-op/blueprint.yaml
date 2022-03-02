@@ -66,10 +66,10 @@ spec:
     type: Select
     saveInXlvals: true
     ignoreIfSkipped: true
-    prompt: "Choose the version of the XL Deploy for Upgrader setup of operator"
+    prompt: Choose the version of the XL Deploy for Upgrader setup of operator
     options:
-      - !expr "version('_showapplicableversions', 'xld')"
-    description: "The version of XL Deploy you would like to install for upgrader"
+    - "version('_showapplicableversions', 'xld')"
+    description: The version of XL Deploy you would like to install for upgrader
   - name: UseEmbeddedKeycloak
     type: Input
     saveInXlvals: true
@@ -123,7 +123,7 @@ spec:
     overrideDefault: true
     prompt: Operator image to use
     promptIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    default: xebialabsunsupported/release-operator:22.1.0-301.113
+    default: xebialabsunsupported/release-operator:22.1.0-302.113
     description: Operator image to use
   - name: OperatorImageReleaseOpenshift
     type: Input
@@ -132,7 +132,7 @@ spec:
     overrideDefault: true
     prompt: Operator image to use
     promptIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    default: xebialabsunsupported/release-operator:22.1.0-301.113-openshift
+    default: xebialabsunsupported/release-operator:22.1.0-302.113-openshift
     description: Operator image to use
   - name: UseOperatorZipDeploy
     type: Confirm
