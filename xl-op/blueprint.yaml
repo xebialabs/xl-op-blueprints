@@ -78,8 +78,7 @@ spec:
     promptIf: !expr "!regex('^10.*$', ImageTag)"
     prompt: Use embedded keycloak?
     default: true
-    description: "If true, keycloak will be installed in kubernetes cluster with predefined\
-      \ configuration."
+    description: "If true, keycloak will be installed in kubernetes cluster with predefined configuration."
   - name: KeycloakUrl
     type: Input
     saveInXlvals: true
@@ -87,7 +86,7 @@ spec:
     overrideDefault: true
     promptIf: !expr UseEmbeddedKeycloak == true
     prompt: Enter Keycloak public URL
-    description: Enter the deploy task engine image name to use
+    description: Enter Keycloak public URL that will be used for keycloak installation.
   - name: UpgradeType
     type: Select
     prompt: Select the type of upgrade you want.
