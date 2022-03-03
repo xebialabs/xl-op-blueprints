@@ -63,12 +63,10 @@ spec:
     default: deploy-task-engine
     description: Enter the deploy task engine image name to use
   - name: DeployImageVersionForUpgrader
-    type: Select
+    type: Input
     saveInXlvals: true
     ignoreIfSkipped: true
     prompt: Choose the version of the XL Deploy for Upgrader setup of operator
-    options:
-    - "version('_showapplicableversions', 'xld')"
     description: The version of XL Deploy you would like to install for upgrader
   - name: UseEmbeddedKeycloak
     type: Input
@@ -181,7 +179,7 @@ spec:
     overrideDefault: false
     prompt: "Use Standalone CentralConfiguration?"
     promptIf: !expr "ServerType == 'dummy'"
-    default: !expr "ServerType == 'daiDeploy' && !regex('^10.*$', ImageTag) && !regex(':1', OperatorImageDeployGeneric)"
+    default: !expr "ServerType == 'daiDeploy' && !regex('^10.*$', ImageTag) && !regex('^1.*$', OperatorImageDeployGeneric)"
     description: "Determines whether to use Embedded CentralConfiguration\
       \ or Standalone CentralConfiguration"
   - name: UseStandaloneCentralConfigurationOpenshift
@@ -191,7 +189,7 @@ spec:
     overrideDefault: false
     prompt: "Use Standalone CentralConfiguration?"
     promptIf: !expr "ServerType == 'dummy'"
-    default: !expr "ServerType == 'daiDeploy' && !regex('^10.*$', ImageTag) && !regex(':1', OperatorImageDeployOpenshift)"
+    default: !expr "ServerType == 'daiDeploy' && K8sSetup == 'Openshift' && !regex('^10.*$', ImageTag) && !regex('^1.*$', OperatorImageDeployOpenshift)"
     description: "Determines whether to use Embedded CentralConfiguration\
       \ or Standalone CentralConfiguration"
   - name: CrName
