@@ -184,6 +184,16 @@ spec:
     default: !expr "ServerType == 'daiDeploy' && !regex('^10.*$', ImageTag) && !regex(':1', OperatorImageDeployGeneric)"
     description: "Determines whether to use Embedded CentralConfiguration\
       \ or Standalone CentralConfiguration"
+  - name: UseStandaloneCentralConfigurationOpenshift
+    type: Input
+    saveInXlvals: true
+    ignoreIfSkipped: true
+    overrideDefault: false
+    prompt: "Use Standalone CentralConfiguration?"
+    promptIf: !expr "ServerType == 'dummy'"
+    default: !expr "ServerType == 'daiDeploy' && !regex('^10.*$', ImageTag) && !regex(':1', OperatorImageDeployOpenshift)"
+    description: "Determines whether to use Embedded CentralConfiguration\
+      \ or Standalone CentralConfiguration"
   - name: CrName
     type: Input
     saveInXlvals: true
