@@ -50,7 +50,7 @@ spec:
     ignoreIfSkipped: true
     overrideDefault: true
     prompt: "Enter the image tag(eg: <repositoryName>/<imageName>:<tagName>)"
-    default: 10.0.0
+    default: 22.0.0
     description: Enter the image tag to use
   - name: ImageNameDeployTaskEngine
     type: Input
@@ -61,6 +61,32 @@ spec:
     prompt: "Enter the deploy task engine image name for version 22 and above (eg:\
       \ <repositoryName>/<imageName>:<tagName>)"
     default: deploy-task-engine
+    description: Enter the deploy task engine image name to use
+  - name: DeployImageVersionForUpgrader
+    type: Select
+    saveInXlvals: true
+    ignoreIfSkipped: true
+    prompt: Choose the version of the XL Deploy for Upgrader setup of operator
+    options:
+    - "version('_showapplicableversions', 'xld')"
+    description: The version of XL Deploy you would like to install for upgrader
+  - name: UseEmbeddedKeycloak
+    type: Input
+    saveInXlvals: true
+    ignoreIfSkipped: true
+    overrideDefault: true
+    promptIf: !expr "!regex('^10.*$', ImageTag)"
+    prompt: Use embedded keycloak?
+    default: true
+    description: "If true, keycloak will be installed in kubernetes cluster with predefined\
+      \ configuration."
+  - name: KeycloakUrl
+    type: Input
+    saveInXlvals: true
+    ignoreIfSkipped: true
+    overrideDefault: true
+    promptIf: !expr UseEmbeddedKeycloak == true
+    prompt: Enter Keycloak public URL
     description: Enter the deploy task engine image name to use
   - name: UpgradeType
     type: Select
@@ -79,7 +105,7 @@ spec:
     overrideDefault: true
     prompt: Operator image to use
     promptIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    default: xebialabs/deploy-operator:22.0.0
+    default: xebialabsunsupported/deploy-operator:22.1.0-302.113
     description: Operator image to use
   - name: OperatorImageDeployOpenshift
     type: Input
@@ -88,7 +114,7 @@ spec:
     overrideDefault: true
     prompt: Operator image to use
     promptIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    default: xebialabs/deploy-operator:22.0.0-openshift
+    default: xebialabsunsupported/deploy-operator:22.1.0-302.113-openshift
     description: Operator image to use
   - name: OperatorImageReleaseGeneric
     type: Input
@@ -97,7 +123,7 @@ spec:
     overrideDefault: true
     prompt: Operator image to use
     promptIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    default: xebialabs/deploy-release:22.0.0
+    default: xebialabsunsupported/release-operator:22.1.0-303.113
     description: Operator image to use
   - name: OperatorImageReleaseOpenshift
     type: Input
@@ -106,7 +132,7 @@ spec:
     overrideDefault: true
     prompt: Operator image to use
     promptIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    default: xebialabs/deploy-release:22.0.0-openshift
+    default: xebialabsunsupported/release-operator:22.1.0-303.113-openshift
     description: Operator image to use
   - name: UseOperatorZipDeploy
     type: Confirm
