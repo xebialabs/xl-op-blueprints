@@ -62,6 +62,16 @@ spec:
       \ <repositoryName>/<imageName>:<tagName>)"
     default: deploy-task-engine
     description: Enter the deploy task engine image name to use
+  - name: UseStandaloneCentralConfiguration
+    type: Input
+    saveInXlvals: true
+    ignoreIfSkipped: true
+    overrideDefault: false
+    prompt: "Use Standalone CentralConfiguration?"
+    promptIf: !expr "ServerType == 'dummy'"
+    default: !expr "ServerType == 'daiDeploy' && !regex('^10.*$', ImageTag)"
+    description: "Determines whether to use Embedded CentralConfiguration\
+      \ or Standalone CentralConfiguration"
   - name: DeployImageVersionForUpgrader
     type: Select
     saveInXlvals: true
