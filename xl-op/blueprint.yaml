@@ -179,7 +179,7 @@ spec:
     overrideDefault: false
     prompt: "Use Standalone CentralConfiguration?"
     promptIf: !expr "ServerType == 'dummy'"
-    default: !expr "ServerType == 'daiDeploy' && !regex('^10.*$', ImageTag) && !regex('^1.*$', OperatorImageDeployGeneric)"
+    default: !expr "ServerType == 'daiDeploy' && !regex('^10.*$', ImageTag) && !regex('.*:1.*$', OperatorImageDeployGeneric)"
     description: "Determines whether to use Embedded CentralConfiguration\
       \ or Standalone CentralConfiguration"
   - name: UseStandaloneCentralConfigurationOpenshift
@@ -189,7 +189,7 @@ spec:
     overrideDefault: false
     prompt: "Use Standalone CentralConfiguration?"
     promptIf: !expr "ServerType == 'dummy'"
-    default: !expr "ServerType == 'daiDeploy' && K8sSetup == 'Openshift' && !regex('^10.*$', ImageTag) && !regex('^1.*$', OperatorImageDeployOpenshift)"
+    default: !expr "ServerType == 'daiDeploy' && K8sSetup == 'Openshift' && !regex('^10.*$', ImageTag) && !regex('.*:1.*$', OperatorImageDeployOpenshift)"
     description: "Determines whether to use Embedded CentralConfiguration\
       \ or Standalone CentralConfiguration"
   - name: CrName
