@@ -62,16 +62,6 @@ spec:
       \ <repositoryName>/<imageName>:<tagName>)"
     default: deploy-task-engine
     description: Enter the deploy task engine image name to use
-  - name: UseStandaloneCentralConfiguration
-    type: Input
-    saveInXlvals: true
-    ignoreIfSkipped: true
-    overrideDefault: false
-    prompt: "Use Standalone CentralConfiguration?"
-    promptIf: !expr "ServerType == 'dummy'"
-    default: !expr "ServerType == 'daiDeploy' && !regex('^10.*$', ImageTag)"
-    description: "Determines whether to use Embedded CentralConfiguration\
-      \ or Standalone CentralConfiguration"
   - name: DeployImageVersionForUpgrader
     type: Select
     saveInXlvals: true
@@ -184,6 +174,16 @@ spec:
       UseOperatorZipRelease
     description: "Release operator zip to use, specify URL to the zip (check https://dist.xebialabs.com/customer/operator/release/)\
       \ or absolute path"
+  - name: UseStandaloneCentralConfiguration
+    type: Input
+    saveInXlvals: true
+    ignoreIfSkipped: true
+    overrideDefault: false
+    prompt: "Use Standalone CentralConfiguration?"
+    promptIf: !expr "ServerType == 'dummy'"
+    default: !expr "ServerType == 'daiDeploy' && !regex('^10.*$', ImageTag) && !regex(':1', OperatorImageDeployGeneric)"
+    description: "Determines whether to use Embedded CentralConfiguration\
+      \ or Standalone CentralConfiguration"
   - name: CrName
     type: Input
     saveInXlvals: true
