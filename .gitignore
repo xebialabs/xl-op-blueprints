@@ -1,2 +1,8 @@
 *.lic
 *.jceks
+
+.idea/
+*.iml
+
+.gradle
+build
