@@ -166,26 +166,6 @@ spec:
       prompt: Release operator zip to use (absolute path or URL to the zip)
       promptIf: !expr ServerType == 'daiRelease' && UpgradeType == 'operatorToOperator' && UseOperatorZipRelease
       description: "Release operator zip to use, specify URL to the zip (check https://dist.xebialabs.com/customer/operator/release/) or absolute path"
-    - name: UseStandaloneCentralConfiguration
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: false
-      prompt: "Use Standalone CentralConfiguration?"
-      promptIf: !expr "ServerType == 'dummy'"
-      default: !expr "ServerType == 'daiDeploy' && !regex('^10.*$', ImageTag) && !regex('.*:1.*$', OperatorImageDeployGeneric)"
-      description: "Determines whether to use Embedded CentralConfiguration\
-      \ or Standalone CentralConfiguration"
-    - name: UseStandaloneCentralConfigurationOpenshift
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: false
-      prompt: "Use Standalone CentralConfiguration?"
-      promptIf: !expr "ServerType == 'dummy'"
-      default: !expr "ServerType == 'daiDeploy' && K8sSetup == 'Openshift' && !regex('^10.*$', ImageTag) && !regex('.*:1.*$', OperatorImageDeployOpenshift)"
-      description: "Determines whether to use Embedded CentralConfiguration\
-      \ or Standalone CentralConfiguration"
     - name: CrName
       type: Input
       saveInXlvals: true
@@ -237,10 +217,6 @@ spec:
         .spec.rabbitmq.persistence.replicaCount
         .spec.route.hosts
         .spec.xldLicense
-        .spec.centralConfiguration.image.repository
-        .spec.centralConfiguration.persistence.pvcSize
-        .spec.centralConfiguration.migrateFromEmbedded
-        .spec.CentralConfigEncryptKey
     - name: PreserveCrValuesRelease
       type: Editor
       prompt: Edit list of custom resource keys that will migrate to the new Release CR
