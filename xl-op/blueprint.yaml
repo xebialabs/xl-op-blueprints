@@ -68,7 +68,7 @@ spec:
     ignoreIfSkipped: true
     prompt: Choose the version of the XL Deploy for Upgrader setup of operator
     options:
-    - "version('_showapplicableversions', 'xld')"
+    - !expr "version('_showapplicableversions', 'xld')"
     description: The version of XL Deploy you would like to install for upgrader
   - name: UseEmbeddedKeycloak
     type: Input
