@@ -58,8 +58,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "ServerType == 'daiDeploy' && !regex('^10.*$', ImageTag)"
-      prompt: "Enter the deploy task engine image name for version 22 and above (eg:\
-      \ <repositoryName>/<imageName>:<tagName>)"
+      prompt: "Enter the deploy task engine image name for version 22 and above (eg: <repositoryName>/<imageName>:<tagName>)"
       default: deploy-task-engine
       description: Enter the deploy task engine image name to use
     - name: DeployImageVersionForUpgrader
@@ -104,7 +103,7 @@ spec:
       overrideDefault: true
       prompt: Operator image to use
       promptIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-      default: xebialabsunsupported/deploy-operator:22.1.0-302.113
+      default: xebialabsunsupported/deploy-operator:22.1.0-307.113
       description: Operator image to use
     - name: OperatorImageDeployOpenshift
       type: Input
@@ -113,7 +112,7 @@ spec:
       overrideDefault: true
       prompt: Operator image to use
       promptIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-      default: xebialabsunsupported/deploy-operator:22.1.0-302.113-openshift
+      default: xebialabsunsupported/deploy-operator:22.1.0-307.113-openshift
       description: Operator image to use
     - name: OperatorImageReleaseGeneric
       type: Input
@@ -122,7 +121,7 @@ spec:
       overrideDefault: true
       prompt: Operator image to use
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-      default: xebialabsunsupported/release-operator:22.1.0-302.113
+      default: xebialabsunsupported/release-operator:22.1.0-307.113
       description: Operator image to use
     - name: OperatorImageReleaseOpenshift
       type: Input
@@ -131,7 +130,7 @@ spec:
       overrideDefault: true
       prompt: Operator image to use
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-      default: xebialabsunsupported/release-operator:22.1.0-302.113-openshift
+      default: xebialabsunsupported/release-operator:22.1.0-307.113-openshift
       description: Operator image to use
     - name: UseOperatorZipDeploy
       type: Confirm
@@ -194,8 +193,7 @@ spec:
       promptIf: !expr ServerType == 'daiDeploy' && UseOperatorZipDeploy
       saveInXlvals: true
       ignoreIfSkipped: true
-      description: "For all matched expressions in the cluster CR, the values will be\
-      \ migrated to the upgraded Deploy CR"
+      description: "For all matched expressions in the cluster CR, the values will be migrated to the upgraded Deploy CR"
       default: |-
         .spec.XldMasterCount
         .spec.XldWorkerCount
