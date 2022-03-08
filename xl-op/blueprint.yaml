@@ -225,7 +225,6 @@ spec:
         .spec.centralConfiguration.image.repository      
         .spec.centralConfiguration.persistence.pvcSize
         .spec.centralConfiguration.migrateFromEmbedded
-        .spec.CentralConfigEncryptKey
     - name: PreserveCrValuesRelease
       type: Editor
       prompt: Edit list of custom resource keys that will migrate to the new Release CR
