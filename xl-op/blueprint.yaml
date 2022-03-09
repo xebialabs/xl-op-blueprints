@@ -103,7 +103,7 @@ spec:
       overrideDefault: true
       prompt: Operator image to use
       promptIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-      default: xebialabsunsupported/deploy-operator:22.1.0-308.113
+      default: xebialabsunsupported/deploy-operator:22.1.0-309.113
       description: Operator image to use
     - name: OperatorImageDeployOpenshift
       type: Input
@@ -112,7 +112,7 @@ spec:
       overrideDefault: true
       prompt: Operator image to use
       promptIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-      default: xebialabsunsupported/deploy-operator:22.1.0-308.113-openshift
+      default: xebialabsunsupported/deploy-operator:22.1.0-309.113-openshift
       description: Operator image to use
     - name: OperatorImageReleaseGeneric
       type: Input
@@ -121,7 +121,7 @@ spec:
       overrideDefault: true
       prompt: Operator image to use
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-      default: xebialabsunsupported/release-operator:22.1.0-308.113
+      default: xebialabsunsupported/release-operator:22.1.0-309.113
       description: Operator image to use
     - name: OperatorImageReleaseOpenshift
       type: Input
@@ -130,7 +130,7 @@ spec:
       overrideDefault: true
       prompt: Operator image to use
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-      default: xebialabsunsupported/release-operator:22.1.0-308.113-openshift
+      default: xebialabsunsupported/release-operator:22.1.0-309.113-openshift
       description: Operator image to use
     - name: UseOperatorZipDeploy
       type: Confirm
@@ -139,8 +139,7 @@ spec:
       default: true
       saveInXlvals: true
       ignoreIfSkipped: true
-      description: Use current custom resource from cluster or use the custom one custom
-        resource from the Deploy operator zip.
+      description: Use current custom resource from cluster or use the custom one custom resource from the Deploy operator zip.
     - name: OperatorZipDeploy
       type: Input
       saveInXlvals: true
@@ -149,8 +148,7 @@ spec:
       default: ""
       prompt: Deploy operator zip to use (absolute path or URL to the zip)
       promptIf: !expr ServerType == 'daiDeploy' && UseOperatorZipDeploy
-      description: "Deploy operator zip to use, specify URL to the zip (check https://dist.xebialabs.com/customer/operator/deploy/)\
-      \ or absolute path"
+      description: "Deploy operator zip to use, specify URL to the zip (check https://dist.xebialabs.com/customer/operator/deploy/) or absolute path"
     - name: UseOperatorZipRelease
       type: Confirm
       prompt: Do you want to use custom operator zip file for Release?
@@ -158,8 +156,7 @@ spec:
       default: true
       saveInXlvals: true
       ignoreIfSkipped: true
-      description: Use current custom resource from cluster or use the custom one custom
-        resource from the Release operator zip.
+      description: Use current custom resource from cluster or use the custom one custom resource from the Release operator zip.
     - name: OperatorZipRelease
       type: Input
       saveInXlvals: true
@@ -168,8 +165,7 @@ spec:
       default: ""
       prompt: Release operator zip to use (absolute path or URL to the zip)
       promptIf: !expr ServerType == 'daiRelease' && UseOperatorZipRelease
-      description: "Release operator zip to use, specify URL to the zip (check https://dist.xebialabs.com/customer/operator/release/)\
-      \ or absolute path"
+      description: "Release operator zip to use, specify URL to the zip (check https://dist.xebialabs.com/customer/operator/release/) or absolute path"
     - name: CrName
       type: Input
       saveInXlvals: true
@@ -188,8 +184,7 @@ spec:
       description: The name of your custom resource definition.
     - name: PreserveCrValuesDeploy
       type: Editor
-      prompt: Edit list of custom resource keys that will migrate to the new Deploy
-        CR
+      prompt: Edit list of custom resource keys that will migrate to the new Deploy CR
       promptIf: !expr ServerType == 'daiDeploy' && UseOperatorZipDeploy
       saveInXlvals: true
       ignoreIfSkipped: true
