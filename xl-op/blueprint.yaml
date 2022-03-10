@@ -217,6 +217,9 @@ spec:
         .spec.rabbitmq.persistence.replicaCount
         .spec.route.hosts
         .spec.xldLicense
+        .spec.centralConfiguration.image.repository      
+        .spec.centralConfiguration.persistence.pvcSize
+        .spec.centralConfiguration.migrateFromEmbedded
     - name: PreserveCrValuesRelease
       type: Editor
       prompt: Edit list of custom resource keys that will migrate to the new Release CR
