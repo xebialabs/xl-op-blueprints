@@ -121,7 +121,7 @@ spec:
       overrideDefault: true
       prompt: Operator image to use
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-      default: xebialabsunsupported/release-operator:22.1.0-310.113
+      default: xebialabsunsupported/release-operator:22.2.0-311.113
       description: Operator image to use
     - name: OperatorImageReleaseOpenshift
       type: Input
@@ -130,7 +130,7 @@ spec:
       overrideDefault: true
       prompt: Operator image to use
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-      default: xebialabsunsupported/release-operator:22.1.0-310.113-openshift
+      default: xebialabsunsupported/release-operator:22.2.0-311.113-openshift
       description: Operator image to use
     - name: UseOperatorZipDeploy
       type: Confirm
@@ -189,37 +189,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       description: "For all matched expressions in the cluster CR, the values will be migrated to the upgraded Deploy CR"
-      default: |-
-        .spec.XldMasterCount
-        .spec.XldWorkerCount
-        .spec.UseExistingDB.Enabled
-        .spec.UseExistingMQ.Enabled
-        .spec.ingress.hosts
-        .spec.KeystorePassphrase
-        .spec.Persistence.StorageClass
-        .spec.Persistence.XldMasterPvcSize
-        .spec.Persistence.XldWorkerPvcSize
-        .spec.RepositoryKeystore
-        .spec.postgresql.persistence.size
-        .spec.postgresql.persistence.storageClass
-        .spec.postgresql.postgresqlMaxConnections
-        .spec.keycloak.postgresql.persistence.size
-        .spec.keycloak.postgresql.postgresqlMaxConnections
-        .spec.haproxy-ingress.install
-        .spec.keycloak.install
-        .spec.nginx-ingress-controller.install
-        .spec.postgresql.install
-        .spec.rabbitmq.install
-        .spec.oidc.enabled
-        .spec.rabbitmq.persistence.storageClass
-        .spec.rabbitmq.persistence.size
-        .spec.rabbitmq.replicaCount
-        .spec.rabbitmq.persistence.replicaCount
-        .spec.route.hosts
-        .spec.xldLicense
-        .spec.centralConfiguration.image.repository      
-        .spec.centralConfiguration.persistence.pvcSize
-        .spec.centralConfiguration.migrateFromEmbedded
+      default: ".spec.XldMasterCount\n.spec.XldWorkerCount\n.spec.UseExistingDB.Enabled\n.spec.UseExistingMQ.Enabled\n.spec.ingress.hosts\n.spec.KeystorePassphrase\n.spec.Persistence.StorageClass\n.spec.Persistence.XldMasterPvcSize\n.spec.Persistence.XldWorkerPvcSize\n.spec.RepositoryKeystore\n.spec.postgresql.persistence.size\n.spec.postgresql.persistence.storageClass\n.spec.postgresql.postgresqlMaxConnections\n.spec.keycloak.postgresql.persistence.size\n.spec.keycloak.postgresql.postgresqlMaxConnections\n.spec.haproxy-ingress.install\n.spec.keycloak.install\n.spec.nginx-ingress-controller.install\n.spec.postgresql.install\n.spec.rabbitmq.install\n.spec.oidc.enabled\n.spec.rabbitmq.persistence.storageClass\n.spec.rabbitmq.persistence.size\n.spec.rabbitmq.replicaCount\n.spec.rabbitmq.persistence.replicaCount\n.spec.route.hosts\n.spec.xldLicense\n.spec.centralConfiguration.image.repository      \n.spec.centralConfiguration.persistence.pvcSize\n.spec.centralConfiguration.migrateFromEmbedded"
     - name: PreserveCrValuesRelease
       type: Editor
       prompt: Edit list of custom resource keys that will migrate to the new Release CR
