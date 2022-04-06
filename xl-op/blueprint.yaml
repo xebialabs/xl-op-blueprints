@@ -103,7 +103,7 @@ spec:
       overrideDefault: true
       prompt: Operator image to use
       promptIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-      default: xebialabsunsupported/deploy-operator:22.2.0-405.113
+      default: xebialabsunsupported/deploy-operator:22.2.0-406.113
       description: Operator image to use
     - name: OperatorImageDeployOpenshift
       type: Input
@@ -112,7 +112,7 @@ spec:
       overrideDefault: true
       prompt: Operator image to use
       promptIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-      default: xebialabsunsupported/deploy-operator:22.2.0-405.113-openshift
+      default: xebialabsunsupported/deploy-operator:22.2.0-406.113-openshift
       description: Operator image to use
     - name: OperatorImageReleaseGeneric
       type: Input
