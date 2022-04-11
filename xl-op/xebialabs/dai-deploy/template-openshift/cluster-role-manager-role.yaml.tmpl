@@ -1,7 +1,11 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  {{ if eq .UseCustomNamespace true }}
+  name: {{ .Namespace }}-xld-operator-manager-role
+  {{ else }}
   name: xld-operator-manager-role
+  {{ end }}
 rules:
 - apiGroups:
   - ""

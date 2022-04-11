@@ -235,11 +235,11 @@ spec:
       description: The name of your custom resource definition.
   files:
     - path: xebialabs/xl-k8s-foundation.yaml.tmpl
-    - path: xebialabs/dai-deploy/template-generic/cluster-role-digital-proxy-role.yaml
+    - path: xebialabs/dai-deploy/template-generic/cluster-role-digital-proxy-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/template-generic/cluster-role-manager-role.yaml
+    - path: xebialabs/dai-deploy/template-generic/cluster-role-manager-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/template-generic/cluster-role-metrics-reader.yaml
+    - path: xebialabs/dai-deploy/template-generic/cluster-role-metrics-reader.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
     - path: xebialabs/dai-deploy/template-generic/controller-manager-metrics-service.yaml
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
@@ -247,7 +247,7 @@ spec:
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
     - path: xebialabs/dai-deploy/template-generic/leader-election-role.yaml
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/template-generic/leader-election-rolebinding.yaml
+    - path: xebialabs/dai-deploy/template-generic/leader-election-rolebinding.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
     - path: xebialabs/dai-deploy/template-generic/manager-rolebinding.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
@@ -257,11 +257,11 @@ spec:
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
     - path: xebialabs/dai-deploy-operator.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/template-generic/cluster-role-digital-proxy-role.yaml
+    - path: xebialabs/dai-release/template-generic/cluster-role-digital-proxy-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/template-generic/cluster-role-manager-role.yaml
+    - path: xebialabs/dai-release/template-generic/cluster-role-manager-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/template-generic/cluster-role-metrics-reader.yaml
+    - path: xebialabs/dai-release/template-generic/cluster-role-metrics-reader.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
     - path: xebialabs/dai-release/template-generic/controller-manager-metrics-service.yaml
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
@@ -269,7 +269,7 @@ spec:
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
     - path: xebialabs/dai-release/template-generic/leader-election-role.yaml
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/template-generic/leader-election-rolebinding.yaml
+    - path: xebialabs/dai-release/template-generic/leader-election-rolebinding.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
     - path: xebialabs/dai-release/template-generic/manager-rolebinding.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
@@ -279,11 +279,11 @@ spec:
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
     - path: xebialabs/dai-release/template-generic/deployment.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/template-openshift/cluster-role-digital-proxy-role.yaml
+    - path: xebialabs/dai-deploy/template-openshift/cluster-role-digital-proxy-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/template-openshift/cluster-role-manager-role.yaml
+    - path: xebialabs/dai-deploy/template-openshift/cluster-role-manager-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/template-openshift/cluster-role-metrics-reader.yaml
+    - path: xebialabs/dai-deploy/template-openshift/cluster-role-metrics-reader.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
     - path: xebialabs/dai-deploy/template-openshift/controller-manager-metrics-service.yaml
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
@@ -291,7 +291,7 @@ spec:
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
     - path: xebialabs/dai-deploy/template-openshift/leader-election-role.yaml
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/template-openshift/leader-election-rolebinding.yaml
+    - path: xebialabs/dai-deploy/template-openshift/leader-election-rolebinding.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
     - path: xebialabs/dai-deploy/template-openshift/manager-rolebinding.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
@@ -301,11 +301,11 @@ spec:
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
     - path: xebialabs/dai-deploy-operator.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/template-openshift/cluster-role-digital-proxy-role.yaml
+    - path: xebialabs/dai-release/template-openshift/cluster-role-digital-proxy-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/template-openshift/cluster-role-manager-role.yaml
+    - path: xebialabs/dai-release/template-openshift/cluster-role-manager-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/template-openshift/cluster-role-metrics-reader.yaml
+    - path: xebialabs/dai-release/template-openshift/cluster-role-metrics-reader.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
     - path: xebialabs/dai-release/template-openshift/controller-manager-metrics-service.yaml
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
@@ -313,7 +313,7 @@ spec:
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
     - path: xebialabs/dai-release/template-openshift/leader-election-role.yaml
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/template-openshift/leader-election-rolebinding.yaml
+    - path: xebialabs/dai-release/template-openshift/leader-election-rolebinding.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
     - path: xebialabs/dai-release/template-openshift/manager-rolebinding.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'

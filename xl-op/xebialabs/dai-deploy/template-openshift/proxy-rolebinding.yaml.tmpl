@@ -1,11 +1,19 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  {{ if eq .UseCustomNamespace true }}
+  name: {{ .Namespace }}-xld-operator-proxy-rolebinding
+  {{ else }}
   name: xld-operator-proxy-rolebinding
+  {{ end }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
+  {{ if eq .UseCustomNamespace true }}
+  name: {{ .Namespace }}-xld-operator-proxy-role
+  {{ else }}
   name: xld-operator-proxy-role
+  {{ end }}
 subjects:
 - kind: ServiceAccount
   name: default
