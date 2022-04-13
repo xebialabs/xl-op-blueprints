@@ -32,6 +32,11 @@ spec:
         - "--leader-elect"
         - "--leader-election-id=xlr-operator-controller-manager"
         image: {{ .OperatorImageReleaseOpenshift }}
+        env:
+        - name: WATCH_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
         livenessProbe:
           httpGet:
             path: /readyz
