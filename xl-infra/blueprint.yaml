@@ -174,10 +174,10 @@ spec:
 
     - name: UseCustomNamespace
       type: Confirm
-      default: false
+      default: true
       saveInXlvals: true
-      prompt: "Do you want to use an existing Kubernetes namespace?"
-      description: "Use an already existing namespace in your kubernetes cluster for doing an initial deployment, update or undeployment of the Xebialabs Devops Platform."
+      prompt: "Do you want to use an custom Kubernetes namespace?"
+      description: "Use an already existing namespace in your kubernetes cluster for doing an upgrade of the Xebialabs Devops Platform."
 
     - name: Namespace
       type: Input

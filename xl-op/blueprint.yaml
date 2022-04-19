@@ -166,14 +166,6 @@ spec:
       prompt: Release operator zip to use (absolute path or URL to the zip)
       promptIf: !expr ServerType == 'daiRelease' && UseOperatorZipRelease
       description: "Release operator zip to use, specify URL to the zip (check https://dist.xebialabs.com/customer/operator/release/) or absolute path"
-    - name: CrName
-      type: Input
-      saveInXlvals: true
-      promptIf: !expr UpgradeType == 'operatorToOperator'
-      prompt: Enter the name of custom resource.
-      ignoreIfSkipped: true
-      overrideDefault: true
-      description: The name of your custom resource
     - name: CrdName
       type: Input
       saveInXlvals: true
@@ -182,6 +174,14 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       description: The name of your custom resource definition.
+    - name: CrName
+      type: Input
+      saveInXlvals: true
+      promptIf: !expr UpgradeType == 'operatorToOperator'
+      prompt: Enter the name of custom resource.
+      ignoreIfSkipped: true
+      overrideDefault: true
+      description: The name of your custom resource
     - name: PreserveCrValuesDeploy
       type: Editor
       prompt: Edit list of custom resource keys that will migrate to the new Deploy CR

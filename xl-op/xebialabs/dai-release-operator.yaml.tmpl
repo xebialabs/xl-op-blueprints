@@ -86,7 +86,6 @@ spec:
         modifyOrder: "11"
         destroyOrder: "12"
         file: !file "dai-release/template-openshift/cluster-role-manager-role.yaml"
-      {{ if eq .IsCrdReused false }}
       - name: custom-resource-definition
         type: k8s.ResourcesFile
         fileEncodings:
@@ -98,7 +97,6 @@ spec:
         modifyOrder: "2"
         destroyOrder: "1"
         file: !file "dai-release/template-openshift/custom-resource-definition.yaml"
-      {{ end }}
       - name: cluster-role-digital-proxy-role
         type: k8s.ResourcesFile
         fileEncodings:
@@ -230,7 +228,6 @@ spec:
         modifyOrder: "11"
         destroyOrder: "12"
         file: !file "dai-release/template-generic/cluster-role-manager-role.yaml"
-      {{ if eq .IsCrdReused false }}
       - name: custom-resource-definition
         type: k8s.ResourcesFile
         fileEncodings:
@@ -242,7 +239,6 @@ spec:
         modifyOrder: "2"
         destroyOrder: "1"
         file: !file "dai-release/template-generic/custom-resource-definition.yaml"
-      {{ end }}
       - name: cluster-role-digital-proxy-role
         type: k8s.ResourcesFile
         fileEncodings:
