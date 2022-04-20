@@ -1,0 +1,68 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dai-xlr-postgresql-init-keycloak-db
+  labels:
+    app: digitalai-release
+spec:
+  template:
+    metadata:
+      name: dai-xlr-postgresql-init-keycloak-db
+    spec:
+      initContainers:
+        - name: wait-for-postgresql
+          image: xebialabs/tiny-tools:22.2.0
+          command:
+            - sh
+            - -c
+            - >
+              until nc -z -w 2 $POSTGRES_SVC $POSTGRES_PORT && echo database ok; do
+              sleep 2;
+              done;
+          env:
+            - name: POSTGRES_SVC
+              value: dai-xlr-postgresql
+            - name: POSTGRES_PORT
+              value: "5432"
+      containers:
+        - name: postgresql-init-keycloak-db
+          image: xebialabs/tiny-tools:22.2.0
+          command:
+            - sh
+            - -c
+            - >
+              output=$(psql -h $POSTGRES_SVC -p $POSTGRES_PORT -U $USERNAME -W $PGPASSWORD -lqt);
+              if [[ $? -ne 0 ]]; then
+                echo "Cannot connect to the DB server $POSTGRES_SVC";
+                exit 1;
+              fi;
+              if echo "$output" | cut -d \| -f 1 | grep -qw $SCHEMA_NAME; then
+                echo "Database $SCHEMA_NAME exists, nothing to do";
+              else
+                echo "Database $SCHEMA_NAME will be created";
+                psql -h $POSTGRES_SVC -p $POSTGRES_PORT -U $USERNAME -W $PGPASSWORD -f /var/init-sql-keycloak/init-keycloak.sql;
+                if [[ $? -ne 0 ]]; then
+                  echo "Cannot connect to the DB server $POSTGRES_SVC";
+                  exit 1;
+                fi;
+              fi;
+          env:
+            - name: POSTGRES_SVC
+              value: dai-xlr-postgresql
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: PGPASSWORD
+              value: "postgres"
+            - name: USERNAME
+              value: postgres
+            - name: SCHEMA_NAME
+              value: keycloak
+          volumeMounts:
+            - mountPath: /var/init-sql-keycloak
+              name: dai-xlr-init-sql-keycloak
+      volumes:
+        - name: dai-xlr-init-sql-keycloak
+          secret:
+            secretName: dai-xlr-postgresql-init-sql-keycloak
+      restartPolicy: Never
+  backoffLimit: 1

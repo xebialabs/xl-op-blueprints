@@ -119,6 +119,30 @@ spec:
         modifyOrder: "26"
         destroyOrder: "27"
         file: !file "dai-deploy/template-openshift/proxy-rolebinding.yaml"
+      {{ if eq .UseEmbeddedKeycloak true }}
+      - name: create-keycloak-db
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "36"
+        modifyOrder: "36"
+        destroyOrder: "2"
+        file: !file "dai-deploy/template-generic/create-keycloak-db.yaml"
+      - name: postgresql-init-keycloak-db
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "37"
+        modifyOrder: "37"
+        destroyOrder: "1"
+        file: !file "dai-deploy/template-generic/postgresql-init-keycloak-db.yaml"
+      {{ end }}
 ---
 apiVersion: xl-deploy/v1
 kind: Applications
@@ -261,6 +285,30 @@ spec:
         modifyOrder: "26"
         destroyOrder: "27"
         file: !file "dai-deploy/template-generic/proxy-rolebinding.yaml"
+      {{ if eq .UseEmbeddedKeycloak true }}
+      - name: create-keycloak-db
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "36"
+        modifyOrder: "36"
+        destroyOrder: "2"
+        file: !file "dai-deploy/template-generic/create-keycloak-db.yaml"
+      - name: postgresql-init-keycloak-db
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "37"
+        modifyOrder: "37"
+        destroyOrder: "1"
+        file: !file "dai-deploy/template-generic/postgresql-init-keycloak-db.yaml"
+      {{ end }}
 ---
 apiVersion: xl-deploy/v1
 kind: Applications

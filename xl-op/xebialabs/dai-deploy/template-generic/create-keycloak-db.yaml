@@ -1,0 +1,8 @@
+kind: Secret
+apiVersion: v1
+metadata:
+  name: dai-xld-postgresql-init-sql-keycloak
+  labels:
+    app: digitalai-deploy
+data:
+  init-keycloak.sql: Q1JFQVRFIFVTRVIgImtleWNsb2FrIiBXSVRIIEVOQ1JZUFRFRCBQQVNTV09SRCAna2V5Y2xvYWsnOwpDUkVBVEUgREFUQUJBU0UgImtleWNsb2FrIjsKR1JBTlQgQUxMIFBSSVZJTEVHRVMgT04gREFUQUJBU0UgImtleWNsb2FrIiBUTyAia2V5Y2xvYWsiOw==

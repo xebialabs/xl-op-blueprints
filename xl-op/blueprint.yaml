@@ -323,6 +323,14 @@ spec:
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
     - path: xebialabs/dai-release/template-openshift/deployment.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
+    - path: xebialabs/dai-deploy/template-generic/create-keycloak-db.yaml
+      writeIf: !expr ServerType == 'daiDeploy' && UseEmbeddedKeycloak == true
+    - path: xebialabs/dai-deploy/template-generic/postgresql-init-keycloak-db.yaml
+      writeIf: !expr ServerType == 'daiDeploy' && UseEmbeddedKeycloak == true
+    - path: xebialabs/dai-release/template-generic/create-keycloak-db.yaml
+      writeIf: !expr ServerType == 'daiRelease' && UseEmbeddedKeycloak == true
+    - path: xebialabs/dai-release/template-generic/postgresql-init-keycloak-db.yaml
+      writeIf: !expr ServerType == 'daiRelease' && UseEmbeddedKeycloak == true
     - path: xebialabs/common.yaml.tmpl
     - path: xebialabs/deployments.yaml.tmpl
     - path: generated_answers.yaml.tmpl
