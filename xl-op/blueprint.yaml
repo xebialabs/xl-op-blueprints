@@ -69,21 +69,56 @@ spec:
       options:
         - !expr version('_showapplicableversions', 'xld')
       description: The version of XL Deploy you would like to install for upgrader
+    - name: EnableOidc
+      type: Confirm
+      default: true
+      saveInXlvals: true
+      prompt: "Do you want to enable an oidc?"
+      description: "Enable OIDC."
+    - name: UseExistingOidcConf
+      type: Confirm
+      default: true
+      saveInXlvals: true
+      promptIf: !expr EnableOidc == true
+      prompt: "Do you want to use an existing oidc configuration from previous installation?"
+      description: "Use an already existing oidc configuration from previous installation."
     - name: UseEmbeddedKeycloak
       type: Confirm
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      promptIf: !expr "!regex('^10.*$', ImageTag)"
+      promptIf: !expr "!regex('^10.*$', ImageTag) && !UseExistingOidcConf"
       prompt: Use embedded keycloak?
       default: true
       description: "If true, keycloak will be installed in kubernetes cluster with predefined configuration."
+    - name: UseExternalOidcConf
+      type: Editor
+      prompt: Configure external oidc setup.
+      promptIf: !expr UseEmbeddedKeycloak == false
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      default: |-
+        .spec.oidc.external=true
+        .spec.oidc.accessTokenUri=null
+        .spec.oidc.clientId=null
+        .spec.oidc.clientSecret=null
+        .spec.oidc.emailClaim=null
+        .spec.oidc.fullNameClaim=null
+        .spec.oidc.issuer=null
+        .spec.oidc.keyRetrievalUri=null
+        .spec.oidc.logoutUri=null
+        .spec.oidc.postLogoutRedirectUri=null
+        .spec.oidc.redirectUri=null
+        .spec.oidc.rolesClaim=null
+        .spec.oidc.userAuthorizationUri=null
+        .spec.oidc.userNameClaim=null
     - name: KeycloakUrl
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      promptIf: !expr UseEmbeddedKeycloak == true
+      promptIf: !expr UseEmbeddedKeycloak == true && !UseExistingOidcConf
       prompt: Enter Keycloak public URL
       description: Enter Keycloak public URL that will be used for keycloak installation.
     - name: UpgradeType
