@@ -25,9 +25,15 @@ UseInternalLoadBalancer: {{ .UseInternalLoadBalancer }}
 {{- if eq .K8sSetup "AwsEKS" }}
 IsEKS: {{eq .K8sSetup "AwsEKS"}}
 UseAWSconfig: {{ .UseAWSconfig }}
+UseAWSSsoCredentials: {{ .UseAWSSsoCredentials }}
 EksClusterName: {{ .EksClusterName }}
 AWSAccessKey: {{ .AWSAccessKey }}
 AWSAccessSecret: {{ .AWSAccessSecret }}
+{{- if .UseAWSSsoCredentials }}
+AWSSessionToken: {{ .AWSSessionToken }}
+AWSAccountId: {{ .AWSAccountId }}
+AWSSSORoleName: {{ .AWSSSORoleName }}
+{{- end }}
 UseInternalLoadBalancer: {{ .UseInternalLoadBalancer }}
 {{- end }}
 {{- if eq .K8sSetup "AzureAKS" }}

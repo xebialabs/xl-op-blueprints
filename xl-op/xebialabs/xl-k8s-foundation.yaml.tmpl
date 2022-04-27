@@ -12,6 +12,12 @@ spec:
         clusterName: !value EksClusterName
         accessKey: !value AWSAccessKey
         accessSecret: !value AWSAccessSecret
+        {{- if  .UseAWSSsoCredentials  }}
+        isAssumeRole: true
+        accountId: {{.AWSAccountId}}
+        roleName: {{.AWSSSORoleName}}
+        sessionToken: {{.AWSSessionToken}}
+        {{- end }}
         children:
         - name: {{.Namespace}}
           type: k8s.Namespace
