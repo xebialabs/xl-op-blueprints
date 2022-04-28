@@ -192,13 +192,12 @@ spec:
       description: "Your AWS SSO session token key. AWS SSO session token is required for xl up in order to connect to your AWS EKS cluster"
 
     - name: AWSAccountId
-      type: SecretInput
-      prompt: "What is the AWS Account?"
+      type: Input
+      prompt: "What is the AWS Account ID?"
       promptIf: !expr "K8sSetup == 'AwsEKS' && UseAWSSsoCredentials"
       saveInXlvals: true
-      replaceAsIs: true
       ignoreIfSkipped: !expr "K8sSetup == 'AwsEKS' ? false : true"
-      description: "Your AWS Account"
+      description: "Your AWS Account ID"
 
     - name: AWSSSORoleName
       type: Input
