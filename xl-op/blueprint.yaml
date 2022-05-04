@@ -78,8 +78,10 @@ spec:
     - name: UseExistingOidcConf
       type: Confirm
       default: true
+      ignoreIfSkipped: true
+      overrideDefault: true
       saveInXlvals: true
-      promptIf: !expr EnableOidc == true
+      promptIf: !expr "EnableOidc == true"
       prompt: "Do you want to use an existing oidc configuration from previous installation?"
       description: "Use an already existing oidc configuration from previous installation."
     - name: UseEmbeddedKeycloak
@@ -94,7 +96,7 @@ spec:
     - name: UseExternalOidcConf
       type: Editor
       prompt: Configure external oidc setup.
-      promptIf: !expr UseEmbeddedKeycloak == false
+      promptIf: !expr "UseEmbeddedKeycloak == false"
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
@@ -118,7 +120,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      promptIf: !expr UseEmbeddedKeycloak == true && !UseExistingOidcConf
+      promptIf: !expr "UseEmbeddedKeycloak == true && !UseExistingOidcConf"
       prompt: Enter Keycloak public URL
       description: Enter Keycloak public URL that will be used for keycloak installation.
     - name: UpgradeType
