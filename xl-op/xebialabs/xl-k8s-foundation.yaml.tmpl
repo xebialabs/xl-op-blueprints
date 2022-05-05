@@ -17,6 +17,8 @@ spec:
         accountId: {{.AWSAccountId}}
         roleName: {{.AWSSSORoleName}}
         sessionToken: {{.AWSSessionToken}}
+        roleArn: {{.AWSRoleArn}}
+        durationSeconds: 3600
         {{- end }}
         children:
         - name: {{.Namespace}}

@@ -207,6 +207,14 @@ spec:
       ignoreIfSkipped: !expr "K8sSetup == 'AwsEKS' ? true : true"
       description: "Your AWS SSO Role Name"
 
+    - name: AWSRoleArn
+      type: Input
+      prompt: "What is the AWS Role ARN?"
+      promptIf: !expr "K8sSetup == 'AwsEKS' && UseAWSSsoCredentials"
+      saveInXlvals: true
+      ignoreIfSkipped: !expr "K8sSetup == 'AwsEKS' ? true : true"
+      description: "Your AWS Role ARN ?"
+
     - name: UseCustomNamespace
       type: Confirm
       default: true
