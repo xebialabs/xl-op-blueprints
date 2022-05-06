@@ -96,7 +96,7 @@ spec:
     - name: UseExternalOidcConf
       type: Editor
       prompt: Configure external oidc setup.
-      promptIf: !expr "UseEmbeddedKeycloak == false"
+      promptIf: !expr "EnableOidc == true && UseEmbeddedKeycloak == false"
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
