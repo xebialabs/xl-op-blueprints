@@ -143,6 +143,15 @@ spec:
       ignoreIfSkipped: true
       value: !expr "K8sSetup == 'AwsEKS' ? awsCredentials('IsAvailable') : ''"
 
+    - name: UseAWSSsoCredentials
+      type: Confirm
+      prompt: "Do you want to use the AWS SSO credentials ?"
+      promptIf: !expr "IsAwsCfgAvailable && K8sSetup == 'AwsEKS'"
+      default: false
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      description: "Use the AWS SSO credentials"
+
     - name: UseAWSconfig
       type: Confirm
       prompt: "Do you want to use the AWS credentials from your ~/.aws/credentials file?"
@@ -171,6 +180,40 @@ spec:
       ignoreIfSkipped: !expr "K8sSetup == 'AwsEKS' ? false : true"
       replaceAsIs: true
       description: "Your AWS secret access key. AWS secret access key is required for xl up in order to connect to your AWS EKS cluster"
+
+    - name: AWSSessionToken
+      type: SecretInput
+      prompt: "What is the AWS secret Token for SSO?"
+      promptIf: !expr "!UseAWSconfig && K8sSetup == 'AwsEKS' && UseAWSSsoCredentials"
+      default: !expr "K8sSetup == 'AwsEKS' ? awsCredentials('SessionToken') : ''"
+      saveInXlvals: true
+      ignoreIfSkipped: !expr "K8sSetup == 'AwsEKS' ? false : true"
+      replaceAsIs: true
+      description: "Your AWS SSO session token key. AWS SSO session token is required for xl up in order to connect to your AWS EKS cluster"
+
+    - name: AWSAccountId
+      type: Input
+      prompt: "What is the AWS Account ID?"
+      promptIf: !expr "K8sSetup == 'AwsEKS' && UseAWSSsoCredentials"
+      saveInXlvals: true
+      ignoreIfSkipped: !expr "K8sSetup == 'AwsEKS' ? false : true"
+      description: "Your AWS Account ID"
+
+    - name: AWSSSORoleName
+      type: Input
+      prompt: "What is the AWS SSO Role Name?"
+      promptIf: !expr "K8sSetup == 'AwsEKS' && UseAWSSsoCredentials"
+      saveInXlvals: true
+      ignoreIfSkipped: !expr "K8sSetup == 'AwsEKS' ? true : true"
+      description: "Your AWS SSO Role Name"
+
+    - name: AWSRoleArn
+      type: Input
+      prompt: "What is the AWS Role ARN?"
+      promptIf: !expr "K8sSetup == 'AwsEKS' && UseAWSSsoCredentials"
+      saveInXlvals: true
+      ignoreIfSkipped: !expr "K8sSetup == 'AwsEKS' ? true : true"
+      description: "Your AWS Role ARN ?"
 
     - name: UseCustomNamespace
       type: Confirm
