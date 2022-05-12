@@ -51,7 +51,7 @@ spec:
         children:
         - name: default
           type: openshift.Project
-          projectName: default
+          projectName: {{ .Namespace }}
 {{- else}}
 apiVersion: xl-deploy/v1
 kind: Infrastructure
