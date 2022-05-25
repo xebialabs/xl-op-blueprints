@@ -24,8 +24,8 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Enter the repository name(eg: <repositoryName>/<imageName>:<tagName>)"
-      default: xebialabs
-      description: Enter the image tag to use
+      default: xebialabsunsupported
+      description: Enter the repository name to use
     - name: ImageNameDeploy
       type: Input
       saveInXlvals: true
@@ -43,14 +43,14 @@ spec:
       promptIf: !expr ServerType == 'daiRelease'
       prompt: "Enter the image name(eg: <repositoryName>/<imageName>:<tagName>)"
       default: xl-release
-      description: Enter the image tag to use
+      description: Enter the image name to use
     - name: ImageTag
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Enter the image tag(eg: <repositoryName>/<imageName>:<tagName>)"
-      default: 22.0.0
+      default: 22.2.0-511.113
       description: Enter the image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -61,14 +61,47 @@ spec:
       prompt: "Enter the deploy task engine image name for version 22 and above (eg: <repositoryName>/<imageName>:<tagName>)"
       default: deploy-task-engine
       description: Enter the deploy task engine image name to use
-    - name: DeployImageVersionForUpgrader
-      type: Select
+    - name: XldMasterCount
+      type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
-      prompt: Choose the version of the XL Deploy for Upgrader setup of operator
+      overrideDefault: true
+      promptIf: !expr ServerType == 'daiDeploy'
+      prompt: "Enter the deploy master server replica count"
+      default: 3
+      description: Enter the deploy master server replica count
+    - name: XldWorkerCount
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      promptIf: !expr ServerType == 'daiDeploy'
+      prompt: "Enter the deploy worker replica count"
+      default: 3
+      description: Enter the deploy worker replica count
+    - name: XlrReplicaCount
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      promptIf: !expr ServerType == 'daiRelease'
+      prompt: "Enter the release server replica count"
+      default: 3
+      description: Enter the release server replica count
+    - name: IngressType
+      type: Select
+      prompt: Select between supported ingress types
       options:
-        - !expr version('_showapplicableversions', 'xld')
-      description: The version of XL Deploy you would like to install for upgrader
+        - label: NGINX
+          value: nginx
+        - label: HAProxy
+          value: haproxy
+        - label: None
+          value: none
+      promptIf: !expr ProcessType == "install"
+      saveInXlvals: true
+      default: !expr "K8sSetup == 'PlainK8SCluster' ? 'none' : 'nginx'"
+      description: Select between supported ingress types?     {{ if eq .IngressType nginx  }}
     - name: EnableOidc
       type: Confirm
       default: true
@@ -77,8 +110,7 @@ spec:
       description: "Enable OIDC."
     - name: UseExistingOidcConf
       type: Confirm
-      default: true
-      ignoreIfSkipped: true
+      default: !expr "EnableOidc == true"
       overrideDefault: true
       saveInXlvals: true
       promptIf: !expr "EnableOidc == true"
@@ -87,11 +119,10 @@ spec:
     - name: UseEmbeddedKeycloak
       type: Confirm
       saveInXlvals: true
-      ignoreIfSkipped: true
       overrideDefault: true
-      promptIf: !expr "!regex('^10.*$', ImageTag) && !UseExistingOidcConf"
+      promptIf: !expr "EnableOidc && !regex('^10.*$', ImageTag) && !UseExistingOidcConf"
       prompt: Use embedded keycloak?
-      default: true
+      default: !expr "EnableOidc && !regex('^10.*$', ImageTag) && !UseExistingOidcConf"
       description: "If true, keycloak will be installed in kubernetes cluster with predefined configuration."
     - name: UseExternalOidcConf
       type: Editor
@@ -115,7 +146,7 @@ spec:
         .spec.oidc.rolesClaim=null
         .spec.oidc.userAuthorizationUri=null
         .spec.oidc.userNameClaim=null
-    - name: KeycloakUrl
+    - name: KeycloakIngressHost
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
@@ -126,11 +157,13 @@ spec:
     - name: UpgradeType
       type: Select
       prompt: Select the type of upgrade you want.
+      ignoreIfSkipped: true
       options:
         - label: Operator to Operator
           value: operatorToOperator
         - label: Helm to Operator
           value: helmToOperator
+      promptIf: !expr ProcessType == "upgrade"
       saveInXlvals: true
       description: Type of upgrade you want?
     - name: OperatorImageDeployGeneric
@@ -169,40 +202,87 @@ spec:
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
       default: xebialabsunsupported/release-operator:22.2.0-511.113-openshift
       description: Operator image to use
-    - name: UseOperatorZipDeploy
-      type: Confirm
-      prompt: Do you want to use custom operator zip file for Deploy?
-      promptIf: !expr ServerType == 'daiDeploy'
-      default: true
+
+    - name: License
+      type: Editor
       saveInXlvals: true
       ignoreIfSkipped: true
-      description: Use current custom resource from cluster or use the custom one custom resource from the Deploy operator zip.
-    - name: OperatorZipDeploy
+      overrideDefault: true
+      prompt: Provide license file for the server
+      promptIf: !expr ProcessType == "install"
+      description: Provide license file for the server
+    - name: RepositoryKeystore
+      type: Editor
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: Provide repository keystore for the server
+      promptIf: !expr ProcessType == "install"
+      description: Provide repository keystore for the server
+    - name: KeystorePassphrase
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      default: ""
-      prompt: Deploy operator zip to use (absolute path or URL to the zip)
-      promptIf: !expr ServerType == 'daiDeploy' && UseOperatorZipDeploy
-      description: "Deploy operator zip to use, specify URL to the zip (check https://dist.xebialabs.com/customer/operator/deploy/) or absolute path"
-    - name: UseOperatorZipRelease
-      type: Confirm
-      prompt: Do you want to use custom operator zip file for Release?
-      promptIf: !expr ServerType == 'daiRelease'
-      default: true
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      description: Use current custom resource from cluster or use the custom one custom resource from the Release operator zip.
-    - name: OperatorZipRelease
+      prompt: Provide keystore passphrase
+      promptIf: !expr ProcessType == "install"
+      description: Keystore passphrase for the server
+    - name: StorageClass
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      default: ""
-      prompt: Release operator zip to use (absolute path or URL to the zip)
-      promptIf: !expr ServerType == 'daiRelease' && UseOperatorZipRelease
-      description: "Release operator zip to use, specify URL to the zip (check https://dist.xebialabs.com/customer/operator/release/) or absolute path"
+      prompt: Provide storage class for the server
+      promptIf: !expr ProcessType == "install"
+      description: Provide storage class for the server
+    - name: IngressHost
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: Provide DNS name for accessing UI of the server
+      promptIf: !expr ProcessType == "install"
+      description: Provide DNS name for accessing UI of the server
+    - name: EnablePostgresql
+      type: Confirm
+      default: true
+      saveInXlvals: true
+      prompt: "Do you want to enable an PostgreSQL?"
+      description: "Enable PostgreSQL."
+    - name: PostgresqlStorageClass
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: Provide Storage Class to be defined for PostgreSQL
+      default: !expr StorageClass
+      promptIf: !expr ProcessType == "install" && EnablePostgresql
+      description: Provide Storage Class to be defined for PostgreSQL
+    - name: EnableRabbitmq
+      type: Confirm
+      default: true
+      saveInXlvals: true
+      prompt: "Do you want to enable an RabbitMQ?"
+      description: "Enable RabbitMQ."
+    - name: RabbitmqReplicaCount
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: Replica count to be defined for RabbitMQ
+      default: 3
+      promptIf: !expr ProcessType == "install" && EnableRabbitmq
+      description: Replica count to be defined for RabbitMQ
+    - name: RabbitmqStorageClass
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: Storage Class to be defined for RabbitMQ
+      default: !expr StorageClass
+      promptIf: !expr ProcessType == "install" && EnableRabbitmq
+      description: Storage Class to be defined for RabbitMQ
+
     - name: CrdName
       type: Input
       saveInXlvals: true
@@ -222,15 +302,45 @@ spec:
     - name: PreserveCrValuesDeploy
       type: Editor
       prompt: Edit list of custom resource keys that will migrate to the new Deploy CR
-      promptIf: !expr ServerType == 'daiDeploy' && UseOperatorZipDeploy
+      promptIf: !expr ServerType == 'daiDeploy' && ProcessType == "upgrade"
       saveInXlvals: true
       ignoreIfSkipped: true
       description: "For all matched expressions in the cluster CR, the values will be migrated to the upgraded Deploy CR"
-      default: ".spec.XldMasterCount\n.spec.XldWorkerCount\n.spec.UseExistingDB.Enabled\n.spec.UseExistingMQ.Enabled\n.spec.ingress.hosts\n.spec.KeystorePassphrase\n.spec.Persistence.StorageClass\n.spec.Persistence.XldMasterPvcSize\n.spec.Persistence.XldWorkerPvcSize\n.spec.RepositoryKeystore\n.spec.postgresql.persistence.size\n.spec.postgresql.persistence.storageClass\n.spec.postgresql.postgresqlMaxConnections\n.spec.keycloak.postgresql.persistence.size\n.spec.keycloak.postgresql.postgresqlMaxConnections\n.spec.haproxy-ingress.install\n.spec.keycloak.install\n.spec.nginx-ingress-controller.install\n.spec.postgresql.install\n.spec.rabbitmq.install\n.spec.oidc.enabled\n.spec.rabbitmq.persistence.storageClass\n.spec.rabbitmq.persistence.size\n.spec.rabbitmq.replicaCount\n.spec.rabbitmq.persistence.replicaCount\n.spec.route.hosts\n.spec.xldLicense\n.spec.centralConfiguration.image.repository      \n.spec.centralConfiguration.persistence.pvcSize\n.spec.centralConfiguration.migrateFromEmbedded"
+      default: |-
+        .spec.XldMasterCount
+        .spec.XldWorkerCount
+        .spec.UseExistingDB.Enabled
+        .spec.UseExistingMQ.Enable
+        .spec.ingress.hosts
+        .spec.KeystorePassphrase
+        .spec.Persistence.StorageClass
+        .spec.Persistence.XldMasterPvcSize
+        .spec.Persistence.XldWorkerPvcSize
+        .spec.RepositoryKeystore
+        .spec.postgresql.persistence.size
+        .spec.postgresql.persistence.storageClass
+        .spec.postgresql.postgresqlMaxConnections
+        .spec.keycloak.postgresql.persistence.size
+        .spec.keycloak.postgresql.postgresqlMaxConnections
+        .spec.haproxy-ingress.install
+        .spec.keycloak.install
+        .spec.nginx-ingress-controller.install
+        .spec.postgresql.install
+        .spec.rabbitmq.install
+        .spec.oidc.enabled
+        .spec.rabbitmq.persistence.storageClass
+        .spec.rabbitmq.persistence.size
+        .spec.rabbitmq.replicaCount
+        .spec.rabbitmq.persistence.replicaCount
+        .spec.route.hosts
+        .spec.xldLicense
+        .spec.centralConfiguration.image.repository      
+        .spec.centralConfiguration.persistence.pvcSize
+        .spec.centralConfiguration.migrateFromEmbedded"
     - name: PreserveCrValuesRelease
       type: Editor
       prompt: Edit list of custom resource keys that will migrate to the new Release CR
-      promptIf: !expr ServerType == 'daiRelease' && UseOperatorZipRelease
+      promptIf: !expr ServerType == 'daiRelease' && ProcessType == "upgrade"
       saveInXlvals: true
       ignoreIfSkipped: true
       description: For all matched expressions in the cluster CR, the values will be migrated to the upgraded Release CR
@@ -271,104 +381,72 @@ spec:
       overrideDefault: true
       description: The name of your custom resource definition.
   files:
-    - path: xebialabs/xl-k8s-foundation.yaml.tmpl
-    - path: xebialabs/dai-deploy/template-generic/cluster-role-digital-proxy-role.yaml.tmpl
+    - path: xebialabs/dai-deploy/kubernetes-generic/template/cluster-role-digital-proxy-role.yaml.tmpl
+      writeIf: !expr ServerType == 'daiDeploy'
+    - path: xebialabs/dai-deploy/kubernetes-generic/template/cluster-role-manager-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/template-generic/cluster-role-manager-role.yaml.tmpl
+    - path: xebialabs/dai-deploy/kubernetes-generic/template/cluster-role-metrics-reader.yaml.tmpl
+      writeIf: !expr ServerType == 'daiDeploy'
+    - path: xebialabs/dai-deploy/kubernetes-generic/template/controller-manager-metrics-service.yaml
+      writeIf: !expr ServerType == 'daiDeploy'
+    - path: xebialabs/dai-deploy/kubernetes-generic/template/custom-resource-definition.yaml
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/template-generic/cluster-role-metrics-reader.yaml.tmpl
+    - path: xebialabs/dai-deploy/kubernetes-generic/daideploy_cr_default.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/template-generic/controller-manager-metrics-service.yaml
+    - path: xebialabs/dai-deploy/kubernetes-generic/template/leader-election-role.yaml
+      writeIf: !expr ServerType == 'daiDeploy'
+    - path: xebialabs/dai-deploy/kubernetes-generic/template/leader-election-rolebinding.yaml.tmpl
+      writeIf: !expr ServerType == 'daiDeploy'
+    - path: xebialabs/dai-deploy/kubernetes-generic/template/manager-rolebinding.yaml.tmpl
+      writeIf: !expr ServerType == 'daiDeploy'
+    - path: xebialabs/dai-deploy/kubernetes-generic/template/proxy-rolebinding.yaml.tmpl
+      writeIf: !expr ServerType == 'daiDeploy'
+    - path: xebialabs/dai-deploy/kubernetes-generic/template/deployment.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/template-generic/custom-resource-definition.yaml
-      writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/template-generic/leader-election-role.yaml
-      writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/template-generic/leader-election-rolebinding.yaml.tmpl
-      writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/template-generic/manager-rolebinding.yaml.tmpl
-      writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/template-generic/proxy-rolebinding.yaml.tmpl
-      writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/template-generic/deployment.yaml.tmpl
-      writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy-operator.yaml.tmpl
-      writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/template-generic/cluster-role-digital-proxy-role.yaml.tmpl
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/template-generic/cluster-role-manager-role.yaml.tmpl
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/template-generic/cluster-role-metrics-reader.yaml.tmpl
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/template-generic/controller-manager-metrics-service.yaml
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/template-generic/custom-resource-definition.yaml
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/template-generic/leader-election-role.yaml
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/template-generic/leader-election-rolebinding.yaml.tmpl
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/template-generic/manager-rolebinding.yaml.tmpl
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/template-generic/proxy-rolebinding.yaml.tmpl
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release-operator.yaml.tmpl
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/template-generic/deployment.yaml.tmpl
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/template-openshift/cluster-role-digital-proxy-role.yaml.tmpl
+    - path: xebialabs/dai-deploy/kubernetes-openshift/template/cluster-role-manager-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/template-openshift/cluster-role-manager-role.yaml.tmpl
+    - path: xebialabs/dai-deploy/kubernetes-openshift/template/custom-resource-definition.yaml
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/template-openshift/cluster-role-metrics-reader.yaml.tmpl
+    - path: xebialabs/dai-deploy/kubernetes-openshift/daideploy_cr_default.yaml
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/template-openshift/controller-manager-metrics-service.yaml
+    - path: xebialabs/dai-deploy/kubernetes-openshift/template/deployment.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/template-openshift/custom-resource-definition.yaml
-      writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/template-openshift/leader-election-role.yaml
-      writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/template-openshift/leader-election-rolebinding.yaml.tmpl
-      writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/template-openshift/manager-rolebinding.yaml.tmpl
-      writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/template-openshift/proxy-rolebinding.yaml.tmpl
-      writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/template-openshift/deployment.yaml.tmpl
-      writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy-operator.yaml.tmpl
-      writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/template-openshift/cluster-role-digital-proxy-role.yaml.tmpl
+    - path: xebialabs/dai-deploy/kubernetes-generic/template/create-keycloak-db.yaml
+      writeIf: !expr ServerType == 'daiDeploy' && EnableOidc == true && UseEmbeddedKeycloak == true
+    - path: xebialabs/dai-deploy/kubernetes-generic/template/postgresql-init-keycloak-db.yaml
+      writeIf: !expr ServerType == 'daiDeploy' && EnableOidc == true && UseEmbeddedKeycloak == true
+    - path: xebialabs/dai-release/kubernetes-generic/template/cluster-role-digital-proxy-role.yaml.tmpl
+      writeIf: !expr ServerType == 'daiRelease'
+    - path: xebialabs/dai-release/kubernetes-generic/template/cluster-role-manager-role.yaml.tmpl
+      writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
+    - path: xebialabs/dai-release/kubernetes-generic/template/cluster-role-metrics-reader.yaml.tmpl
+      writeIf: !expr ServerType == 'daiRelease'
+    - path: xebialabs/dai-release/kubernetes-generic/template/controller-manager-metrics-service.yaml
+      writeIf: !expr ServerType == 'daiRelease'
+    - path: xebialabs/dai-release/kubernetes-generic/template/custom-resource-definition.yaml
+      writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
+    - path: xebialabs/dai-release/kubernetes-generic/dairelease_cr_default.yaml.tmpl
+      writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
+    - path: xebialabs/dai-release/kubernetes-generic/template/leader-election-role.yaml
+      writeIf: !expr ServerType == 'daiRelease'
+    - path: xebialabs/dai-release/kubernetes-generic/template/leader-election-rolebinding.yaml.tmpl
+      writeIf: !expr ServerType == 'daiRelease'
+    - path: xebialabs/dai-release/kubernetes-generic/template/manager-rolebinding.yaml.tmpl
+      writeIf: !expr ServerType == 'daiRelease'
+    - path: xebialabs/dai-release/kubernetes-generic/template/proxy-rolebinding.yaml.tmpl
+      writeIf: !expr ServerType == 'daiRelease'
+    - path: xebialabs/dai-release/kubernetes-generic/template/deployment.yaml.tmpl
+      writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
+    - path: xebialabs/dai-release/kubernetes-openshift/template/cluster-role-manager-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/template-openshift/cluster-role-manager-role.yaml.tmpl
+    - path: xebialabs/dai-release/kubernetes-openshift/template/custom-resource-definition.yaml
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/template-openshift/cluster-role-metrics-reader.yaml.tmpl
+    - path: xebialabs/dai-release/kubernetes-openshift/dairelease_cr_default.yaml
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/template-openshift/controller-manager-metrics-service.yaml
+    - path: xebialabs/dai-release/kubernetes-openshift/template/deployment.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/template-openshift/custom-resource-definition.yaml
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/template-openshift/leader-election-role.yaml
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/template-openshift/leader-election-rolebinding.yaml.tmpl
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/template-openshift/manager-rolebinding.yaml.tmpl
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/template-openshift/proxy-rolebinding.yaml.tmpl
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release-operator.yaml.tmpl
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/template-openshift/deployment.yaml.tmpl
-      writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/template-generic/create-keycloak-db.yaml
-      writeIf: !expr ServerType == 'daiDeploy' && UseEmbeddedKeycloak == true
-    - path: xebialabs/dai-deploy/template-generic/postgresql-init-keycloak-db.yaml
-      writeIf: !expr ServerType == 'daiDeploy' && UseEmbeddedKeycloak == true
-    - path: xebialabs/dai-release/template-generic/create-keycloak-db.yaml
-      writeIf: !expr ServerType == 'daiRelease' && UseEmbeddedKeycloak == true
-    - path: xebialabs/dai-release/template-generic/postgresql-init-keycloak-db.yaml
-      writeIf: !expr ServerType == 'daiRelease' && UseEmbeddedKeycloak == true
-    - path: xebialabs/common.yaml.tmpl
-    - path: xebialabs/deployments.yaml.tmpl
+    - path: xebialabs/dai-release/kubernetes-generic/template/create-keycloak-db.yaml
+      writeIf: !expr ServerType == 'daiRelease' && EnableOidc == true && UseEmbeddedKeycloak == true
+    - path: xebialabs/dai-release/kubernetes-generic/template/postgresql-init-keycloak-db.yaml
+      writeIf: !expr ServerType == 'daiRelease' && EnableOidc == true && UseEmbeddedKeycloak == true
     - path: generated_answers.yaml.tmpl
-    - path: xebialabs.yaml.tmpl
