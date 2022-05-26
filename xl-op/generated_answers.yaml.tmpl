@@ -42,8 +42,15 @@ IsAKS: {{eq .K8sSetup "AzureAKS"}}
 UseInternalLoadBalancer: {{ .UseInternalLoadBalancer }}
 {{- end }}
 Namespace: {{ .Namespace }}
+EnableOidc: {{ .EnableOidc }}
+UseExistingOidcConf: {{ .UseExistingOidcConf }}
 UseEmbeddedKeycloak: {{ .UseEmbeddedKeycloak }}
+{{- if and (not .UseEmbeddedKeycloak) (.EnableOidc) }}
+UseExternalOidcConf: {{ .UseExternalOidcConf }}
+{{- end }}
+{{- if .UseEmbeddedKeycloak }}
 KeycloakUrl: {{ .KeycloakUrl }}
+{{- end }}
 UseCustomNamespace: {{ .UseCustomNamespace }}
 UseCustomRegistry: {{ .UseCustomRegistry }}
 InstallXLD: {{ .InstallXLD }}
