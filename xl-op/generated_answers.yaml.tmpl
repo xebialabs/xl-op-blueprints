@@ -50,6 +50,7 @@ UseExternalOidcConf: {{ .UseExternalOidcConf }}
 {{- end }}
 {{- if .UseEmbeddedKeycloak }}
 KeycloakUrl: {{ .KeycloakUrl }}
+UseKeycloakWithEmbeddedDB: {{ .UseKeycloakWithEmbeddedDB }}
 {{- end }}
 UseCustomNamespace: {{ .UseCustomNamespace }}
 UseCustomRegistry: {{ .UseCustomRegistry }}
