@@ -1,13 +1,21 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
+  {{ if eq .UseCustomNamespace true }}
+  name: dai-xlr-{{ .Namespace }}-postgresql-init-keycloak-db
+  {{ else }}
   name: dai-xlr-postgresql-init-keycloak-db
+  {{ end }}
   labels:
     app: digitalai-release
 spec:
   template:
     metadata:
+      {{ if eq .UseCustomNamespace true }}
+      name: dai-xlr-{{ .Namespace }}-postgresql-init-keycloak-db
+      {{ else }}
       name: dai-xlr-postgresql-init-keycloak-db
+      {{ end }}
     spec:
       initContainers:
         - name: wait-for-postgresql
@@ -21,7 +29,11 @@ spec:
               done;
           env:
             - name: POSTGRES_SVC
+              {{ if eq .UseCustomNamespace true }}
+              value: dai-xlr-{{ .Namespace }}-postgresql
+              {{ else }}
               value: dai-xlr-postgresql
+              {{ end }}
             - name: POSTGRES_PORT
               value: "5432"
       containers:
@@ -48,7 +60,11 @@ spec:
               fi;
           env:
             - name: POSTGRES_SVC
+              {{ if eq .UseCustomNamespace true }}
+              value: dai-xlr-{{ .Namespace }}-postgresql
+              {{ else }}
               value: dai-xlr-postgresql
+              {{ end }}
             - name: POSTGRES_PORT
               value: "5432"
             - name: PGPASSWORD
