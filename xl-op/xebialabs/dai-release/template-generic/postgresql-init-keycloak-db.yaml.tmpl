@@ -1,13 +1,13 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: dai-xld-postgresql-init-keycloak-db
+  name: dai-xlr-postgresql-init-keycloak-db
   labels:
-    app: digitalai-deploy
+    app: digitalai-release
 spec:
   template:
     metadata:
-      name: dai-xld-postgresql-init-keycloak-db
+      name: dai-xlr-postgresql-init-keycloak-db
     spec:
       initContainers:
         - name: wait-for-postgresql
@@ -21,7 +21,7 @@ spec:
               done;
           env:
             - name: POSTGRES_SVC
-              value: dai-xld-postgresql
+              value: dai-xlr-postgresql
             - name: POSTGRES_PORT
               value: "5432"
       containers:
@@ -48,7 +48,7 @@ spec:
               fi;
           env:
             - name: POSTGRES_SVC
-              value: dai-xld-postgresql
+              value: dai-xlr-postgresql
             - name: POSTGRES_PORT
               value: "5432"
             - name: PGPASSWORD
@@ -59,10 +59,14 @@ spec:
               value: keycloak
           volumeMounts:
             - mountPath: /var/init-sql-keycloak
-              name: dai-xld-init-sql-keycloak
+              name: dai-xlr-init-sql-keycloak
       volumes:
-        - name: dai-xld-init-sql-keycloak
+        - name: dai-xlr-init-sql-keycloak
           secret:
-            secretName: dai-xld-postgresql-init-sql-keycloak
+            { { if eq .UseCustomNamespace true } }
+            secretName: dai-xlr-{{ .Namespace }}-postgresql-init-sql-keycloak
+            { { else } }
+            secretName: dai-xlr-postgresql-init-sql-keycloak
+            { { end } }
       restartPolicy: Never
   backoffLimit: 1
