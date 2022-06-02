@@ -30,7 +30,7 @@ spec:
           env:
             {{ if eq .UseCustomNamespace true }}
             - name: POSTGRES_SVC_NAME
-              value: dai-xld-{{ .Namespace }}-postgresql
+              value: {{ .CrName }}-postgresql
             {{ else }}
             - name: POSTGRES_SVC_NAME
               value: dai-xld-postgresql
@@ -62,7 +62,7 @@ spec:
           env:
             {{ if eq .UseCustomNamespace true }}
             - name: POSTGRES_SVC_NAME
-              value: dai-xld-{{ .Namespace }}-postgresql
+              value: {{ .CrName }}-postgresql
             {{ else }}
             - name: POSTGRES_SVC_NAME
               value: dai-xld-postgresql
