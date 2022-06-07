@@ -72,10 +72,9 @@ spec:
     - name: K8sToken
       type: SecretEditor
       prompt: "Provide authentication token for the existing service account:"
-      promptIf: !expr "K8sSetup != 'AwsEKS' && K8sAuthentication == 'Token'"
-      default: !expr "(UseKubeconfig && k8sConfig('IsUserTokenAvailable')) ? k8sConfig('UserToken') : ''"
+      value: !expr "(UseKubeconfig && k8sConfig('IsUserTokenAvailable')) ? k8sConfig('UserToken') : ''"
       saveInXlvals: true
-      ignoreIfSkipped: false
+      ignoreIfSkipped: !expr "K8sSetup != 'AwsEKS' && K8sAuthentication == 'Token'"
       replaceAsIs: true
       description: "Provide an authentication token for a service account that you have previously configured in your cluster. The service account for which the token is provided should be able to create/modify resources in the Kubernetes cluster"
 
