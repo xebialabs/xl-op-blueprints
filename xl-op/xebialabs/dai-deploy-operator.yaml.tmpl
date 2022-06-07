@@ -120,6 +120,30 @@ spec:
         destroyOrder: "27"
         file: !file "dai-deploy/template-openshift/proxy-rolebinding.yaml"
       {{ if eq .UseEmbeddedKeycloak true }}
+      {{ if eq .K8sSetup 'Openshift' }}
+      - name: create-keycloak-db
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "36"
+        modifyOrder: "36"
+        destroyOrder: "2"
+        file: !file "dai-deploy/template-openshift/create-keycloak-db.yaml"
+      - name: postgresql-init-keycloak-db
+        type: k8s.ResourcesFile
+        fileEncodings:
+          ".+\\.properties": ISO-8859-1
+        mergePatchType: strategic
+        propagationPolicy: Foreground
+        updateMethod: patch
+        createOrder: "37"
+        modifyOrder: "37"
+        destroyOrder: "1"
+        file: !file "dai-deploy/template-openshift/postgresql-init-keycloak-db.yaml"
+      {{ else }}
       - name: create-keycloak-db
         type: k8s.ResourcesFile
         fileEncodings:
@@ -142,6 +166,7 @@ spec:
         modifyOrder: "37"
         destroyOrder: "1"
         file: !file "dai-deploy/template-generic/postgresql-init-keycloak-db.yaml"
+      {{ end }}
       {{ end }}
 ---
 apiVersion: xl-deploy/v1

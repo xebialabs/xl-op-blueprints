@@ -401,14 +401,25 @@ spec:
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
     - path: xebialabs/dai-release/template-openshift/deployment.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
+
     - path: xebialabs/dai-deploy/template-generic/create-keycloak-db.yaml.tmpl
-      writeIf: !expr ServerType == 'daiDeploy' && UseEmbeddedKeycloak == true
+      writeIf: !expr ServerType == 'daiDeploy' && UseEmbeddedKeycloak == true && K8sSetup != 'Openshift'
     - path: xebialabs/dai-deploy/template-generic/postgresql-init-keycloak-db.yaml.tmpl
-      writeIf: !expr ServerType == 'daiDeploy' && UseEmbeddedKeycloak == true
+      writeIf: !expr ServerType == 'daiDeploy' && UseEmbeddedKeycloak == true && K8sSetup != 'Openshift'
     - path: xebialabs/dai-release/template-generic/create-keycloak-db.yaml.tmpl
-      writeIf: !expr ServerType == 'daiRelease' && UseEmbeddedKeycloak == true
+      writeIf: !expr ServerType == 'daiRelease' && UseEmbeddedKeycloak == true && K8sSetup != 'Openshift'
     - path: xebialabs/dai-release/template-generic/postgresql-init-keycloak-db.yaml.tmpl
-      writeIf: !expr ServerType == 'daiRelease' && UseEmbeddedKeycloak == true
+      writeIf: !expr ServerType == 'daiRelease' && UseEmbeddedKeycloak == true && K8sSetup != 'Openshift'
+
+    - path: xebialabs/dai-deploy/template-openshift/create-keycloak-db.yaml.tmpl
+      writeIf: !expr ServerType == 'daiDeploy' && UseEmbeddedKeycloak == true && K8sSetup == 'Openshift'
+    - path: xebialabs/dai-deploy/template-openshift/postgresql-init-keycloak-db.yaml.tmpl
+      writeIf: !expr ServerType == 'daiDeploy' && UseEmbeddedKeycloak == true && K8sSetup == 'Openshift'
+    - path: xebialabs/dai-release/template-openshift/create-keycloak-db.yaml.tmpl
+      writeIf: !expr ServerType == 'daiRelease' && UseEmbeddedKeycloak == true && K8sSetup == 'Openshift'
+    - path: xebialabs/dai-release/template-openshift/postgresql-init-keycloak-db.yaml.tmpl
+      writeIf: !expr ServerType == 'daiRelease' && UseEmbeddedKeycloak == true   && K8sSetup == 'Openshift'
+
     - path: xebialabs/common.yaml.tmpl
     - path: xebialabs/deployments.yaml.tmpl
     - path: generated_answers.yaml.tmpl
