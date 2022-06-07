@@ -82,7 +82,7 @@ spec:
     - name: K8sToken
       type: SecretEditor
       prompt: "Provide authentication token for the existing service account:"
-      value: !expr "InputK8sToken ? InputK8sToken : ((UseKubeconfig && k8sConfig('IsUserTokenAvailable')) ? k8sConfig('UserToken') : '')"
+      value: !expr "InputK8sToken != '' ? InputK8sToken : k8sConfig('UserToken')"
       saveInXlvals: true
       ignoreIfSkipped: !expr "(UseKubeconfig && k8sConfig('IsUserTokenAvailable')) ? false : true"
       replaceAsIs: true
