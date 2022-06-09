@@ -69,11 +69,20 @@ spec:
       ignoreIfSkipped: true
       description: "Define how xl up will authenticate with your Kubernetes cluster"
 
-    - name: K8sToken
+    - name: InputK8sToken
       type: SecretEditor
       prompt: "Provide authentication token for the existing service account:"
       promptIf: !expr "K8sSetup != 'AwsEKS' && K8sAuthentication == 'Token'"
       default: !expr "(UseKubeconfig && k8sConfig('IsUserTokenAvailable')) ? k8sConfig('UserToken') : ''"
+      saveInXlvals: true
+      ignoreIfSkipped: !expr "(UseKubeconfig && k8sConfig('IsUserTokenAvailable')) ? false : true"
+      replaceAsIs: true
+      description: "Provide an authentication token for a service account that you have previously configured in your cluster. The service account for which the token is provided should be able to create/modify resources in the Kubernetes cluster"
+
+    - name: K8sToken
+      type: SecretEditor
+      prompt: "Provide authentication token for the existing service account:"
+      value: !expr "InputK8sToken != '' ? InputK8sToken : k8sConfig('UserToken')"
       saveInXlvals: true
       ignoreIfSkipped: !expr "(UseKubeconfig && k8sConfig('IsUserTokenAvailable')) ? false : true"
       replaceAsIs: true
