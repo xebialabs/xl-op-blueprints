@@ -1,13 +1,21 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
+  {{ if eq .UseCustomNamespace true }}
+  name: dai-xld-{{ .Namespace }}-postgresql-init-keycloak-db
+  {{ else }}
   name: dai-xld-postgresql-init-keycloak-db
+  {{ end }}
   labels:
     app: digitalai-deploy
 spec:
   template:
     metadata:
+      {{ if eq .UseCustomNamespace true }}
+      name: dai-xld-{{ .Namespace }}-postgresql-init-keycloak-db
+      {{ else }}
       name: dai-xld-postgresql-init-keycloak-db
+      {{ end }}
     spec:
       initContainers:
         - name: wait-for-postgresql
@@ -16,12 +24,17 @@ spec:
             - sh
             - -c
             - >
-              until nc -z -w 2 $POSTGRES_SVC $POSTGRES_PORT && echo database ok; do
+              until nc -z -w 2 $POSTGRES_SVC_NAME $POSTGRES_PORT && echo database ok; do
               sleep 2;
               done;
           env:
-            - name: POSTGRES_SVC
+            {{ if eq .UseCustomNamespace true }}
+            - name: POSTGRES_SVC_NAME
+              value: {{ .CrName }}-postgresql
+            {{ else }}
+            - name: POSTGRES_SVC_NAME
               value: dai-xld-postgresql
+            {{ end }}
             - name: POSTGRES_PORT
               value: "5432"
       containers:
@@ -31,24 +44,29 @@ spec:
             - sh
             - -c
             - >
-              output=$(psql -h $POSTGRES_SVC -p $POSTGRES_PORT -U $USERNAME -W $PGPASSWORD -lqt);
+              output=$(psql -h $POSTGRES_SVC_NAME -p $POSTGRES_PORT -U $USERNAME -W $PGPASSWORD -lqt);
               if [[ $? -ne 0 ]]; then
-                echo "Cannot connect to the DB server $POSTGRES_SVC";
+                echo "Cannot connect to the DB server $POSTGRES_SVC_NAME";
                 exit 1;
               fi;
               if echo "$output" | cut -d \| -f 1 | grep -qw $SCHEMA_NAME; then
                 echo "Database $SCHEMA_NAME exists, nothing to do";
               else
                 echo "Database $SCHEMA_NAME will be created";
-                psql -h $POSTGRES_SVC -p $POSTGRES_PORT -U $USERNAME -W $PGPASSWORD -f /var/init-sql-keycloak/init-keycloak.sql;
+                psql -h $POSTGRES_SVC_NAME -p $POSTGRES_PORT -U $USERNAME -W $PGPASSWORD -f /var/init-sql-keycloak/init-keycloak.sql;
                 if [[ $? -ne 0 ]]; then
-                  echo "Cannot connect to the DB server $POSTGRES_SVC";
+                  echo "Cannot connect to the DB server $POSTGRES_SVC_NAME";
                   exit 1;
                 fi;
               fi;
           env:
-            - name: POSTGRES_SVC
+            {{ if eq .UseCustomNamespace true }}
+            - name: POSTGRES_SVC_NAME
+              value: {{ .CrName }}-postgresql
+            {{ else }}
+            - name: POSTGRES_SVC_NAME
               value: dai-xld-postgresql
+            {{ end }}
             - name: POSTGRES_PORT
               value: "5432"
             - name: PGPASSWORD
@@ -63,6 +81,10 @@ spec:
       volumes:
         - name: dai-xld-init-sql-keycloak
           secret:
+            {{ if eq .UseCustomNamespace true }}
+            secretName: dai-xld-{{ .Namespace }}-postgresql-init-sql-keycloak
+            {{ else }}
             secretName: dai-xld-postgresql-init-sql-keycloak
+            {{ end }}
       restartPolicy: Never
   backoffLimit: 1

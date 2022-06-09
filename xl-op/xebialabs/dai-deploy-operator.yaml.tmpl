@@ -130,7 +130,7 @@ spec:
         createOrder: "36"
         modifyOrder: "36"
         destroyOrder: "2"
-        file: !file "dai-deploy/template-generic/create-keycloak-db.yaml"
+        file: !file "dai-deploy/template-openshift/create-keycloak-db.yaml"
       - name: postgresql-init-keycloak-db
         type: k8s.ResourcesFile
         fileEncodings:
@@ -141,7 +141,7 @@ spec:
         createOrder: "37"
         modifyOrder: "37"
         destroyOrder: "1"
-        file: !file "dai-deploy/template-generic/postgresql-init-keycloak-db.yaml"
+        file: !file "dai-deploy/template-openshift/postgresql-init-keycloak-db.yaml"
       {{ end }}
 ---
 apiVersion: xl-deploy/v1
