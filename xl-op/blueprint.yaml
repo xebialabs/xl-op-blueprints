@@ -18,7 +18,6 @@ spec:
           value: daiDeploy
       saveInXlvals: true
       description: "Product server you want to perform upgrade for?"
-
     - name: RepositoryName
       type: Input
       saveInXlvals: true
@@ -27,7 +26,6 @@ spec:
       prompt: "Enter the repository name(eg: <repositoryName>/<imageName>:<tagName>)"
       default: xebialabs
       description: "Enter the image tag to use"
-
     - name: ImageNameDeploy
       type: Input
       saveInXlvals: true
@@ -37,7 +35,6 @@ spec:
       prompt: "Enter the image name(eg: <repositoryName>/<imageName>:<tagName>)"
       default: xl-deploy
       description: "Enter the image tag to use"
-
     - name: ImageNameRelease
       type: Input
       saveInXlvals: true
@@ -47,7 +44,6 @@ spec:
       prompt: "Enter the image name(eg: <repositoryName>/<imageName>:<tagName>)"
       default: xl-release
       description: "Enter the image tag to use"
-
     - name: ImageTag
       type: Input
       saveInXlvals: true
@@ -56,7 +52,6 @@ spec:
       prompt: "Enter the image tag(eg: <repositoryName>/<imageName>:<tagName>)"
       default: 10.0.0
       description: "Enter the image tag to use"
-
     - name: UpgradeType
       type: Select
       prompt: "Select the type of upgrade you want."
@@ -67,7 +62,6 @@ spec:
           value: helmToOperator
       saveInXlvals: true
       description: "Type of upgrade you want?"
-
     - name: OperatorImageDeployGeneric
       type: Input
       saveInXlvals: true
@@ -75,9 +69,8 @@ spec:
       overrideDefault: true
       prompt: "Operator image to use"
       promptIf: !expr "ServerType == 'daiDeploy' && K8sSetup != 'Openshift'"
-      default: xebialabs/deploy-operator:1.1.0
+      default: xebialabs/deploy-operator:10.3.14
       description: "Operator image to use"
-
     - name: OperatorImageDeployOpenshift
       type: Input
       saveInXlvals: true
@@ -85,9 +78,8 @@ spec:
       overrideDefault: true
       prompt: "Operator image to use"
       promptIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'Openshift'"
-      default: xebialabs/deploy-operator:1.1.0-openshift
+      default: xebialabs/deploy-operator:10.3.14-openshift
       description: "Operator image to use"
-
     - name: OperatorImageReleaseGeneric
       type: Input
       saveInXlvals: true
@@ -97,7 +89,6 @@ spec:
       promptIf: !expr "ServerType == 'daiRelease' && K8sSetup != 'Openshift'"
       default: xebialabs/release-operator:1.1.0
       description: "Operator image to use"
-
     - name: OperatorImageReleaseOpenshift
       type: Input
       saveInXlvals: true
@@ -107,7 +98,6 @@ spec:
       promptIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'Openshift'"
       default: xebialabs/release-operator:1.1.0-openshift
       description: "Operator image to use"
-      
     - name: CrName
       type: Input
       saveInXlvals: true
@@ -116,7 +106,6 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       description: "The name of your custom resource"
-    
     - name: CrdName
       type: Input
       saveInXlvals: true
@@ -125,7 +114,6 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       description: "The name of your custom resource definition."
-    
     - name: ReleaseName
       type: Input
       saveInXlvals: true
@@ -134,11 +122,9 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       description: "The name of your custom resource definition."
-
   files:
     # k8s-foundation
     - path: xebialabs/xl-k8s-foundation.yaml.tmpl
-    
     # files to write if server to deploy is Deploy and kubernetes setup is docker desktop
     - path: xebialabs/dai-deploy/template-generic/cluster-role-digital-proxy-role.yaml
       writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup != 'Openshift'"
@@ -162,7 +148,6 @@ spec:
       writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup != 'Openshift'"
     - path: xebialabs/dai-deploy-operator.yaml.tmpl
       writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup != 'Openshift'"
-
     # files to write if server to deploy is Release and kubernetes environment is docker desktop
     - path: xebialabs/dai-release/template-generic/cluster-role-digital-proxy-role.yaml
       writeIf: !expr "ServerType == 'daiRelease' && K8sSetup != 'Openshift'"
@@ -186,7 +171,6 @@ spec:
       writeIf: !expr "ServerType == 'daiRelease' && K8sSetup != 'Openshift'"
     - path: xebialabs/dai-release/template-generic/deployment.yaml.tmpl
       writeIf: !expr "ServerType == 'daiRelease' && K8sSetup != 'Openshift'"
-
     # files to write if server to deploy is Deploy and kubernetes setup is openshift
     - path: xebialabs/dai-deploy/template-openshift/cluster-role-digital-proxy-role.yaml
       writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'Openshift'"
@@ -210,7 +194,6 @@ spec:
       writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'Openshift'"
     - path: xebialabs/dai-deploy-operator.yaml.tmpl
       writeIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'Openshift'"
-
     # files to write if server to deploy is Release and kubernetes environment is openshift
     - path: xebialabs/dai-release/template-openshift/cluster-role-digital-proxy-role.yaml
       writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'Openshift'"
@@ -234,8 +217,6 @@ spec:
       writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'Openshift'"
     - path: xebialabs/dai-release/template-openshift/deployment.yaml.tmpl
       writeIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'Openshift'"
-
-
     - path: xebialabs/common.yaml.tmpl
     - path: xebialabs/deployments.yaml.tmpl
     - path: generated_answers.yaml.tmpl
