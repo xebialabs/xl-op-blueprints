@@ -143,7 +143,7 @@ tasks {
                 "ssh xebialabs@nexus1.xebialabs.cyso.net " +
                         "rm -fr /tmp/xl-op-blueprints/$versionToSync/; mkdir -p /tmp/xl-op-blueprints/$versionToSync; " +
                         "cd /tmp/xl-op-blueprints/$versionToSync/;" +
-                        "unzip -o /opt/sonatype-work/nexus/storage/digitalai-public/content/ai/digital/xlclient/blueprints/xl-op-blueprints/$versionToSync/xl-op-blueprints-$versionToSync.zip"
+                        "unzip -o /opt/sonatype-work/nexus/storage/digitalai-public/ai/digital/xlclient/blueprints/xl-up-blueprints/$versionToSync/xl-op-blueprints-$versionToSync.zip"
 
             commandLine(commandUnzip.split(" "))
         } else {
