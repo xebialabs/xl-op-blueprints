@@ -167,7 +167,7 @@ spec:
       overrideDefault: true
       prompt: Operator image to use
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-      default: xebialabsunsupported/release-operator:22.2.0-609.113
+      default: xebialabsunsupported/release-operator:22.3.0-613.113
       description: Operator image to use
     - name: OperatorImageReleaseOpenshift
       type: Input
@@ -176,7 +176,7 @@ spec:
       overrideDefault: true
       prompt: Operator image to use
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-      default: xebialabsunsupported/release-operator:22.2.0-609.113-openshift
+      default: xebialabsunsupported/release-operator:22.3.0-613.113-openshift
       description: Operator image to use
     - name: UseOperatorZipDeploy
       type: Confirm
@@ -401,7 +401,6 @@ spec:
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
     - path: xebialabs/dai-release/template-openshift/deployment.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-
     - path: xebialabs/dai-deploy/template-generic/create-keycloak-db.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && UseEmbeddedKeycloak == true && K8sSetup != 'Openshift'
     - path: xebialabs/dai-deploy/template-generic/postgresql-init-keycloak-db.yaml.tmpl
@@ -410,7 +409,6 @@ spec:
       writeIf: !expr ServerType == 'daiRelease' && UseEmbeddedKeycloak == true && K8sSetup != 'Openshift'
     - path: xebialabs/dai-release/template-generic/postgresql-init-keycloak-db.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && UseEmbeddedKeycloak == true && K8sSetup != 'Openshift'
-
     - path: xebialabs/dai-deploy/template-openshift/create-keycloak-db.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && UseEmbeddedKeycloak == true && K8sSetup == 'Openshift'
     - path: xebialabs/dai-deploy/template-openshift/postgresql-init-keycloak-db.yaml.tmpl
@@ -419,7 +417,6 @@ spec:
       writeIf: !expr ServerType == 'daiRelease' && UseEmbeddedKeycloak == true && K8sSetup == 'Openshift'
     - path: xebialabs/dai-release/template-openshift/postgresql-init-keycloak-db.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && UseEmbeddedKeycloak == true   && K8sSetup == 'Openshift'
-
     - path: xebialabs/common.yaml.tmpl
     - path: xebialabs/deployments.yaml.tmpl
     - path: generated_answers.yaml.tmpl
