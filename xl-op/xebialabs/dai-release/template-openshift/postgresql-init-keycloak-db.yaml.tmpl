@@ -44,7 +44,8 @@ spec:
             - sh
             - -c
             - >
-              output=$(psql -h $POSTGRES_SVC_NAME -p $POSTGRES_PORT -U $USERNAME -W $PGPASSWORD -lqt);
+              export PGPASSWORD=$PGPASSWORD;
+              output=$(psql -h $POSTGRES_SVC_NAME -p $POSTGRES_PORT -U $USERNAME --password -lqt);
               if [[ $? -ne 0 ]]; then
                 echo "Cannot connect to the DB server $POSTGRES_SVC_NAME";
                 exit 1;
@@ -53,7 +54,7 @@ spec:
                 echo "Database $SCHEMA_NAME exists, nothing to do";
               else
                 echo "Database $SCHEMA_NAME will be created";
-                psql -h $POSTGRES_SVC_NAME -p $POSTGRES_PORT -U $USERNAME -W $PGPASSWORD -f /var/init-sql-keycloak/init-keycloak.sql;
+                psql -h $POSTGRES_SVC_NAME -p $POSTGRES_PORT -U $USERNAME --password -f /var/init-sql-keycloak/init-keycloak.sql;
                 if [[ $? -ne 0 ]]; then
                   echo "Cannot connect to the DB server $POSTGRES_SVC_NAME";
                   exit 1;
