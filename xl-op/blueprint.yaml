@@ -23,7 +23,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Enter the repository name(eg: <repositoryName>/<imageName>:<tagName>)"
+      prompt: "Enter the repository name (eg: <repositoryName>/<imageName>:<tagName>)"
       default: xebialabs
       description: "Enter the image tag to use"
     - name: ImageNameDeploy
@@ -32,7 +32,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "ServerType == 'daiDeploy'"
-      prompt: "Enter the image name(eg: <repositoryName>/<imageName>:<tagName>)"
+      prompt: "Enter the image name (eg: <repositoryName>/<imageName>:<tagName>)"
       default: xl-deploy
       description: "Enter the image tag to use"
     - name: ImageNameRelease
@@ -41,7 +41,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "ServerType == 'daiRelease'"
-      prompt: "Enter the image name(eg: <repositoryName>/<imageName>:<tagName>)"
+      prompt: "Enter the image name (eg: <repositoryName>/<imageName>:<tagName>)"
       default: xl-release
       description: "Enter the image tag to use"
     - name: ImageTag
@@ -49,7 +49,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Enter the image tag(eg: <repositoryName>/<imageName>:<tagName>)"
+      prompt: "Enter the image tag (eg: <repositoryName>/<imageName>:<tagName>)"
       default: 10.0.0
       description: "Enter the image tag to use"
     - name: UpgradeType
@@ -67,37 +67,37 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Operator image to use"
+      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr "ServerType == 'daiDeploy' && K8sSetup != 'Openshift'"
       default: xebialabs/deploy-operator:10.3.14
-      description: "Operator image to use"
+      description: "Enter the operator image to use"
     - name: OperatorImageDeployOpenshift
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Operator image to use"
+      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr "ServerType == 'daiDeploy' && K8sSetup == 'Openshift'"
       default: xebialabs/deploy-operator:10.3.14-openshift
-      description: "Operator image to use"
+      description: "Enter the operator image to use"
     - name: OperatorImageReleaseGeneric
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Operator image to use"
+      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr "ServerType == 'daiRelease' && K8sSetup != 'Openshift'"
       default: xebialabs/release-operator:10.3.14
-      description: "Operator image to use"
+      description: "Enter the operator image to use"
     - name: OperatorImageReleaseOpenshift
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Operator image to use"
+      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr "ServerType == 'daiRelease' && K8sSetup == 'Openshift'"
       default: xebialabs/release-operator:10.3.14-openshift
-      description: "Operator image to use"
+      description: "Enter the operator image to use"
     - name: CrName
       type: Input
       saveInXlvals: true
