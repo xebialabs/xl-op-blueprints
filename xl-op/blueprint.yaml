@@ -147,7 +147,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)
+      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
       default: xebialabs/deploy-operator:22.2.0
       description: Enter the operator image to use
@@ -156,7 +156,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)
+      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
       default: xebialabs/deploy-operator:22.2.0-openshift
       description: Enter the operator image to use
@@ -165,7 +165,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)
+      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
       default: xebialabs/release-operator:22.2.0
       description: Enter the operator image to use
@@ -174,7 +174,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)
+      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
       default: xebialabs/release-operator:22.2.0-openshift
       description: Enter the operator image to use
