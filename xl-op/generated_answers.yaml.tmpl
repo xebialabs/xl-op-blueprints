@@ -13,7 +13,7 @@ XldMasterCount: {{ .XldMasterCount }}
 XldWorkerCount: {{ .XldWorkerCount }}
   {{- if eq .ProcessType "upgrade" }}
 PreserveCrValuesDeploy: |-
-{{ .PreserveCrValuesDeploy }}
+  {{ .PreserveCrValuesDeploy }}
   {{ end }}
 {{ end }}
 {{- if eq .ServerType "daiRelease" }}
@@ -23,7 +23,7 @@ OperatorImageReleaseOpenshift: {{ .OperatorImageReleaseOpenshift }}
 XlrReplicaCount: {{ .XlrReplicaCount }}
   {{- if eq .ProcessType "upgrade" }}
 PreserveCrValuesRelease: |-
-{{ .PreserveCrValuesRelease }}
+  {{ .PreserveCrValuesRelease }}
   {{ end }}
 {{ end }}
 EnableOidc: {{ .EnableOidc }}
@@ -31,6 +31,8 @@ UseExistingOidcConf: {{ .UseExistingOidcConf }}
 UseEmbeddedKeycloak: {{ .UseEmbeddedKeycloak }}
 UseExternalOidcConf: |-
 {{ .UseExternalOidcConf }}
+KeycloakUrl: {{ .KeycloakUrl }}
+UseKeycloakWithEmbeddedDB: {{ .UseKeycloakWithEmbeddedDB }}
 KeycloakIngressHost: '{{ .KeycloakIngressHost }}'
 {{- if eq .ProcessType "install" }}
 IngressType: {{ .IngressType }}
