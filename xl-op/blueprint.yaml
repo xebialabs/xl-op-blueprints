@@ -192,7 +192,6 @@ spec:
         .spec.rabbitmq.persistence.replicaCount
         .spec.route.hosts
         .spec.xldLicense
-        .spec.deploy.configurationManagement
     - name: PreserveCrValuesRelease
       type: Editor
       prompt: Edit list of custom resource keys that will migrate to the new Release CR
