@@ -50,7 +50,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>)"
-      default: 22.3.0-707.113
+      default: 22.3.0-628.113
       description: Enter the image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -183,7 +183,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-      default: xebialabsunsupported/deploy-operator:22.3.0-707.113
+      default: xebialabsunsupported/deploy-operator:22.3.0-713.113
       description: Enter the operator image to use
     - name: OperatorImageDeployOpenshift
       type: Input
@@ -192,7 +192,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-      default: xebialabsunsupported/deploy-operator:22.3.0-707.113-openshift
+      default: xebialabsunsupported/deploy-operator:22.3.0-713.113-openshift
       description: Enter the operator image to use
     - name: OperatorImageReleaseGeneric
       type: Input
@@ -201,7 +201,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-      default: xebialabsunsupported/release-operator:22.3.0-707.113
+      default: xebialabsunsupported/release-operator:22.3.0-713.113
       description: Enter the operator image to use
     - name: OperatorImageReleaseOpenshift
       type: Input
@@ -210,7 +210,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-      default: xebialabsunsupported/release-operator:22.3.0-707.113-openshift
+      default: xebialabsunsupported/release-operator:22.3.0-713.113-openshift
       description: Enter the operator image to use
     - name: License
       type: Editor
@@ -346,6 +346,7 @@ spec:
         .spec.centralConfiguration.image.repository      
         .spec.centralConfiguration.persistence.pvcSize
         .spec.centralConfiguration.migrateFromEmbedded
+        .spec.deploy.configurationManagement
     - name: PreserveCrValuesRelease
       type: Editor
       prompt: Edit list of custom resource keys that will migrate to the new Release CR
@@ -382,6 +383,7 @@ spec:
         .spec.rabbitmq.persistence.storageClass
         .spec.route.hosts
         .spec.xlrLicense
+        .spec.release.configurationManagement
     - name: ReleaseName
       type: Input
       saveInXlvals: true
@@ -392,84 +394,84 @@ spec:
       description: The name of your custom resource definition.
   files:
     # Deploy
-    - path: xebialabs/dai-deploy/kubernetes-generic/template/cluster-role-digital-proxy-role.yaml.tmpl
+    - path: digitalai/dai-deploy/kubernetes-generic/template/cluster-role-digital-proxy-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy'
-    - path: xebialabs/dai-deploy/kubernetes-generic/template/cluster-role-manager-role.yaml.tmpl
+    - path: digitalai/dai-deploy/kubernetes-generic/template/cluster-role-manager-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/kubernetes-generic/template/cluster-role-metrics-reader.yaml.tmpl
+    - path: digitalai/dai-deploy/kubernetes-generic/template/cluster-role-metrics-reader.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy'
-    - path: xebialabs/dai-deploy/kubernetes-generic/template/controller-manager-metrics-service.yaml
+    - path: digitalai/dai-deploy/kubernetes-generic/template/controller-manager-metrics-service.yaml
       writeIf: !expr ServerType == 'daiDeploy'
-    - path: xebialabs/dai-deploy/kubernetes-generic/template/custom-resource-definition.yaml
+    - path: digitalai/dai-deploy/kubernetes-generic/template/custom-resource-definition.yaml
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/kubernetes-generic/daideploy_cr_default.yaml.tmpl
+    - path: digitalai/dai-deploy/kubernetes-generic/daideploy_cr_default.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/kubernetes-generic/template/leader-election-role.yaml
+    - path: digitalai/dai-deploy/kubernetes-generic/template/leader-election-role.yaml
       writeIf: !expr ServerType == 'daiDeploy'
-    - path: xebialabs/dai-deploy/kubernetes-generic/template/leader-election-rolebinding.yaml.tmpl
+    - path: digitalai/dai-deploy/kubernetes-generic/template/leader-election-rolebinding.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy'
-    - path: xebialabs/dai-deploy/kubernetes-generic/template/manager-rolebinding.yaml.tmpl
+    - path: digitalai/dai-deploy/kubernetes-generic/template/manager-rolebinding.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy'
-    - path: xebialabs/dai-deploy/kubernetes-generic/template/proxy-rolebinding.yaml.tmpl
+    - path: digitalai/dai-deploy/kubernetes-generic/template/proxy-rolebinding.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy'
-    - path: xebialabs/dai-deploy/kubernetes-generic/template/deployment.yaml.tmpl
+    - path: digitalai/dai-deploy/kubernetes-generic/template/deployment.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/kubernetes-generic/template/create-keycloak-db.yaml
+    - path: digitalai/dai-deploy/kubernetes-generic/template/create-keycloak-db.yaml
       writeIf: !expr ServerType == 'daiDeploy' && EnableOidc == true && UseEmbeddedKeycloak == true && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-deploy/kubernetes-generic/template/postgresql-init-keycloak-db.yaml
+    - path: digitalai/dai-deploy/kubernetes-generic/template/postgresql-init-keycloak-db.yaml
       writeIf: !expr ServerType == 'daiDeploy' && EnableOidc == true && UseEmbeddedKeycloak == true && K8sSetup != 'Openshift'
     # Deploy OpenShift
-    - path: xebialabs/dai-deploy/kubernetes-openshift/template/cluster-role-manager-role.yaml.tmpl
+    - path: digitalai/dai-deploy/kubernetes-openshift/template/cluster-role-manager-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/kubernetes-openshift/template/custom-resource-definition.yaml
+    - path: digitalai/dai-deploy/kubernetes-openshift/template/custom-resource-definition.yaml
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/kubernetes-openshift/daideploy_cr_default.yaml.tmpl
+    - path: digitalai/dai-deploy/kubernetes-openshift/daideploy_cr_default.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/kubernetes-openshift/template/deployment.yaml.tmpl
+    - path: digitalai/dai-deploy/kubernetes-openshift/template/deployment.yaml.tmpl
       writeIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/kubernetes-openshift/template/create-keycloak-db.yaml
+    - path: digitalai/dai-deploy/kubernetes-openshift/template/create-keycloak-db.yaml
       writeIf: !expr ServerType == 'daiDeploy' && EnableOidc == true && UseEmbeddedKeycloak == true && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-deploy/kubernetes-openshift/template/postgresql-init-keycloak-db.yaml
+    - path: digitalai/dai-deploy/kubernetes-openshift/template/postgresql-init-keycloak-db.yaml
       writeIf: !expr ServerType == 'daiDeploy' && EnableOidc == true && UseEmbeddedKeycloak == true && K8sSetup == 'Openshift'
     # Release
-    - path: xebialabs/dai-release/kubernetes-generic/template/cluster-role-digital-proxy-role.yaml.tmpl
+    - path: digitalai/dai-release/kubernetes-generic/template/cluster-role-digital-proxy-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease'
-    - path: xebialabs/dai-release/kubernetes-generic/template/cluster-role-manager-role.yaml.tmpl
+    - path: digitalai/dai-release/kubernetes-generic/template/cluster-role-manager-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/kubernetes-generic/template/cluster-role-metrics-reader.yaml.tmpl
+    - path: digitalai/dai-release/kubernetes-generic/template/cluster-role-metrics-reader.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease'
-    - path: xebialabs/dai-release/kubernetes-generic/template/controller-manager-metrics-service.yaml
+    - path: digitalai/dai-release/kubernetes-generic/template/controller-manager-metrics-service.yaml
       writeIf: !expr ServerType == 'daiRelease'
-    - path: xebialabs/dai-release/kubernetes-generic/template/custom-resource-definition.yaml
+    - path: digitalai/dai-release/kubernetes-generic/template/custom-resource-definition.yaml
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/kubernetes-generic/dairelease_cr_default.yaml.tmpl
+    - path: digitalai/dai-release/kubernetes-generic/dairelease_cr_default.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/kubernetes-generic/template/leader-election-role.yaml
+    - path: digitalai/dai-release/kubernetes-generic/template/leader-election-role.yaml
       writeIf: !expr ServerType == 'daiRelease'
-    - path: xebialabs/dai-release/kubernetes-generic/template/leader-election-rolebinding.yaml.tmpl
+    - path: digitalai/dai-release/kubernetes-generic/template/leader-election-rolebinding.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease'
-    - path: xebialabs/dai-release/kubernetes-generic/template/manager-rolebinding.yaml.tmpl
+    - path: digitalai/dai-release/kubernetes-generic/template/manager-rolebinding.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease'
-    - path: xebialabs/dai-release/kubernetes-generic/template/proxy-rolebinding.yaml.tmpl
+    - path: digitalai/dai-release/kubernetes-generic/template/proxy-rolebinding.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease'
-    - path: xebialabs/dai-release/kubernetes-generic/template/deployment.yaml.tmpl
+    - path: digitalai/dai-release/kubernetes-generic/template/deployment.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/kubernetes-generic/template/create-keycloak-db.yaml.tmpl
+    - path: digitalai/dai-release/kubernetes-generic/template/create-keycloak-db.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && EnableOidc == true && UseEmbeddedKeycloak == true && K8sSetup != 'Openshift'
-    - path: xebialabs/dai-release/kubernetes-generic/template/postgresql-init-keycloak-db.yaml.tmpl
+    - path: digitalai/dai-release/kubernetes-generic/template/postgresql-init-keycloak-db.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && EnableOidc == true && UseEmbeddedKeycloak == true && K8sSetup != 'Openshift'
     # Release OpenShift
-    - path: xebialabs/dai-release/kubernetes-openshift/template/cluster-role-manager-role.yaml.tmpl
+    - path: digitalai/dai-release/kubernetes-openshift/template/cluster-role-manager-role.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/kubernetes-openshift/template/custom-resource-definition.yaml
+    - path: digitalai/dai-release/kubernetes-openshift/template/custom-resource-definition.yaml
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/kubernetes-openshift/dairelease_cr_default.yaml.tmpl
+    - path: digitalai/dai-release/kubernetes-openshift/dairelease_cr_default.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/kubernetes-openshift/template/deployment.yaml.tmpl
+    - path: digitalai/dai-release/kubernetes-openshift/template/deployment.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/kubernetes-openshift/template/create-keycloak-db.yaml.tmpl
+    - path: digitalai/dai-release/kubernetes-openshift/template/create-keycloak-db.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && EnableOidc == true && UseEmbeddedKeycloak == true && K8sSetup == 'Openshift'
-    - path: xebialabs/dai-release/kubernetes-openshift/template/postgresql-init-keycloak-db.yaml.tmpl
+    - path: digitalai/dai-release/kubernetes-openshift/template/postgresql-init-keycloak-db.yaml.tmpl
       writeIf: !expr ServerType == 'daiRelease' && EnableOidc == true && UseEmbeddedKeycloak == true && K8sSetup == 'Openshift'
     # Generic
     - path: generated_answers.yaml.tmpl
