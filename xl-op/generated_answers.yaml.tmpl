@@ -13,9 +13,9 @@ XldMasterCount: {{ .XldMasterCount }}
 XldWorkerCount: {{ .XldWorkerCount }}
   {{- if eq .ProcessType "upgrade" }}
 PreserveCrValuesDeploy: |-
-  {{ .PreserveCrValuesDeploy }}
-  {{ end }}
-{{ end }}
+{{ .PreserveCrValuesDeploy | indent 2 }}
+  {{- end }}
+{{- end }}
 {{- if eq .ServerType "daiRelease" }}
 ImageNameRelease: {{ .ImageNameRelease }}
 OperatorImageReleaseGeneric: {{ .OperatorImageReleaseGeneric }}
@@ -23,14 +23,14 @@ OperatorImageReleaseOpenshift: {{ .OperatorImageReleaseOpenshift }}
 XlrReplicaCount: {{ .XlrReplicaCount }}
   {{- if eq .ProcessType "upgrade" }}
 PreserveCrValuesRelease: |-
-  {{ .PreserveCrValuesRelease }}
-  {{ end }}
-{{ end }}
+{{ .PreserveCrValuesRelease | indent 2 }}
+  {{- end }}
+{{- end }}
 EnableOidc: {{ .EnableOidc }}
 UseExistingOidcConf: {{ .UseExistingOidcConf }}
 UseEmbeddedKeycloak: {{ .UseEmbeddedKeycloak }}
 UseExternalOidcConf: |-
-{{ .UseExternalOidcConf }}
+{{ .UseExternalOidcConf | indent 2 }}
 KeycloakUrl: {{ .KeycloakUrl }}
 UseKeycloakWithEmbeddedDB: {{ .UseKeycloakWithEmbeddedDB }}
 KeycloakIngressHost: '{{ .KeycloakIngressHost }}'
@@ -46,14 +46,14 @@ PostgresqlStorageClass: {{ .PostgresqlStorageClass }}
 EnableRabbitmq: {{ .EnableRabbitmq }}
 RabbitmqReplicaCount: {{ .RabbitmqReplicaCount }}
 RabbitmqStorageClass: {{ .RabbitmqStorageClass }}
-{{ end }}
+{{- end }}
 {{- if eq .ProcessType "upgrade" }}
 UpgradeType: {{ .UpgradeType }}
   {{- if eq .UpgradeType "operatorToOperator" }}
 CrdName: '{{ .CrdName }}'
 CrName: '{{ .CrName }}'
-  {{ end }}
+  {{- end }}
   {{- if eq .UpgradeType "helmToOperator" }}
 ReleaseName: '{{ .ReleaseName }}'
-  {{ end }}
-{{ end }}
+  {{- end }}
+{{- end }}
