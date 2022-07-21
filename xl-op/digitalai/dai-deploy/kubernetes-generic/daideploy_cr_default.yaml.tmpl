@@ -1,10 +1,10 @@
-apiVersion: xlr.digital.ai/v1alpha1
-kind: DigitalaiRelease
+apiVersion: xld.digital.ai/v1alpha1
+kind: DigitalaiDeploy
 metadata:
   {{ if eq .UseCustomNamespace true }}
-  name: dai-xlr-{{ .Namespace }}
+  name: dai-xld-{{ .Namespace }}
   {{ else }}
-  name: dai-xlr
+  name: dai-xld
   {{ end }}
 spec:
   AdminPassword: admin
@@ -14,14 +14,15 @@ spec:
   HealthProbesLivenessTimeout: 60
   HealthProbesReadinessTimeout: 60
   ImagePullPolicy: Always
-  ImageRepository: {{ .RepositoryName }}/{{ .ImageNameRelease }}
-  ImageTag: "{{ .ImageTag }}"
+  ServerImageRepository: {{ .RepositoryName }}/{{ .ImageNameDeploy }}
+  WorkerImageRepository: {{ .RepositoryName }}/{{ .ImageNameDeployTaskEngine }}
+  ImageTag: "22.2.0-520.113"
   ## xebialabs/tiny-tools image version
   ## Ref: https://hub.docker.com/r/xebialabs/tiny-tools/tags
   TinyToolsImageRepository: "xebialabs/tiny-tools"
   TinyToolsImageTag: "22.2.0"
   # Secrets must be manually created in the namespace
-  # ImagePullSecret: xlRelease
+  # ImagePullSecret: xlDeploy
   K8sSetup:
     {{ if eq .K8sSetup "AwsEKS" }}
     Platform: AWSEKS
@@ -36,45 +37,64 @@ spec:
     Platform: PlainK8s
     {{ end }}
   KeystorePassphrase: '{{ .KeystorePassphrase }}'
-  GenerateXlConfig: true
-  MetricsEnabled: false
-  UseIpAsHostname: false
-  ForceRemoveMissingTypes: false
   Persistence:
     AccessMode: ReadWriteOnce
-    Annotations:
-      helm.sh/resource-policy: "keep"
+    Annotations: {}
     Enabled: true
-    Size: 8Gi
     # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
     StorageClass: '{{ .StorageClass }}'
-  # https://docs.xebialabs.com/v.9.8/release/how-to/update-the-xl-release-digital-certificate/#view-the-certificate
+    XldMasterPvcSize: 10Gi
+    XldWorkerPvcSize: 10Gi
+  # https://docs.xebialabs.com/v.9.8/deploy/how-to/update-the-xl-deploy-digital-certificate/#get-started
   # Convert repository-keystore.jceks files content to base64
   # ( cat repository-keystore.jceks | base64 -w 0 ) and put the output here
   RepositoryKeystore: '{{ .RepositoryKeystore }}'
   UseExistingDB:
     Enabled: false
-    # If you want to use a existing database.
-    # Set 'postgresql.install' to 'false', Only when we use existing Database for both Release and keycloak.
+    # If you want to use an existing database.
+    # Set 'postgresql.install' to 'false', Only when we use existing Database for both Deploy and keycloak.
     # Set 'UseExistingDB.Enabled' to 'true'.
     # Uncomment the following lines and provide the values.
-    # XLR_DB_URL:
-    # XLR_DB_USER:
-    # XLR_DB_PASS:
-    # XLR_REPORT_DB_URL:
-    # XLR_REPORT_DB_USER:
-    # XLR_REPORT_DB_PASS:
+    # XL_DB_PASSWORD:
+    # XL_DB_URL:
+    # XL_DB_USERNAME:
   UseExistingMQ:
     Enabled: false
     # If you want to use a existing Message Queue.
-    # Set 'rabbitmq.install' to 'false'.
+    # Set the "rabbitmq.install to false"
     # Set 'UseExistingMQ.Enabled' to 'true'.
     # Uncomment the following lines and provide the values.
-    # XLR_TASK_QUEUE_USERNAME:
-    # XLR_TASK_QUEUE_PASSWORD:
-    # XLR_TASK_QUEUE_NAME:
-    # XLR_TASK_QUEUE_URL:
+    # XLD_TASK_QUEUE_DRIVER_CLASS_NAME:
+    # XLD_TASK_QUEUE_PASSWORD:
+    # XLD_TASK_QUEUE_URL:
+    # XLD_TASK_QUEUE_USERNAME:
+  XldMasterCount: {{ .XldMasterCount }}
+  XldWorkerCount: {{ .XldWorkerCount }}
   affinity: {}
+  deploy:
+    configurationManagement:
+      centralConfiguration:
+        configuration:
+          enabled: true
+          resetFiles: ## Resets part of the configuration files
+            - xlc-wrapper.conf.common
+            - jmx-exporter.yaml
+          resetCcFiles:
+            - deploy-server.yaml
+      master:
+        configuration:
+          enabled: true
+          resetFiles: ## Resets part of the configuration files and license
+            - deployit-license.lic
+            - jmx-exporter.yaml
+            - xld-wrapper.conf.common
+      worker:
+        configuration:
+          enabled: true
+          resetFiles: ## Resets part of the configuration files and license
+            - deployit-license.lic
+            - jmx-exporter.yaml
+            - xld-wrapper.conf.common
   haproxy-ingress:
     controller:
       affinity: {}
@@ -112,9 +132,9 @@ spec:
         tag: v0.13.4
       imagePullSecrets: []
       {{ if eq .UseCustomNamespace true }}
-      ingressClass: haproxy-dai-xlr-{{ .Namespace }}
+      ingressClass: haproxy-dai-xld-{{ .Namespace }}
       {{ else }}
-      ingressClass: haproxy-dai-xlr
+      ingressClass: haproxy-dai-xld
       {{ end }}
       initContainers: []
       kind: Deployment
@@ -266,30 +286,30 @@ spec:
     Enabled: true
     annotations:
       {{ if eq .UseCustomNamespace true }}
-      kubernetes.io/ingress.class: nginx-dai-xlr-{{ .Namespace }}
+      kubernetes.io/ingress.class: nginx-dai-xld-{{ .Namespace }}
       {{ else }}
-      kubernetes.io/ingress.class: nginx-dai-xlr
+      kubernetes.io/ingress.class: nginx-dai-xld
       {{ end }}
       nginx.ingress.kubernetes.io/affinity: cookie
       nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
       nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
       nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
       nginx.ingress.kubernetes.io/rewrite-target: /
-      nginx.ingress.kubernetes.io/session-cookie-name: JSESSIONID
+      nginx.ingress.kubernetes.io/session-cookie-name: SESSION_XLD
       nginx.ingress.kubernetes.io/ssl-redirect: "false"
     {{ end }}
     {{ if eq .IngressType "haproxy" }}
     Enabled: true
     annotations:
       {{ if eq .UseCustomNamespace true }}
-      kubernetes.io/ingress.class: haproxy-dai-xlr-{{ .Namespace }}
+      kubernetes.io/ingress.class: haproxy-dai-xld-{{ .Namespace }}
       {{ else }}
-      kubernetes.io/ingress.class: haproxy-dai-xlr
+      kubernetes.io/ingress.class: haproxy-dai-xld
       {{ end }}
       ingress.kubernetes.io/ssl-redirect: "false"
       ingress.kubernetes.io/rewrite-target: /
       ingress.kubernetes.io/affinity: cookie
-      ingress.kubernetes.io/session-cookie-name: JSESSIONID
+      ingress.kubernetes.io/session-cookie-name: SESSION_XLD
       ingress.kubernetes.io/session-cookie-strategy: prefix
       ingress.kubernetes.io/config-backend: |
         option httpchk GET /ha/health HTTP/1.0
@@ -332,7 +352,7 @@ spec:
                     values:
                       - test
               topologyKey: failure-domain.beta.kubernetes.io/zone
-      `}}
+    `}}
     args: []
     autoscaling:
       behavior:
@@ -412,12 +432,10 @@ spec:
       - name: realm-config
         mountPath: "/realm/"
         readOnly: true
-    {{`
-      extraVolumes: |
-        - name: realm-config
-          configMap:
-            name: {{ .Release.Name }}-realm
-    `}}
+    extraVolumes: |
+      - name: realm-config
+        configMap:
+          name: {{ .Release.Name }}-realm
     fullnameOverride: ""
     global: {}
     hostAliases: []
@@ -429,9 +447,9 @@ spec:
     ingress:
       annotations:
         {{ if eq .UseCustomNamespace true }}
-        kubernetes.io/ingress.class: nginx-dai-xlr-{{ .Namespace }}
+        kubernetes.io/ingress.class: nginx-dai-xld-{{ .Namespace }}
         {{ else }}
-        kubernetes.io/ingress.class: nginx-dai-xlr
+        kubernetes.io/ingress.class: nginx-dai-xld
         {{ end }}
         nginx.ingress.kubernetes.io/ssl-redirect: "false"
       console:
@@ -440,7 +458,7 @@ spec:
         ingressClassName: ""
         {{`
         rules:
-          - host: '{{ .Deploy.Name }}.keycloak.example.com'
+          - host: '{{ .Release.Name }}.keycloak.example.com'
             paths:
               - path: /auth/admin/
                 pathType: Prefix
@@ -454,7 +472,6 @@ spec:
             - path: /
               pathType: Prefix
       servicePort: http
-      tls: []
     {{ if and .UseEmbeddedKeycloak .EnableOidc }}
     install: true
     {{ else }}
@@ -742,7 +759,7 @@ spec:
     route:
       annotations: {}
       enabled: false
-      host: '{{ .KeycloakUrl }}'
+      host: ""
       labels: {}
       path: /
       tls:
@@ -930,10 +947,10 @@ spec:
     electionID: ingress-controller-leader
     {{ if eq .UseCustomNamespace true }}
     extraArgs:
-      ingress-class: "nginx-dai-xlr-{{ .Namespace }}"
+      ingress-class: "nginx-dai-xld-{{ .Namespace }}"
     {{ else }}
     extraArgs:
-      ingress-class: nginx-dai-xlr
+      ingress-class: "nginx-dai-xld"
     {{ end }}
     extraDeploy: []
     extraEnvVars: []
@@ -955,17 +972,17 @@ spec:
       tag: 1.0.4-debian-10-r13
     {{ if eq .UseCustomNamespace true }}
     ingressClassResource:
-      controllerClass: k8s.io/ingress-nginx-dai-xlr-{{ .Namespace }}
+      controllerClass: k8s.io/ingress-nginx-dai-xld-{{ .Namespace }}
       default: false
       enabled: true
-      name: nginx-dai-xlr-{{ .Namespace }}
+      name: nginx-dai-xld-{{ .Namespace }}
       parameters: {}
     {{ else }}
     ingressClassResource:
-      controllerClass: k8s.io/ingress-nginx-dai-xlr
+      controllerClass: k8s.io/ingress-nginx-dai-xld
       default: false
       enabled: true
-      name: nginx-dai-xlr
+      name: nginx-dai-xld
       parameters: {}
     {{ end }}
     initContainers: []
@@ -999,8 +1016,8 @@ spec:
         annotations:
           {{`
           prometheus.io/port: '{{ .Values.metrics.service.port }}'
-          `}}
           prometheus.io/scrape: "true"
+          `}}
         port: 9913
         type: ClusterIP
       serviceMonitor:
@@ -1092,22 +1109,19 @@ spec:
     watchIngressWithoutClass: false
   nodeSelector: {}
   oidc:
-    enabled: {{ .EnableOidc }}
     accessTokenUri: null
     clientId: null
     clientSecret: null
-    emailClaim: null
+    enabled: {{ .EnableOidc }}
     external: false
-    fullNameClaim: null
     issuer: null
     keyRetrievalUri: null
     logoutUri: null
     postLogoutRedirectUri: null
     redirectUri: null
-    rolesClaim: null
+    rolesClaimName: null
     userAuthorizationUri: null
-    userNameClaim: null
-    scopes: ["openid"]
+    userNameClaimName: null
   postgresql:
     audit:
       clientMinMessages: error
@@ -1172,7 +1186,7 @@ spec:
     initdbPassword: ""
     initdbScripts: {}
     initdbScriptsConfigMap: ""
-    initdbScriptsSecret: postgresql-init-sql-xlr
+    initdbScriptsSecret: postgresql-init-sql-xld
     initdbUser: ""
     install: {{ .EnablePostgresql }}
     ldap:
@@ -1269,7 +1283,7 @@ spec:
     postgresqlExtendedConf: {}
     postgresqlInitdbArgs: ""
     postgresqlInitdbWalDir: ""
-    postgresqlMaxConnections: "150"
+    postgresqlMaxConnections: "300"
     postgresqlPassword: postgres
     postgresqlPghbaRemoveFilters: ""
     postgresqlPostgresConnectionLimit: ""
@@ -1418,7 +1432,7 @@ spec:
     affinity: {}
     args: []
     auth:
-      erlangCookie: RELEASERABBITMQCLUSTER
+      erlangCookie: DEPLOYRABBITMQCLUSTER
       existingErlangSecret: ""
       existingPasswordSecret: ""
       password: guest
@@ -1514,18 +1528,18 @@ spec:
         - sleep
       enabled: false
     extraConfiguration: |
-      load_definitions = /app/xlr-load_definition.json
+      load_definitions = /app/xld-load_definition.json
       raft.wal_max_size_bytes = 1048576
     extraContainerPorts: []
     extraDeploy: []
     extraEnvVars: []
     extraEnvVarsCM: ""
     extraEnvVarsSecret: ""
-    extraPlugins: rabbitmq_amqp1_0
+    extraPlugins: rabbitmq_jms_topic_exchange
     extraSecrets:
-      xlr-load-definition:
+      xld-load-definition:
         {{`
-        xlr-load_definition.json: |
+        xld-load_definition.json: |
           {
           "users": [
             {
@@ -1616,7 +1630,7 @@ spec:
       timeoutSeconds: 20
     loadDefinition:
       enabled: true
-      existingSecret: xlr-load-definition
+      existingSecret: xld-load-definition
     logs: '-'
     maxAvailableSchedulers: ""
     memoryHighWatermark:
@@ -1670,7 +1684,7 @@ spec:
       selector: {}
       size: 8Gi
       # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
-      storageClass: {{ .RabbitmqStorageClass }}
+      storageClass: '{{ .RabbitmqStorageClass }}'
       volumes: []
     plugins: rabbitmq_management rabbitmq_peer_discovery_k8s
     podAffinityPreset: ""
@@ -1748,8 +1762,17 @@ spec:
       resources:
         limits: {}
         requests: {}
-  replicaCount: {{ .XlrReplicaCount }}
   resources: {}
+  satellite:
+    Enabled: false
   tolerations: []
-  # Convert xl-release.lic files content to base64 ( cat xl-release.lic | base64 -w 0 ) and put the output here
-  xlrLicense: '{{ .License }}'
+  # Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
+  xldLicense: '{{ .License }}'
+  centralConfiguration:
+    replicas: 1
+    image:
+      repository: xebialabsunsupported/central-configuration
+    persistence:
+      annotations: {}
+      pvcSize: 500M
+    migrateFromEmbedded: "false"
