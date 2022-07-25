@@ -69,11 +69,19 @@ spec:
       ignoreIfSkipped: true
       description: "Define how xl up will authenticate with your Kubernetes cluster"
 
-    - name: K8sToken
+    - name: InputK8sToken
       type: SecretEditor
       prompt: "Provide authentication token for the existing service account:"
       promptIf: !expr "K8sSetup != 'AwsEKS' && K8sAuthentication == 'Token'"
       default: !expr "(UseKubeconfig && k8sConfig('IsUserTokenAvailable')) ? k8sConfig('UserToken') : ''"
+      saveInXlvals: true
+      ignoreIfSkipped: !expr "(UseKubeconfig && k8sConfig('IsUserTokenAvailable')) ? false : true"
+      replaceAsIs: true
+      description: "Provide an authentication token for a service account that you have previously configured in your cluster. The service account for which the token is provided should be able to create/modify resources in the Kubernetes cluster"
+
+    - name: K8sToken
+      type: SecretEditor
+      value: !expr "InputK8sToken != '' ? InputK8sToken : k8sConfig('UserToken')"
       saveInXlvals: true
       ignoreIfSkipped: !expr "(UseKubeconfig && k8sConfig('IsUserTokenAvailable')) ? false : true"
       replaceAsIs: true
@@ -214,18 +222,19 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: !expr "K8sSetup == 'AwsEKS' ? true : true"
       description: "Your AWS Role ARN ?"
+
     - name: UseCustomNamespace
       type: Confirm
-      default: false
+      default: true
       saveInXlvals: true
-      prompt: "Do you want to use an existing Kubernetes namespace?"
-      description: "Use an already existing namespace in your kubernetes cluster for doing an initial deployment, update or undeployment  of the Xebialabs Devops Platform."
+      prompt: "Do you want to use an custom Kubernetes namespace (current default is 'digitalai')?"
+      description: "Use an already existing namespace in your kubernetes cluster for doing an upgrade of the Xebialabs Devops Platform."
 
     - name: Namespace
       type: Input
       promptIf: !expr "UseCustomNamespace"
       prompt: "Enter the name of the existing Kubernetes namespace where the XebiaLabs DevOps Platform will be installed, updated or undeployed:"
-      default: default
+      default: digitalai
       saveInXlvals: true
       ignoreIfSkipped: true
       description: "The existing Kubernetes namespace to install, update or undeploy the XebiaLabs Devops Platform "

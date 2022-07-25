@@ -1,11 +1,3 @@
-{{- if not .UseCustomNamespace }}
-apiVersion: xl-deploy/v1
-kind: Deployment
-spec:
-  package: Applications/DIGITALAI/XL-K8S-FOUNDATION/K8s-NameSpace/1.0
-  environment: Environments/DIGITALAI/K8S
----
-{{- end }}
 {{- if eq .ServerType "daiDeploy"}}
 ---
 apiVersion: xl-deploy/v1

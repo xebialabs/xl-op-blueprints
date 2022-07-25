@@ -49,9 +49,9 @@ spec:
           {{- end}}
         verifyCertificates: false
         children:
-        - name: default
+        - name: {{ .Namespace }}
           type: openshift.Project
-          projectName: default
+          projectName: {{ .Namespace }}
 {{- else}}
 apiVersion: xl-deploy/v1
 kind: Infrastructure
