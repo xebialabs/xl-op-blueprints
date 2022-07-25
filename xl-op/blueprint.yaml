@@ -240,13 +240,11 @@ spec:
         .spec.keycloak.postgresql.persistence.size
         .spec.keycloak.postgresql.postgresqlMaxConnections
         .spec.haproxy-ingress.install
-        .spec.rabbitmq.install
         .spec.keycloak.install
         .spec.nginx-ingress-controller.install
         .spec.postgresql.install
-        .spec.rabbitmq.install
         .spec.oidc.enabled
-        .spec.rabbitmq.persistence.storageClass
+        .spec.rabbitmq.install
         .spec.rabbitmq.persistence.size
         .spec.rabbitmq.replicaCount
         .spec.rabbitmq.persistence.replicaCount
