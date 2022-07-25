@@ -76,7 +76,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)
+      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr ServerType == 'daiDeploy' && K8sSetup != 'Openshift'
       default: xebialabs/deploy-operator:22.0.6
       description: Enter the operator image to use
@@ -85,7 +85,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)
+      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr ServerType == 'daiDeploy' && K8sSetup == 'Openshift'
       default: xebialabs/deploy-operator:22.0.6-openshift
       description: Enter the operator image to use
@@ -94,7 +94,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)
+      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
       default: xebialabs/release-operator:22.0.6
       description: Enter the operator image to use
@@ -103,7 +103,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)
+      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
       default: xebialabs/release-operator:22.0.6-openshift
       description: Enter the operator image to use
@@ -192,6 +192,7 @@ spec:
         .spec.rabbitmq.persistence.replicaCount
         .spec.route.hosts
         .spec.xldLicense
+        .spec.deploy.configurationManagement
     - name: PreserveCrValuesRelease
       type: Editor
       prompt: Edit list of custom resource keys that will migrate to the new Release CR
@@ -199,7 +200,33 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       description: "For all matched expressions in the cluster CR, the values will be migrated to the upgraded Release CR"
-      default: ".spec.replicaCount\n.spec.UseExistingDB.Enabled\n.spec.UseExistingMQ.Enabled\n.spec.ingress.hosts\n.spec.KeystorePassphrase\n.spec.Persistence.Size\n.spec.Persistence.StorageClass\n.spec.RepositoryKeystore\n.spec.postgresql.persistence.size\n.spec.postgresql.persistence.storageClass\n.spec.postgresql.postgresqlMaxConnections\n.spec.keycloak.postgresql.persistence.size\n.spec.keycloak.postgresql.postgresqlMaxConnections\n.spec.haproxy-ingress.install\n.spec.keycloak.install\n.spec.nginx-ingress-controller.install\n.spec.postgresql.install\n.spec.rabbitmq.install\n.spec.oidc.enabled\n.spec.rabbitmq.persistence.size\n.spec.rabbitmq.replicaCount\n.spec.rabbitmq.persistence.replicaCount\n.spec.rabbitmq.persistence.storageClass\n.spec.route.hosts\n.spec.xlrLicense        "
+      default: |-
+        .spec.replicaCount
+        .spec.UseExistingDB.Enabled
+        .spec.UseExistingMQ.Enabled
+        .spec.ingress.hosts
+        .spec.KeystorePassphrase
+        .spec.Persistence.Size
+        .spec.Persistence.StorageClass
+        .spec.RepositoryKeystore
+        .spec.postgresql.persistence.size
+        .spec.postgresql.persistence.storageClass
+        .spec.postgresql.postgresqlMaxConnections
+        .spec.keycloak.postgresql.persistence.size
+        .spec.keycloak.postgresql.postgresqlMaxConnections
+        .spec.haproxy-ingress.install
+        .spec.keycloak.install
+        .spec.nginx-ingress-controller.install
+        .spec.postgresql.install
+        .spec.oidc.enabled
+        .spec.rabbitmq.install
+        .spec.rabbitmq.persistence.size
+        .spec.rabbitmq.replicaCount
+        .spec.rabbitmq.persistence.replicaCount
+        .spec.rabbitmq.persistence.storageClass
+        .spec.route.hosts
+        .spec.xlrLicense
+        .spec.release.configurationManagement
     - name: ReleaseName
       type: Input
       saveInXlvals: true
