@@ -32,6 +32,7 @@ spec:
         - "--leader-elect"
         - "--leader-election-id=xld-operator-controller-manager"
         image: {{ .OperatorImageDeployOpenshift }}
+        imagePullPolicy: Always
         env:
         - name: WATCH_NAMESPACE
           valueFrom:
