@@ -1,11 +1,11 @@
 apiVersion: xld.digital.ai/v1alpha1
 kind: DigitalaiDeploy
 metadata:
-  {{ if eq .UseCustomNamespace true }}
+  {{- if eq .UseCustomNamespace true }}
   name: dai-xld-{{ .Namespace }}
-  {{ else }}
+  {{- else }}
   name: dai-xld
-  {{ end }}
+  {{- end }}
 spec:
   AdminPassword: admin
   HealthPeriodScans: 10
@@ -24,18 +24,18 @@ spec:
   # Secrets must be manually created in the namespace
   # ImagePullSecret: xlDeploy
   K8sSetup:
-    {{ if eq .K8sSetup "AwsEKS" }}
+    {{- if eq .K8sSetup "AwsEKS" }}
     Platform: AWSEKS
-    {{ end }}
-    {{ if eq .K8sSetup "AzureAKS" }}
+    {{- end }}
+    {{- if eq .K8sSetup "AzureAKS" }}
     Platform: AzureAKS
-    {{ end }}
-    {{ if eq .K8sSetup "GoogleGKE" }}
+    {{- end }}
+    {{- if eq .K8sSetup "GoogleGKE" }}
     Platform: GoogleGKE
-    {{ end }}
-    {{ if eq .K8sSetup "PlainK8SCluster" }}
+    {{- end }}
+    {{- if eq .K8sSetup "PlainK8SCluster" }}
     Platform: PlainK8s
-    {{ end }}
+    {{- end }}
   KeystorePassphrase: '{{ .KeystorePassphrase }}'
   Persistence:
     AccessMode: ReadWriteOnce
@@ -131,11 +131,11 @@ spec:
         repository: quay.io/jcmoraisjr/haproxy-ingress
         tag: v0.13.4
       imagePullSecrets: []
-      {{ if eq .UseCustomNamespace true }}
+      {{- if eq .UseCustomNamespace true }}
       ingressClass: haproxy-dai-xld-{{ .Namespace }}
-      {{ else }}
+      {{- else }}
       ingressClass: haproxy-dai-xld
-      {{ end }}
+      {{- end }}
       initContainers: []
       kind: Deployment
       lifecycle: {}
@@ -266,11 +266,11 @@ spec:
       tolerations: []
     fullnameOverride: ""
     global: {}
-    {{ if eq .IngressType "haproxy" }}
+    {{- if eq .IngressType "haproxy" }}
     install: true
-    {{ else }}
+    {{- else }}
     install: false
-    {{ end }}
+    {{- end }}
     nameOverride: ""
     rbac:
       create: true
@@ -282,14 +282,14 @@ spec:
       create: true
       name: null
   ingress:
-    {{ if eq .IngressType "nginx" }}
+    {{- if eq .IngressType "nginx" }}
     Enabled: true
     annotations:
-      {{ if eq .UseCustomNamespace true }}
+      {{- if eq .UseCustomNamespace true }}
       kubernetes.io/ingress.class: nginx-dai-xld-{{ .Namespace }}
-      {{ else }}
+      {{- else }}
       kubernetes.io/ingress.class: nginx-dai-xld
-      {{ end }}
+      {{- end }}
       nginx.ingress.kubernetes.io/affinity: cookie
       nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
       nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
@@ -297,15 +297,15 @@ spec:
       nginx.ingress.kubernetes.io/rewrite-target: /
       nginx.ingress.kubernetes.io/session-cookie-name: SESSION_XLD
       nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    {{ end }}
-    {{ if eq .IngressType "haproxy" }}
+    {{- end }}
+    {{- if eq .IngressType "haproxy" }}
     Enabled: true
     annotations:
-      {{ if eq .UseCustomNamespace true }}
+      {{- if eq .UseCustomNamespace true }}
       kubernetes.io/ingress.class: haproxy-dai-xld-{{ .Namespace }}
-      {{ else }}
+      {{- else }}
       kubernetes.io/ingress.class: haproxy-dai-xld
-      {{ end }}
+      {{- end }}
       ingress.kubernetes.io/ssl-redirect: "false"
       ingress.kubernetes.io/rewrite-target: /
       ingress.kubernetes.io/affinity: cookie
@@ -313,8 +313,8 @@ spec:
       ingress.kubernetes.io/session-cookie-strategy: prefix
       ingress.kubernetes.io/config-backend: |
         option httpchk GET /ha/health HTTP/1.0
-    {{ end }}
-    {{ if eq .IngressType "none" }}
+    {{- end }}
+    {{- if eq .IngressType "none" }}
     Enabled: true
     annotations:
       kubernetes.io/ingress.class: {{ .ExternalIngressClass }}
@@ -325,7 +325,7 @@ spec:
       ingress.kubernetes.io/session-cookie-strategy: prefix
       ingress.kubernetes.io/config-backend: |
         option httpchk GET /ha/health HTTP/1.0
-    {{ end }}
+    {{- end }}
     hosts:
       - '{{ .IngressHost }}'
     path: /
@@ -336,7 +336,7 @@ spec:
     #     hosts:
     #       - FQDN_MATCH_WITH_CERT_CN
   keycloak:
-    {{`
+    {{- `
     affinity: |
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -361,7 +361,7 @@ spec:
                     values:
                       - test
               topologyKey: failure-domain.beta.kubernetes.io/zone
-    `}}
+    ` -}}
     args: []
     autoscaling:
       behavior:
@@ -386,7 +386,7 @@ spec:
     command: []
     enableServiceLinks: true
     extraContainers: ""
-    {{`
+    {{- `
     extraEnv: |
       - name: PROXY_ADDRESS_FORWARDING
         value: "true"
@@ -423,7 +423,7 @@ spec:
         value: keycloak
       - name: KEYCLOAK_IMPORT
         value: /realm/digitalai-platform-realm.json
-    `}}
+    ` -}}
     extraEnvFrom: ""
     extraInitContainers: ""
     extraPorts: []
@@ -455,23 +455,23 @@ spec:
     imagePullSecrets: []
     ingress:
       annotations:
-        {{ if eq .UseCustomNamespace true }}
+        {{- if eq .UseCustomNamespace true }}
         kubernetes.io/ingress.class: nginx-dai-xld-{{ .Namespace }}
-        {{ else }}
+        {{- else }}
         kubernetes.io/ingress.class: nginx-dai-xld
-        {{ end }}
+        {{- end }}
         nginx.ingress.kubernetes.io/ssl-redirect: "false"
       console:
         annotations: {}
         enabled: false
         ingressClassName: ""
-        {{`
+        {{- `
         rules:
           - host: '{{ .Release.Name }}.keycloak.example.com'
             paths:
               - path: /auth/admin/
                 pathType: Prefix
-        `}}
+      ` -}}
       enabled: true
       ingressClassName: ""
       labels: {}
@@ -481,11 +481,11 @@ spec:
             - path: /
               pathType: Prefix
       servicePort: http
-    {{ if and .UseEmbeddedKeycloak .EnableOidc }}
+    {{- if and .UseEmbeddedKeycloak .EnableOidc }}
     install: true
-    {{ else }}
+    {{- else }}
     install: false
-    {{ end }}
+    {{- end }}
     lifecycleHooks: ""
     livenessProbe: |
       httpGet:
@@ -817,10 +817,10 @@ spec:
       failureThreshold: 60
       periodSeconds: 5
     startupScripts:
-      {{`
+      {{- `
       keycloak.cli: |
         {{- .Files.Get "scripts/keycloak.cli" }}
-      `}}
+    ` -}}
     statefulsetAnnotations: {}
     statefulsetLabels: {}
     terminationGracePeriodSeconds: 60
@@ -954,13 +954,13 @@ spec:
     dhParam: ""
     dnsPolicy: ClusterFirst
     electionID: ingress-controller-leader
-    {{ if eq .UseCustomNamespace true }}
+    {{- if eq .UseCustomNamespace true }}
     extraArgs:
       ingress-class: "nginx-dai-xld-{{ .Namespace }}"
-    {{ else }}
+    {{- else }}
     extraArgs:
       ingress-class: "nginx-dai-xld"
-    {{ end }}
+    {{- end }}
     extraDeploy: []
     extraEnvVars: []
     extraEnvVarsCM: ""
@@ -979,27 +979,27 @@ spec:
       registry: docker.io
       repository: bitnami/nginx-ingress-controller
       tag: 1.0.4-debian-10-r13
-    {{ if eq .UseCustomNamespace true }}
+    {{- if eq .UseCustomNamespace true }}
     ingressClassResource:
       controllerClass: k8s.io/ingress-nginx-dai-xld-{{ .Namespace }}
       default: false
       enabled: true
       name: nginx-dai-xld-{{ .Namespace }}
       parameters: {}
-    {{ else }}
+    {{- else }}
     ingressClassResource:
       controllerClass: k8s.io/ingress-nginx-dai-xld
       default: false
       enabled: true
       name: nginx-dai-xld
       parameters: {}
-    {{ end }}
+    {{- end }}
     initContainers: []
-    {{ if eq .IngressType "nginx" }}
+    {{- if eq .IngressType "nginx" }}
     install: true
-    {{ else }}
+    {{- else }}
     install: false
-    {{ end }}
+    {{- end }}
     kind: Deployment
     lifecycle: {}
     livenessProbe:
@@ -1023,10 +1023,10 @@ spec:
         rules: []
       service:
         annotations:
-          {{`
+          {{- `
           prometheus.io/port: '{{ .Values.metrics.service.port }}'
           prometheus.io/scrape: "true"
-          `}}
+        ` -}}
         port: 9913
         type: ClusterIP
       serviceMonitor:
@@ -1472,7 +1472,7 @@ spec:
         storageClass: ""
     commonAnnotations: {}
     communityPlugins: ""
-    {{`
+    {{- `
     configuration: |-
       {{- if not .Values.loadDefinition.enabled -}}
       ## Username and password
@@ -1525,7 +1525,7 @@ spec:
       total_memory_available_override_value = {{ include "rabbitmq.toBytes" .Values.resources.limits.memory }}
       vm_memory_high_watermark.{{ .Values.memoryHighWatermark.type }} = {{ .Values.memoryHighWatermark.value }}
       {{- end }}
-    `}}
+    ` -}}
     containerSecurityContext: {}
     customLivenessProbe: {}
     customReadinessProbe: {}
@@ -1547,7 +1547,7 @@ spec:
     extraPlugins: rabbitmq_jms_topic_exchange
     extraSecrets:
       xld-load-definition:
-        {{`
+        {{- `
         xld-load_definition.json: |
           {
           "users": [
@@ -1591,7 +1591,7 @@ spec:
               }
             ]
           }
-      `}}
+    ` -}}
     extraSecretsPrependReleaseName: false
     extraVolumeMounts: []
     extraVolumes: []
@@ -1650,9 +1650,9 @@ spec:
       enabled: false
       plugins: rabbitmq_prometheus
       podAnnotations:
-        {{`
+        {{- `
         prometheus.io/port: '{{ .Values.service.metricsPort }}'
-        `}}
+        ` -}}
         prometheus.io/scrape: "true"
       prometheusRule:
         additionalLabels: {}

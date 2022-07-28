@@ -66,7 +66,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      promptIf: !expr ServerType == 'daiDeploy'
+      promptIf: !expr "ServerType == 'daiDeploy' && ProcessType == 'install'"
       prompt: "Enter the deploy master server replica count"
       default: 3
       description: Enter the deploy master server replica count
@@ -75,7 +75,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      promptIf: !expr ServerType == 'daiDeploy'
+      promptIf: !expr "ServerType == 'daiDeploy' && ProcessType == 'install'"
       prompt: "Enter the deploy worker replica count"
       default: 3
       description: Enter the deploy worker replica count
@@ -84,7 +84,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      promptIf: !expr ServerType == 'daiRelease'
+      promptIf: !expr "ServerType == 'daiRelease' && ProcessType == 'install'"
       prompt: "Enter the release server replica count"
       default: 3
       description: Enter the release server replica count
@@ -256,7 +256,10 @@ spec:
       type: Confirm
       default: true
       saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
       prompt: "Do you want to enable an PostgreSQL?"
+      promptIf: !expr ProcessType == "install"
       description: "Enable PostgreSQL."
     - name: PostgresqlStorageClass
       type: Input
@@ -271,7 +274,10 @@ spec:
       type: Confirm
       default: true
       saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
       prompt: "Do you want to enable an RabbitMQ?"
+      promptIf: !expr ProcessType == "install"
       description: "Enable RabbitMQ."
     - name: RabbitmqReplicaCount
       type: Input

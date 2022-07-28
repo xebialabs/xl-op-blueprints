@@ -1,11 +1,11 @@
 kind: Secret
 apiVersion: v1
 metadata:
-  {{ if eq .UseCustomNamespace true }}
+  {{- if eq .UseCustomNamespace true }}
   name: dai-xlr-{{ .Namespace }}-postgresql-init-sql-keycloak
-  {{ else }}
+  {{- else }}
   name: dai-xlr-postgresql-init-sql-keycloak
-  {{ end }}
+  {{- end }}
   labels:
     app: digitalai-release
 data:

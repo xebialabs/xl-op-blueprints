@@ -1,21 +1,21 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  {{ if eq .UseCustomNamespace true }}
+  {{- if eq .UseCustomNamespace true }}
   name: dai-ocp-xld-{{ .Namespace }}-postgresql-init-keycloak-db
-  {{ else }}
+  {{- else }}
   name: dai-ocp-xld-postgresql-init-keycloak-db
-  {{ end }}
+  {{- end }}
   labels:
     app: digitalai-deploy
 spec:
   template:
     metadata:
-      {{ if eq .UseCustomNamespace true }}
+      {{- if eq .UseCustomNamespace true }}
       name: dai-ocp-xld-{{ .Namespace }}-postgresql-init-keycloak-db
-      {{ else }}
+      {{- else }}
       name: dai-ocp-xld-postgresql-init-keycloak-db
-      {{ end }}
+      {{- end }}
     spec:
       initContainers:
         - name: wait-for-postgresql
@@ -28,13 +28,13 @@ spec:
               sleep 2;
               done;
           env:
-            {{ if eq .UseCustomNamespace true }}
+            {{- if eq .UseCustomNamespace true }}
             - name: POSTGRES_SVC_NAME
               value: {{ .CrName }}-postgresql
-            {{ else }}
+            {{- else }}
             - name: POSTGRES_SVC_NAME
               value: dai-ocp-xld-postgresql
-            {{ end }}
+            {{- end }}
             - name: POSTGRES_PORT
               value: "5432"
       containers:
@@ -61,13 +61,13 @@ spec:
                 fi;
               fi;
           env:
-            {{ if eq .UseCustomNamespace true }}
+            {{- if eq .UseCustomNamespace true }}
             - name: POSTGRES_SVC_NAME
               value: {{ .CrName }}-postgresql
-            {{ else }}
+            {{- else }}
             - name: POSTGRES_SVC_NAME
               value: dai-ocp-xld-postgresql
-            {{ end }}
+            {{- end }}
             - name: POSTGRES_PORT
               value: "5432"
             - name: PGPASSWORD
@@ -82,10 +82,10 @@ spec:
       volumes:
         - name: dai-ocp-xld-init-sql-keycloak
           secret:
-            {{ if eq .UseCustomNamespace true }}
+            {{- if eq .UseCustomNamespace true }}
             secretName: dai-ocp-xld-{{ .Namespace }}-postgresql-init-sql-keycloak
-            {{ else }}
+            {{- else }}
             secretName: dai-ocp-xld-postgresql-init-sql-keycloak
-            {{ end }}
+            {{- end }}
       restartPolicy: Never
   backoffLimit: 1
