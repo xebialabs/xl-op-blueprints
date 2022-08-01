@@ -1,75 +1,59 @@
 K8sSetup: {{ .K8sSetup }}
-UseKubeconfig: {{ .UseKubeconfig }}
-K8sApiServerURL: {{ .K8sApiServerURL }}
-{{- if or (and (not .UseKubeconfig) (ne .K8sSetup "AwsEKS")) (eq .K8sSetup "GoogleGKE")}}
-K8sAuthentication: {{ .K8sAuthentication }}
-{{- end}}
-{{- if eq .K8sToken ""}}
-  {{- if eq .K8sClientCert "" }}
-K8sClientCertFile: {{ .CertFile }}
-K8sClientKeyFile: {{ .KeyFile }}
-  {{- else}}
-K8sClientCert: {{ .K8sClientCert }}
-K8sClientKey: {{ .K8sClientKey }}
-  {{- end}}
-{{- else}}
-K8sToken: {{ .K8sToken}}
-{{- end}}
-{{- if (or (eq .K8sSetup "GoogleGKE" ) (eq .K8sSetup "AwsEKS") (eq .K8sSetup "AzureAKS"))}}
-IsHybridCluster: {{ .IsHybridCluster }}
-{{- end}}
-{{- if eq .K8sSetup "GoogleGKE" }}
-IsGKE: {{eq .K8sSetup "GoogleGKE"}}
-UseInternalLoadBalancer: {{ .UseInternalLoadBalancer }}
-{{- end }}
-{{- if eq .K8sSetup "AwsEKS" }}
-IsEKS: {{eq .K8sSetup "AwsEKS"}}
-UseAWSconfig: {{ .UseAWSconfig }}
-UseAWSSsoCredentials: {{ .UseAWSSsoCredentials }}
-EksClusterName: {{ .EksClusterName }}
-AWSAccessKey: {{ .AWSAccessKey }}
-AWSAccessSecret: {{ .AWSAccessSecret }}
-{{- if .UseAWSSsoCredentials }}
-AWSSessionToken: {{ .AWSSessionToken }}
-AWSAccountId: {{ .AWSAccountId }}
-AWSSSORoleName: {{ .AWSSSORoleName }}
-AWSRoleArn: {{ .AWSRoleArn }}
-{{- end }}
-UseInternalLoadBalancer: {{ .UseInternalLoadBalancer }}
-{{- end }}
-{{- if eq .K8sSetup "AzureAKS" }}
-IsAKS: {{eq .K8sSetup "AzureAKS"}}
-UseInternalLoadBalancer: {{ .UseInternalLoadBalancer }}
-{{- end }}
+UseCustomNamespace: {{ .UseCustomNamespace }}
 Namespace: {{ .Namespace }}
+ServerType: {{ .ServerType }}
+RepositoryName: {{ .RepositoryName }}
+ImageTag: {{ .ImageTag }}
+{{- if eq .ServerType "daiDeploy" }}
+ImageNameDeploy: {{ .ImageNameDeploy }}
+ImageNameDeployTaskEngine: {{ .ImageNameDeployTaskEngine }}
+OperatorImageDeployGeneric: {{ .OperatorImageDeployGeneric }}
+OperatorImageDeployOpenshift: {{ .OperatorImageDeployOpenshift }}
+XldMasterCount: {{ .XldMasterCount }}
+XldWorkerCount: {{ .XldWorkerCount }}
+  {{- if eq .ProcessType "upgrade" }}
+PreserveCrValuesDeploy: |-
+{{ .PreserveCrValuesDeploy | indent 2 }}
+  {{- end }}
+{{- end }}
+{{- if eq .ServerType "daiRelease" }}
+ImageNameRelease: {{ .ImageNameRelease }}
+OperatorImageReleaseGeneric: {{ .OperatorImageReleaseGeneric }}
+OperatorImageReleaseOpenshift: {{ .OperatorImageReleaseOpenshift }}
+XlrReplicaCount: {{ .XlrReplicaCount }}
+  {{- if eq .ProcessType "upgrade" }}
+PreserveCrValuesRelease: |-
+{{ .PreserveCrValuesRelease | indent 2 }}
+  {{- end }}
+{{- end }}
 EnableOidc: {{ .EnableOidc }}
 UseExistingOidcConf: {{ .UseExistingOidcConf }}
 UseEmbeddedKeycloak: {{ .UseEmbeddedKeycloak }}
-{{- if and (not .UseEmbeddedKeycloak) (.EnableOidc) }}
-UseExternalOidcConf: {{ .UseExternalOidcConf }}
-{{- end }}
-{{- if .UseEmbeddedKeycloak }}
+UseExternalOidcConf: |-
+{{ .UseExternalOidcConf | indent 2 }}
 KeycloakUrl: {{ .KeycloakUrl }}
 UseKeycloakWithEmbeddedDB: {{ .UseKeycloakWithEmbeddedDB }}
+KeycloakIngressHost: '{{ .KeycloakIngressHost }}'
+{{- if eq .ProcessType "install" }}
+IngressType: {{ .IngressType }}
+License: '{{ .License }}'
+RepositoryKeystore: '{{ .RepositoryKeystore }}'
+KeystorePassphrase: '{{ .KeystorePassphrase }}'
+StorageClass: {{ .StorageClass }}
+IngressHost: {{ .IngressHost }}
+EnablePostgresql: {{ .EnablePostgresql }}
+PostgresqlStorageClass: {{ .PostgresqlStorageClass }}
+EnableRabbitmq: {{ .EnableRabbitmq }}
+RabbitmqReplicaCount: {{ .RabbitmqReplicaCount }}
+RabbitmqStorageClass: {{ .RabbitmqStorageClass }}
 {{- end }}
-UseCustomNamespace: {{ .UseCustomNamespace }}
-UseCustomRegistry: {{ .UseCustomRegistry }}
-InstallXLD: {{ .InstallXLD }}
-{{- if .UseCustomRegistry }}
-XldVersion: {{ .XldVersion }}
-DockerUser: {{ .DockerUser }}
-DockerPass: {{ .DockerPass }}
-RegistryURL: {{ .RegistryURL }}
-UseCustomRegistryForAllImages: {{ .UseCustomRegistryForAllImages}}
-{{- else }}
-  {{- if .InstallXLD}}
-XldOfficialVersion: {{ .XldOfficialVersion }}
-  {{- end}}
-  {{- if .InstallXLR}}
-XlrOfficialVersion: {{ .XlrOfficialVersion }}
-  {{- end}}
+{{- if eq .ProcessType "upgrade" }}
+UpgradeType: {{ .UpgradeType }}
+  {{- if eq .UpgradeType "operatorToOperator" }}
+CrdName: '{{ .CrdName }}'
+CrName: '{{ .CrName }}'
+  {{- end }}
+  {{- if eq .UpgradeType "helmToOperator" }}
+ReleaseName: '{{ .ReleaseName }}'
+  {{- end }}
 {{- end }}
-
-AdminPassword: {{ .AdminPassword }}
-ImageTag: {{ .ImageTag }}
-OperatorImage: {{ .OperatorImage }}

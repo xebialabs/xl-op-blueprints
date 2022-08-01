@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  {{- if eq .UseCustomNamespace true }}
+  name: {{ .Namespace }}-xld-operator-metrics-reader
+  {{- else }}
+  name: xld-operator-metrics-reader
+  {{- end }}
+rules:
+- nonResourceURLs:
+  - "/metrics"
+  verbs:
+  - get
