@@ -7,7 +7,7 @@ metadata:
   name: dai-ocp-xlr
   {{- end }}
 spec:
-  AdminPassword: admin
+  AdminPassword: '{{ .AdminPassword }}'
   HealthPeriodScans: 10
   HealthProbeFailureThreshold: 12
   HealthProbes: true
@@ -38,27 +38,34 @@ spec:
   # ( cat repository-keystore.jceks | base64 -w 0 ) and put the output here
   RepositoryKeystore: '{{ .RepositoryKeystore }}'
   UseExistingDB:
+    {{- if eq .EnablePostgresql true }}
     Enabled: false
-    # If you want to use a existing database.
-    # Set 'postgresql.install' to 'false', Only when we use existing Database for both Release and keycloak.
+    {{- else }}
+    Enabled: true
+    # If you want to use an existing database.
+    # Set 'postgresql.install' to 'false', Only when we use existing Database for both Deploy and keycloak.
     # Set 'UseExistingDB.Enabled' to 'true'.
     # Uncomment the following lines and provide the values.
-    # XLR_DB_URL:
-    # XLR_DB_USER:
-    # XLR_DB_PASS:
-    # XLR_REPORT_DB_URL:
-    # XLR_REPORT_DB_USER:
-    # XLR_REPORT_DB_PASS:
+    # XL_DB_PASSWORD:
+    # XL_DB_URL:
+    # XL_DB_USERNAME:
+{{ .PostgresqlExternalConfigDeploy | indent 4 }}
+    {{- end }}
   UseExistingMQ:
+    {{- if eq .EnableRabbitmq true }}
     Enabled: false
+    {{- else }}
+    Enabled: true
     # If you want to use a existing Message Queue.
-    # Set 'rabbitmq.install' to 'false'.
+    # Set the "rabbitmq.install to false"
     # Set 'UseExistingMQ.Enabled' to 'true'.
     # Uncomment the following lines and provide the values.
-    # XLR_TASK_QUEUE_USERNAME:
-    # XLR_TASK_QUEUE_PASSWORD:
-    # XLR_TASK_QUEUE_NAME:
-    # XLR_TASK_QUEUE_URL
+    # XLD_TASK_QUEUE_DRIVER_CLASS_NAME:
+    # XLD_TASK_QUEUE_PASSWORD:
+    # XLD_TASK_QUEUE_URL:
+    # XLD_TASK_QUEUE_USERNAME:
+{{ .RabbitmqExternalConfigDeploy | indent 4 }}
+    {{- end }}
   affinity: {}
   release:
     configurationManagement:
@@ -194,28 +201,22 @@ spec:
         annotations: {}
         enabled: false
         ingressClassName: ""
-        {{- `
         rules:
-          - host: '{{ .Deploy.Name }}.keycloak.example.com'
+          - host: {{ .KeycloakHost }}
             paths:
               - path: /auth/admin/
                 pathType: Prefix
-        ` -}}
       enabled: false
       ingressClassName: ""
       labels: {}
       rules:
-        - host: '{{ .KeycloakIngressHost }}'
+        - host: {{ .KeycloakHost }}
           paths:
             - path: /
               pathType: Prefix
       servicePort: http
       tls: []
-    {{- if and .UseEmbeddedKeycloak .EnableOidc }}
-    install: true
-    {{- else }}
-    install: false
-    {{- end }}
+    install: {{ eq .OidcConfigType "embedded" }}
     lifecycleHooks: ""
     livenessProbe: |
       httpGet:
@@ -498,7 +499,7 @@ spec:
     route:
       annotations: {}
       enabled: true
-      host: '{{ .KeycloakUrl }}'
+      host: '{{ .KeycloakHost }}'
       labels: {}
       path: /
       tls:
@@ -569,22 +570,8 @@ spec:
     topologySpreadConstraints: null
   nodeSelector: {}
   oidc:
-    enabled: {{ .EnableOidc }}
-    accessTokenUri: null
-    clientId: null
-    clientSecret: null
-    emailClaim: null
-    external: false
-    fullNameClaim: null
-    issuer: null
-    keyRetrievalUri: null
-    logoutUri: null
-    postLogoutRedirectUri: null
-    redirectUri: null
-    rolesClaim: null
-    userAuthorizationUri: null
-    userNameClaim: null
-    scopes: ["openid"]
+    enabled: {{ not eq (.OidcConfigType "no-oidc") }}
+{{ .ExternalOidcConf | indent 4 }}
   postgresql:
     audit:
       clientMinMessages: error
@@ -651,7 +638,7 @@ spec:
     initdbScriptsConfigMap: ""
     initdbScriptsSecret: postgresql-init-sql-xlr
     initdbUser: ""
-    install: {{ .EnablePostgresql }}
+    install: {{ or .EnablePostgresql .UseKeycloakWithEmbeddedDB }}
     ldap:
       baseDN: ""
       bind_password: ""

@@ -7,7 +7,7 @@ metadata:
   name: dai-xld
   {{- end }}
 spec:
-  AdminPassword: admin
+  AdminPassword: '{{ .AdminPassword }}'
   HealthPeriodScans: 10
   HealthProbeFailureThreshold: 12
   HealthProbes: true
@@ -24,18 +24,7 @@ spec:
   # Secrets must be manually created in the namespace
   # ImagePullSecret: xlDeploy
   K8sSetup:
-    {{- if eq .K8sSetup "AwsEKS" }}
-    Platform: AWSEKS
-    {{- end }}
-    {{- if eq .K8sSetup "AzureAKS" }}
-    Platform: AzureAKS
-    {{- end }}
-    {{- if eq .K8sSetup "GoogleGKE" }}
-    Platform: GoogleGKE
-    {{- end }}
-    {{- if eq .K8sSetup "PlainK8SCluster" }}
-    Platform: PlainK8s
-    {{- end }}
+    Platform: {{ .K8sSetup }}
   KeystorePassphrase: '{{ .KeystorePassphrase }}'
   Persistence:
     AccessMode: ReadWriteOnce
@@ -50,7 +39,10 @@ spec:
   # ( cat repository-keystore.jceks | base64 -w 0 ) and put the output here
   RepositoryKeystore: '{{ .RepositoryKeystore }}'
   UseExistingDB:
+    {{- if eq .EnablePostgresql true }}
     Enabled: false
+    {{- else }}
+    Enabled: true
     # If you want to use an existing database.
     # Set 'postgresql.install' to 'false', Only when we use existing Database for both Deploy and keycloak.
     # Set 'UseExistingDB.Enabled' to 'true'.
@@ -58,8 +50,13 @@ spec:
     # XL_DB_PASSWORD:
     # XL_DB_URL:
     # XL_DB_USERNAME:
+{{ .PostgresqlExternalConfigDeploy | indent 4 }}
+    {{- end }}
   UseExistingMQ:
+    {{- if eq .EnableRabbitmq true }}
     Enabled: false
+    {{- else }}
+    Enabled: true
     # If you want to use a existing Message Queue.
     # Set the "rabbitmq.install to false"
     # Set 'UseExistingMQ.Enabled' to 'true'.
@@ -68,6 +65,8 @@ spec:
     # XLD_TASK_QUEUE_PASSWORD:
     # XLD_TASK_QUEUE_URL:
     # XLD_TASK_QUEUE_USERNAME:
+{{ .RabbitmqExternalConfigDeploy | indent 4 }}
+    {{- end }}
   XldMasterCount: {{ .XldMasterCount }}
   XldWorkerCount: {{ .XldWorkerCount }}
   affinity: {}
@@ -296,7 +295,7 @@ spec:
       nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
       nginx.ingress.kubernetes.io/rewrite-target: /
       nginx.ingress.kubernetes.io/session-cookie-name: SESSION_XLD
-      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/ssl-redirect: "{{ .EnableIngressTls }}"
     {{- end }}
     {{- if eq .IngressType "haproxy" }}
     Enabled: true
@@ -306,7 +305,19 @@ spec:
       {{- else }}
       kubernetes.io/ingress.class: haproxy-dai-xld
       {{- end }}
-      ingress.kubernetes.io/ssl-redirect: "false"
+      ingress.kubernetes.io/ssl-redirect: "{{ .EnableIngressTls }}"
+      ingress.kubernetes.io/rewrite-target: /
+      ingress.kubernetes.io/affinity: cookie
+      ingress.kubernetes.io/session-cookie-name: SESSION_XLD
+      ingress.kubernetes.io/session-cookie-strategy: prefix
+      ingress.kubernetes.io/config-backend: |
+        option httpchk GET /ha/health HTTP/1.0
+    {{- end }}
+    {{- if eq .IngressType "external" }}
+    Enabled: true
+    annotations:
+      kubernetes.io/ingress.class: {{ .ExternalIngressClass }}
+      ingress.kubernetes.io/ssl-redirect: "{{ .EnableIngressTls }}"
       ingress.kubernetes.io/rewrite-target: /
       ingress.kubernetes.io/affinity: cookie
       ingress.kubernetes.io/session-cookie-name: SESSION_XLD
@@ -315,26 +326,19 @@ spec:
         option httpchk GET /ha/health HTTP/1.0
     {{- end }}
     {{- if eq .IngressType "none" }}
-    Enabled: true
-    annotations:
-      kubernetes.io/ingress.class: {{ .ExternalIngressClass }}
-      ingress.kubernetes.io/ssl-redirect: "false"
-      ingress.kubernetes.io/rewrite-target: /
-      ingress.kubernetes.io/affinity: cookie
-      ingress.kubernetes.io/session-cookie-name: SESSION_XLD
-      ingress.kubernetes.io/session-cookie-strategy: prefix
-      ingress.kubernetes.io/config-backend: |
-        option httpchk GET /ha/health HTTP/1.0
+    Enabled: false
     {{- end }}
     hosts:
       - '{{ .IngressHost }}'
     path: /
+    {{- if eq .EnableIngressTls true }}
     # If you want to use TLS configuration uncomment the following lines and provide correct values.
     # You need to create secret, and provide the name under 'secretName'
-    # tls:
-    #   - secretName: NAME_OF_THE_TLS_SECRET
-    #     hosts:
-    #       - FQDN_MATCH_WITH_CERT_CN
+    tls:
+      - secretName: '{{ .IngressTlsSecretName }}'
+        hosts:
+          - '{{ .IngressHost }}'
+    {{- end }}
   keycloak:
     {{- `
     affinity: |
@@ -465,27 +469,21 @@ spec:
         annotations: {}
         enabled: false
         ingressClassName: ""
-        {{- `
         rules:
-          - host: '{{ .Release.Name }}.keycloak.example.com'
+          - host: {{ .KeycloakHost }}
             paths:
               - path: /auth/admin/
                 pathType: Prefix
-      ` -}}
       enabled: true
       ingressClassName: ""
       labels: {}
       rules:
-        - host: '{{ .KeycloakIngressHost }}'
+        - host: '{{ .KeycloakHost }}'
           paths:
             - path: /
               pathType: Prefix
       servicePort: http
-    {{- if and .UseEmbeddedKeycloak .EnableOidc }}
-    install: true
-    {{- else }}
-    install: false
-    {{- end }}
+    install: {{ eq .OidcConfigType "embedded" }}
     lifecycleHooks: ""
     livenessProbe: |
       httpGet:
@@ -768,7 +766,7 @@ spec:
     route:
       annotations: {}
       enabled: false
-      host: ""
+      host: {{ .KeycloakHost }}
       labels: {}
       path: /
       tls:
@@ -1118,19 +1116,8 @@ spec:
     watchIngressWithoutClass: false
   nodeSelector: {}
   oidc:
-    accessTokenUri: null
-    clientId: null
-    clientSecret: null
-    enabled: {{ .EnableOidc }}
-    external: false
-    issuer: null
-    keyRetrievalUri: null
-    logoutUri: null
-    postLogoutRedirectUri: null
-    redirectUri: null
-    rolesClaimName: null
-    userAuthorizationUri: null
-    userNameClaimName: null
+    enabled: {{ not (eq .OidcConfigType "no-oidc") }}
+{{ .ExternalOidcConf | indent 4 }}
   postgresql:
     audit:
       clientMinMessages: error
@@ -1197,7 +1184,7 @@ spec:
     initdbScriptsConfigMap: ""
     initdbScriptsSecret: postgresql-init-sql-xld
     initdbUser: ""
-    install: {{ .EnablePostgresql }}
+    install: {{ or .EnablePostgresql .UseKeycloakWithEmbeddedDB }}
     ldap:
       baseDN: ""
       bind_password: ""

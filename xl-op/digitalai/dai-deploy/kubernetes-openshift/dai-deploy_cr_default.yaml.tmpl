@@ -1,328 +1,97 @@
-apiVersion: xlr.digital.ai/v1alpha1
-kind: DigitalaiRelease
+apiVersion: xldocp.digital.ai/v1alpha1
+kind: DigitalaiDeployOcp
 metadata:
   {{- if eq .UseCustomNamespace true }}
-  name: dai-xlr-{{ .Namespace }}
+  name: dai-ocp-xld-{{ .Namespace }}
   {{- else }}
-  name: dai-xlr
+  name: dai-ocp-xld
   {{- end }}
 spec:
-  AdminPassword: admin
+  AdminPassword: '{{ .AdminPassword }}'
   HealthPeriodScans: 10
   HealthProbeFailureThreshold: 12
   HealthProbes: true
   HealthProbesLivenessTimeout: 60
   HealthProbesReadinessTimeout: 60
   ImagePullPolicy: Always
-  ImageRepository: {{ .RepositoryName }}/{{ .ImageNameRelease }}
+  ServerImageRepository: {{ .RepositoryName }}/{{ .ImageNameDeploy }}
+  WorkerImageRepository: {{ .RepositoryName }}/{{ .ImageNameDeployTaskEngine }}
   ImageTag: "{{ .ImageTag }}"
   ## xebialabs/tiny-tools image version
   ## Ref: https://hub.docker.com/r/xebialabs/tiny-tools/tags
   TinyToolsImageRepository: "xebialabs/tiny-tools"
   TinyToolsImageTag: "22.2.0"
   # Secrets must be manually created in the namespace
-  # ImagePullSecret: xlRelease
-  K8sSetup:
-    {{- if eq .K8sSetup "AwsEKS" }}
-    Platform: AWSEKS
-    {{- end }}
-    {{- if eq .K8sSetup "AzureAKS" }}
-    Platform: AzureAKS
-    {{- end }}
-    {{- if eq .K8sSetup "GoogleGKE" }}
-    Platform: GoogleGKE
-    {{- end }}
-    {{- if eq .K8sSetup "PlainK8SCluster" }}
-    Platform: PlainK8s
-    {{- end }}
+  # ImagePullSecret: xlDeploy
   KeystorePassphrase: '{{ .KeystorePassphrase }}'
-  GenerateXlConfig: true
-  MetricsEnabled: false
-  UseIpAsHostname: false
-  ForceRemoveMissingTypes: false
   Persistence:
     AccessMode: ReadWriteOnce
-    Annotations:
-      helm.sh/resource-policy: "keep"
+    Annotations: {}
     Enabled: true
-    Size: 8Gi
     # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
     StorageClass: '{{ .StorageClass }}'
-  # https://docs.xebialabs.com/v.9.8/release/how-to/update-the-xl-release-digital-certificate/#view-the-certificate
+    XldMasterPvcSize: 10Gi
+    XldWorkerPvcSize: 10Gi
+  # https://docs.xebialabs.com/v.9.8/deploy/how-to/update-the-xl-deploy-digital-certificate/#get-started
   # Convert repository-keystore.jceks files content to base64
   # ( cat repository-keystore.jceks | base64 -w 0 ) and put the output here
   RepositoryKeystore: '{{ .RepositoryKeystore }}'
   UseExistingDB:
+    {{- if eq .EnablePostgresql true }}
     Enabled: false
-    # If you want to use a existing database.
-    # Set 'postgresql.install' to 'false', Only when we use existing Database for both Release and keycloak.
+    {{- else }}
+    Enabled: true
+    # If you want to use an existing database.
+    # Set 'postgresql.install' to 'false', Only when we use existing Database for both Deploy and keycloak.
     # Set 'UseExistingDB.Enabled' to 'true'.
     # Uncomment the following lines and provide the values.
-    # XLR_DB_URL:
-    # XLR_DB_USER:
-    # XLR_DB_PASS:
-    # XLR_REPORT_DB_URL:
-    # XLR_REPORT_DB_USER:
-    # XLR_REPORT_DB_PASS:
+    # XL_DB_PASSWORD:
+    # XL_DB_URL:
+    # XL_DB_USERNAME:
+{{ .PostgresqlExternalConfigDeploy | indent 4 }}
+    {{- end }}
   UseExistingMQ:
+    {{- if eq .EnableRabbitmq true }}
     Enabled: false
+    {{- else }}
+    Enabled: true
     # If you want to use a existing Message Queue.
-    # Set 'rabbitmq.install' to 'false'.
+    # Set the "rabbitmq.install to false"
     # Set 'UseExistingMQ.Enabled' to 'true'.
     # Uncomment the following lines and provide the values.
-    # XLR_TASK_QUEUE_USERNAME:
-    # XLR_TASK_QUEUE_PASSWORD:
-    # XLR_TASK_QUEUE_NAME:
-    # XLR_TASK_QUEUE_URL:
+    # XLD_TASK_QUEUE_DRIVER_CLASS_NAME:
+    # XLD_TASK_QUEUE_PASSWORD:
+    # XLD_TASK_QUEUE_URL:
+    # XLD_TASK_QUEUE_USERNAME:
+{{ .RabbitmqExternalConfigDeploy | indent 4 }}
+    {{- end }}
+  XldMasterCount: {{ .XldMasterCount }}
+  XldWorkerCount: {{ .XldWorkerCount }}
   affinity: {}
-  release:
+  deploy:
     configurationManagement:
-      configuration:
-        enabled: true
-        resetFiles: ## Resets part of the configuration files and license
-          - xl-release-license.lic
-          - xlr-wrapper-linux.conf
-          - jmx-exporter.yaml
-  haproxy-ingress:
-    controller:
-      affinity: {}
-      autoscaling:
-        customMetrics: []
-        enabled: false
-      config: {}
-      daemonset:
-        hostPorts:
-          http: 80
-          https: 443
-          tcp: []
-        useHostPort: false
-      defaultBackendService: ""
-      dnsPolicy: ClusterFirst
-      enableStaticPorts: true
-      extraArgs: {}
-      extraContainers: []
-      extraEnvs: []
-      extraVolumeMounts: []
-      extraVolumes: []
-      haproxy:
-        enabled: false
-        extraArgs: {}
-        image:
-          pullPolicy: IfNotPresent
-          repository: haproxy
-          tag: 2.3.14-alpine
-        resources: {}
-      healthzPort: 10253
-      hostNetwork: false
-      image:
-        pullPolicy: IfNotPresent
-        repository: quay.io/jcmoraisjr/haproxy-ingress
-        tag: v0.13.4
-      imagePullSecrets: []
-      {{- if eq .UseCustomNamespace true }}
-      ingressClass: haproxy-dai-xlr-{{ .Namespace }}
-      {{- else }}
-      ingressClass: haproxy-dai-xlr
-      {{- end }}
-      initContainers: []
-      kind: Deployment
-      lifecycle: {}
-      livenessProbe:
-        failureThreshold: 3
-        initialDelaySeconds: 10
-        path: /healthz
-        periodSeconds: 10
-        port: 10253
-        successThreshold: 1
-        timeoutSeconds: 1
-      logs:
-        enabled: false
-        extraVolumeMounts: []
-        image:
-          pullPolicy: IfNotPresent
-          repository: whereisaaron/kube-syslog-sidecar
-          tag: latest
-        resources: {}
-      metrics:
-        controllerPort: 10254
-        embedded: true
-        enabled: false
-        extraArgs: {}
-        image:
-          pullPolicy: IfNotPresent
-          repository: quay.io/prometheus/haproxy-exporter
-          tag: v0.11.0
-        port: 9101
-        resources: {}
-        service:
-          annotations: {}
-          clusterIP: ""
-          externalIPs: []
-          loadBalancerIP: ""
-          loadBalancerSourceRanges: []
-          serviceControllerPort: 10254
-          servicePort: 9101
-          type: ClusterIP
-      minAvailable: 1
-      minReadySeconds: 0
-      nodeSelector: {}
-      podAffinity: {}
-      podAnnotations: {}
-      podLabels: {}
-      priorityClassName: ""
-      readinessProbe:
-        failureThreshold: 3
-        initialDelaySeconds: 10
-        path: /healthz
-        periodSeconds: 10
-        port: 10253
-        successThreshold: 1
-        timeoutSeconds: 1
-      replicaCount: 1
-      resources: {}
-      securityContext: {}
-      service:
-        annotations: {}
-        clusterIP: ""
-        clusterIPs: []
-        externalIPs: []
-        externalTrafficPolicy: Local
-        extraPorts: []
-        healthCheckNodePort: 0
-        httpPorts:
-          - port: 80
-            targetPort: http
-        httpsPorts:
-          - port: 443
-            targetPort: https
-        labels: {}
-        loadBalancerIP: ""
-        loadBalancerSourceRanges: []
-        type: LoadBalancer
-      serviceMonitor:
-        annotations: {}
-        enabled: false
-        honorLabels: true
-        interval: 10s
-        labels: {}
-      stats:
-        enabled: false
-        port: 1936
-        service:
-          annotations: {}
-          clusterIP: ""
-          externalIPs: []
-          loadBalancerIP: ""
-          loadBalancerSourceRanges: []
-          servicePort: 1936
-          type: ClusterIP
-      tcp: {}
-      template: ""
-      terminationGracePeriodSeconds: 60
-      tolerations: []
-      updateStrategy:
-        rollingUpdate:
-          maxUnavailable: 1
-        type: RollingUpdate
-    defaultBackend:
-      affinity: {}
-      enabled: false
-      image:
-        pullPolicy: IfNotPresent
-        repository: k8s.gcr.io/defaultbackend-amd64
-        tag: "1.5"
-      minAvailable: 1
-      name: default-backend
-      nodeSelector: {}
-      podAnnotations: {}
-      podLabels: {}
-      replicaCount: 1
-      resources:
-        limits:
-          cpu: 10m
-          memory: 20Mi
-      securityContext: {}
-      service:
-        annotations: {}
-        clusterIP: ""
-        externalIPs: []
-        loadBalancerIP: ""
-        loadBalancerSourceRanges: []
-        name: ingress-default-backend
-        servicePort: 8080
-        type: ClusterIP
-      tolerations: []
-    fullnameOverride: ""
-    global: {}
-    {{- if eq .IngressType "haproxy" }}
-    install: true
-    {{- else }}
-    install: false
-    {{- end }}
-    nameOverride: ""
-    rbac:
-      create: true
-      secret:
-        write: false
-      security:
-        enable: false
-    serviceAccount:
-      create: true
-      name: null
-  ingress:
-    {{- if eq .IngressType "nginx" }}
-    Enabled: true
-    annotations:
-      {{- if eq .UseCustomNamespace true }}
-      kubernetes.io/ingress.class: nginx-dai-xlr-{{ .Namespace }}
-      {{- else }}
-      kubernetes.io/ingress.class: nginx-dai-xlr
-      {{- end }}
-      nginx.ingress.kubernetes.io/affinity: cookie
-      nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
-      nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
-      nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
-      nginx.ingress.kubernetes.io/rewrite-target: /
-      nginx.ingress.kubernetes.io/session-cookie-name: JSESSIONID
-      nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    {{- end }}
-    {{- if eq .IngressType "haproxy" }}
-    Enabled: true
-    annotations:
-      {{- if eq .UseCustomNamespace true }}
-      kubernetes.io/ingress.class: haproxy-dai-xlr-{{ .Namespace }}
-      {{- else }}
-      kubernetes.io/ingress.class: haproxy-dai-xlr
-      {{- end }}
-      ingress.kubernetes.io/ssl-redirect: "false"
-      ingress.kubernetes.io/rewrite-target: /
-      ingress.kubernetes.io/affinity: cookie
-      ingress.kubernetes.io/session-cookie-name: JSESSIONID
-      ingress.kubernetes.io/session-cookie-strategy: prefix
-      ingress.kubernetes.io/config-backend: |
-        option httpchk GET /ha/health HTTP/1.0
-    {{- end }}
-    {{- if eq .IngressType "none" }}
-    Enabled: true
-    annotations:
-      kubernetes.io/ingress.class: {{ .ExternalIngressClass }}
-      ingress.kubernetes.io/ssl-redirect: "false"
-      ingress.kubernetes.io/rewrite-target: /
-      ingress.kubernetes.io/affinity: cookie
-      ingress.kubernetes.io/session-cookie-name: SESSION_XLD
-      ingress.kubernetes.io/session-cookie-strategy: prefix
-      ingress.kubernetes.io/config-backend: |
-        option httpchk GET /ha/health HTTP/1.0
-    {{- end }}
-    hosts:
-      - '{{ .IngressHost }}'
-    path: /
-    # If you want to use TLS configuration uncomment the following lines and provide correct values.
-    # You need to create secret, and provide the name under 'secretName'
-    # tls:
-    #   - secretName: NAME_OF_THE_TLS_SECRET
-    #     hosts:
-    #       - FQDN_MATCH_WITH_CERT_CN
+      centralConfiguration:
+        configuration:
+          enabled: true
+          resetFiles: ## Resets part of the configuration files
+            - xlc-wrapper.conf.common
+            - jmx-exporter.yaml
+          resetCcFiles:
+            - deploy-server.yaml
+      master:
+        configuration:
+          enabled: true
+          resetFiles: ## Resets part of the configuration files and license
+            - deployit-license.lic
+            - jmx-exporter.yaml
+            - xld-wrapper.conf.common
+      worker:
+        configuration:
+          enabled: true
+          resetFiles: ## Resets part of the configuration files and license
+            - deployit-license.lic
+            - jmx-exporter.yaml
+            - xld-wrapper.conf.common
   keycloak:
     {{- `
     affinity: |
@@ -429,12 +198,10 @@ spec:
       - name: realm-config
         mountPath: "/realm/"
         readOnly: true
-    {{- `
-      extraVolumes: |
-        - name: realm-config
-          configMap:
-            name: {{ .Release.Name }}-realm
-    ` -}}
+    extraVolumes: |
+      - name: realm-config
+        configMap:
+          name: {{ .Release.Name }}-realm
     fullnameOverride: ""
     global: {}
     hostAliases: []
@@ -444,39 +211,26 @@ spec:
       tag: ""
     imagePullSecrets: []
     ingress:
-      annotations:
-        {{- if eq .UseCustomNamespace true }}
-        kubernetes.io/ingress.class: nginx-dai-xlr-{{ .Namespace }}
-        {{- else }}
-        kubernetes.io/ingress.class: nginx-dai-xlr
-        {{- end }}
-        nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      annotations: {}
       console:
         annotations: {}
         enabled: false
         ingressClassName: ""
-        {{- `
         rules:
-          - host: '{{ .Deploy.Name }}.keycloak.example.com'
+          - host: {{ .KeycloakHost }}
             paths:
               - path: /auth/admin/
                 pathType: Prefix
-      ` -}}
-      enabled: true
+      enabled: false
       ingressClassName: ""
       labels: {}
       rules:
-        - host: '{{ .KeycloakIngressHost }}'
+        - host: {{ .KeycloakHost }}
           paths:
             - path: /
               pathType: Prefix
       servicePort: http
-      tls: []
-    {{- if and .UseEmbeddedKeycloak .EnableOidc }}
-    install: true
-    {{- else }}
-    install: false
-    {{- end }}
+    install: {{ eq .OidcConfigType == "embedded" }}
     lifecycleHooks: ""
     livenessProbe: |
       httpGet:
@@ -758,8 +512,8 @@ spec:
     restartPolicy: Always
     route:
       annotations: {}
-      enabled: false
-      host: '{{ .KeycloakUrl }}'
+      enabled: true
+      host: '{{ .KeycloakHost }}'
       labels: {}
       path: /
       tls:
@@ -782,7 +536,7 @@ spec:
       loadBalancerSourceRanges: []
       sessionAffinity: ""
       sessionAffinityConfig: {}
-      type: LoadBalancer
+      type: ClusterIP
     serviceAccount:
       annotations: {}
       create: true
@@ -828,303 +582,10 @@ spec:
         runAsUser: 1000
     tolerations: []
     topologySpreadConstraints: null
-  nginx-ingress-controller:
-    addHeaders: {}
-    affinity: {}
-    args: []
-    autoscaling:
-      enabled: false
-      maxReplicas: 11
-      minReplicas: 1
-      targetCPU: ""
-      targetMemory: ""
-    command: []
-    common:
-      exampleValue: common-chart
-      global:
-        imagePullSecrets: []
-        imageRegistry: ""
-    commonAnnotations: {}
-    commonLabels: {}
-    config: {}
-    configMapNamespace: ""
-    containerPorts:
-      http: 80
-      https: 443
-      metrics: 10254
-    containerSecurityContext:
-      allowPrivilegeEscalation: true
-      capabilities:
-        add:
-          - NET_BIND_SERVICE
-        drop:
-          - ALL
-      enabled: true
-      runAsUser: 1001
-    customLivenessProbe: {}
-    customReadinessProbe: {}
-    customTemplate:
-      configMapKey: ""
-      configMapName: ""
-    daemonset:
-      hostPorts:
-        http: 80
-        https: 443
-      useHostPort: false
-    defaultBackend:
-      affinity: {}
-      containerPort: 8080
-      containerSecurityContext:
-        enabled: true
-        runAsUser: 1001
-      enabled: true
-      extraArgs: {}
-      hostAliases: []
-      image:
-        pullPolicy: IfNotPresent
-        pullSecrets: []
-        registry: docker.io
-        repository: bitnami/nginx
-        tag: 1.21.3-debian-10-r48
-      livenessProbe:
-        enabled: true
-        failureThreshold: 3
-        httpGet:
-          path: /healthz
-          port: http
-          scheme: HTTP
-        initialDelaySeconds: 30
-        periodSeconds: 10
-        successThreshold: 1
-        timeoutSeconds: 5
-      nodeAffinityPreset:
-        key: ""
-        type: ""
-        values: []
-      nodeSelector: {}
-      pdb:
-        create: false
-        maxUnavailable: ""
-        minAvailable: 1
-      podAffinityPreset: ""
-      podAnnotations: {}
-      podAntiAffinityPreset: soft
-      podLabels: {}
-      podSecurityContext:
-        enabled: true
-        fsGroup: 1001
-      priorityClassName: ""
-      readinessProbe:
-        enabled: true
-        failureThreshold: 6
-        httpGet:
-          path: /healthz
-          port: http
-          scheme: HTTP
-        initialDelaySeconds: 0
-        periodSeconds: 5
-        successThreshold: 1
-        timeoutSeconds: 5
-      replicaCount: 1
-      resources:
-        limits: {}
-        requests: {}
-      serverBlockConfig: |-
-        location /healthz {
-          return 200;
-        }
-
-        location / {
-          return 404;
-        }
-      service:
-        port: 80
-        type: ClusterIP
-      tolerations: []
-    defaultBackendService: ""
-    dhParam: ""
-    dnsPolicy: ClusterFirst
-    electionID: ingress-controller-leader
-    {{- if eq .UseCustomNamespace true }}
-    extraArgs:
-      ingress-class: "nginx-dai-xlr-{{ .Namespace }}"
-    {{- else }}
-    extraArgs:
-      ingress-class: nginx-dai-xlr
-    {{- end }}
-    extraDeploy: []
-    extraEnvVars: []
-    extraEnvVarsCM: ""
-    extraEnvVarsSecret: ""
-    extraVolumeMounts: []
-    extraVolumes: []
-    fullnameOverride: ""
-    global:
-      imagePullSecrets: []
-      imageRegistry: ""
-    hostAliases: []
-    hostNetwork: false
-    image:
-      pullPolicy: IfNotPresent
-      pullSecrets: []
-      registry: docker.io
-      repository: bitnami/nginx-ingress-controller
-      tag: 1.0.4-debian-10-r13
-    {{- if eq .UseCustomNamespace true }}
-    ingressClassResource:
-      controllerClass: k8s.io/ingress-nginx-dai-xlr-{{ .Namespace }}
-      default: false
-      enabled: true
-      name: nginx-dai-xlr-{{ .Namespace }}
-      parameters: {}
-    {{- else }}
-    ingressClassResource:
-      controllerClass: k8s.io/ingress-nginx-dai-xlr
-      default: false
-      enabled: true
-      name: nginx-dai-xlr
-      parameters: {}
-    {{- end }}
-    initContainers: []
-    {{- if eq .IngressType "nginx" }}
-    install: true
-    {{- else }}
-    install: false
-    {{- end }}
-    kind: Deployment
-    lifecycle: {}
-    livenessProbe:
-      enabled: true
-      failureThreshold: 3
-      httpGet:
-        path: /healthz
-        port: 10254
-        scheme: HTTP
-      initialDelaySeconds: 10
-      periodSeconds: 10
-      successThreshold: 1
-      timeoutSeconds: 1
-    maxmindLicenseKey: ""
-    metrics:
-      enabled: false
-      prometheusRule:
-        additionalLabels: {}
-        enabled: false
-        namespace: ""
-        rules: []
-      service:
-        annotations:
-          {{- `
-          prometheus.io/port: '{{ .Values.metrics.service.port }}'
-          ` -}}
-          prometheus.io/scrape: "true"
-        port: 9913
-        type: ClusterIP
-      serviceMonitor:
-        enabled: false
-        interval: 30s
-        namespace: ""
-        scrapeTimeout: ""
-        selector: {}
-    minReadySeconds: 0
-    nameOverride: ""
-    nodeAffinityPreset:
-      key: ""
-      type: ""
-      values: []
-    nodeSelector: {}
-    pdb:
-      create: false
-      maxUnavailable: ""
-      minAvailable: 1
-    podAffinityPreset: ""
-    podAnnotations: {}
-    podAntiAffinityPreset: soft
-    podLabels: {}
-    podSecurityContext:
-      enabled: true
-      fsGroup: 1001
-    podSecurityPolicy:
-      enabled: false
-    priorityClassName: ""
-    proxySetHeaders: {}
-    publishService:
-      enabled: false
-      pathOverride: ""
-    rbac:
-      create: true
-    readinessProbe:
-      enabled: true
-      failureThreshold: 3
-      httpGet:
-        path: /healthz
-        port: 10254
-        scheme: HTTP
-      initialDelaySeconds: 10
-      periodSeconds: 10
-      successThreshold: 1
-      timeoutSeconds: 1
-    replicaCount: 1
-    reportNodeInternalIp: false
-    resources:
-      limits: {}
-      requests: {}
-    revisionHistoryLimit: 10
-    scope:
-      enabled: false
-    service:
-      annotations: {}
-      clusterIP: ""
-      externalIPs: []
-      externalTrafficPolicy: ""
-      healthCheckNodePort: 0
-      labels: {}
-      loadBalancerIP: ""
-      loadBalancerSourceRanges: []
-      nodePorts:
-        http: ""
-        https: ""
-        tcp: {}
-        udp: {}
-      ports:
-        http: 80
-        https: 443
-      targetPorts:
-        http: http
-        https: https
-      type: LoadBalancer
-    serviceAccount:
-      annotations: {}
-      create: true
-      name: ""
-    sidecars: []
-    tcp: {}
-    tcpConfigMapNamespace: ""
-    terminationGracePeriodSeconds: 60
-    tolerations: []
-    topologySpreadConstraints: []
-    udp: {}
-    udpConfigMapNamespace: ""
-    updateStrategy: {}
-    watchIngressWithoutClass: false
   nodeSelector: {}
   oidc:
-    enabled: {{ .EnableOidc }}
-    accessTokenUri: null
-    clientId: null
-    clientSecret: null
-    emailClaim: null
-    external: false
-    fullNameClaim: null
-    issuer: null
-    keyRetrievalUri: null
-    logoutUri: null
-    postLogoutRedirectUri: null
-    redirectUri: null
-    rolesClaim: null
-    userAuthorizationUri: null
-    userNameClaim: null
-    scopes: ["openid"]
+    enabled: {{ not (eq .OidcConfigType "no-oidc") }}
+{{ .ExternalOidcConf | indent 4 }}
   postgresql:
     audit:
       clientMinMessages: error
@@ -1151,7 +612,7 @@ spec:
     commonAnnotations: {}
     configurationConfigMap: ""
     containerSecurityContext:
-      enabled: true
+      enabled: false
       runAsUser: 1001
     customLivenessProbe: {}
     customReadinessProbe: {}
@@ -1189,9 +650,9 @@ spec:
     initdbPassword: ""
     initdbScripts: {}
     initdbScriptsConfigMap: ""
-    initdbScriptsSecret: postgresql-init-sql-xlr
+    initdbScriptsSecret: postgresql-init-sql-xld
     initdbUser: ""
-    install: {{ .EnablePostgresql }}
+    install: {{ or .EnablePostgresql .UseKeycloakWithEmbeddedDB }}
     ldap:
       baseDN: ""
       bind_password: ""
@@ -1286,7 +747,7 @@ spec:
     postgresqlExtendedConf: {}
     postgresqlInitdbArgs: ""
     postgresqlInitdbWalDir: ""
-    postgresqlMaxConnections: "150"
+    postgresqlMaxConnections: "300"
     postgresqlPassword: postgres
     postgresqlPghbaRemoveFilters: ""
     postgresqlPostgresConnectionLimit: ""
@@ -1380,7 +841,7 @@ spec:
         memory: 256Mi
     schedulerName: ""
     securityContext:
-      enabled: true
+      enabled: false
       fsGroup: 1001
     service:
       annotations: {}
@@ -1397,7 +858,7 @@ spec:
       name: ""
     shmVolume:
       chmod:
-        enabled: true
+        enabled: false
       enabled: true
       sizeLimit: ""
     startupProbe:
@@ -1429,13 +890,13 @@ spec:
         repository: bitnami/bitnami-shell
         tag: 10-debian-10-r233
       securityContext:
-        runAsUser: 0
+        runAsUser: auto
   rabbitmq:
     advancedConfiguration: ""
     affinity: {}
     args: []
     auth:
-      erlangCookie: RELEASERABBITMQCLUSTER
+      erlangCookie: DEPLOYRABBITMQCLUSTER
       existingErlangSecret: ""
       existingPasswordSecret: ""
       password: guest
@@ -1531,18 +992,18 @@ spec:
         - sleep
       enabled: false
     extraConfiguration: |
-      load_definitions = /app/xlr-load_definition.json
+      load_definitions = /app/xld-load_definition.json
       raft.wal_max_size_bytes = 1048576
     extraContainerPorts: []
     extraDeploy: []
     extraEnvVars: []
     extraEnvVarsCM: ""
     extraEnvVarsSecret: ""
-    extraPlugins: rabbitmq_amqp1_0
+    extraPlugins: rabbitmq_jms_topic_exchange
     extraSecrets:
-      xlr-load-definition:
+      xld-load-definition:
         {{- `
-        xlr-load_definition.json: |
+        xld-load_definition.json: |
           {
           "users": [
             {
@@ -1633,7 +1094,7 @@ spec:
       timeoutSeconds: 20
     loadDefinition:
       enabled: true
-      existingSecret: xlr-load-definition
+      existingSecret: xld-load-definition
     logs: '-'
     maxAvailableSchedulers: ""
     memoryHighWatermark:
@@ -1687,7 +1148,7 @@ spec:
       selector: {}
       size: 8Gi
       # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
-      storageClass: {{ .RabbitmqStorageClass }}
+      storageClass: '{{ .RabbitmqStorageClass }}'
       volumes: []
     plugins: rabbitmq_management rabbitmq_peer_discovery_k8s
     podAffinityPreset: ""
@@ -1765,8 +1226,26 @@ spec:
       resources:
         limits: {}
         requests: {}
-  replicaCount: {{ .XlrReplicaCount }}
   resources: {}
+  route:
+    Enabled: true
+    annotations:
+      haproxy.router.openshift.io/cookie_name: SESSION_XLD
+      haproxy.router.openshift.io/disable_cookies: "false"
+      haproxy.router.openshift.io/rewrite-target: /
+    hosts:
+      - '{{ .IngressHost }}'
+    path: /
+  satellite:
+    Enabled: false
   tolerations: []
-  # Convert xl-release.lic files content to base64 ( cat xl-release.lic | base64 -w 0 ) and put the output here
-  xlrLicense: '{{ .License }}'
+  # Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
+  xldLicense: '{{ .License }}'
+  centralConfiguration:
+    replicas: 1
+    image:
+      repository: xebialabsunsupported/central-configuration
+    persistence:
+      annotations: {}
+      pvcSize: 500M
+    migrateFromEmbedded: "false"
