@@ -7,7 +7,7 @@ metadata:
   name: dai-ocp-xld
   {{- end }}
 spec:
-  AdminPassword: admin
+  AdminPassword: '{{ .AdminPassword }}'
   HealthPeriodScans: 10
   HealthProbeFailureThreshold: 12
   HealthProbes: true
@@ -30,14 +30,17 @@ spec:
     Enabled: true
     # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
     StorageClass: '{{ .StorageClass }}'
-    XldMasterPvcSize: 10Gi
-    XldWorkerPvcSize: 10Gi
+    XldMasterPvcSize: {{ .PvcSizeDeploy }}Gi
+    XldWorkerPvcSize: {{ .PvcSizeDeployTaskEngine }}Gi
   # https://docs.xebialabs.com/v.9.8/deploy/how-to/update-the-xl-deploy-digital-certificate/#get-started
   # Convert repository-keystore.jceks files content to base64
   # ( cat repository-keystore.jceks | base64 -w 0 ) and put the output here
   RepositoryKeystore: '{{ .RepositoryKeystore }}'
   UseExistingDB:
+    {{- if eq .EnablePostgresql true }}
     Enabled: false
+    {{- else }}
+    Enabled: true
     # If you want to use an existing database.
     # Set 'postgresql.install' to 'false', Only when we use existing Database for both Deploy and keycloak.
     # Set 'UseExistingDB.Enabled' to 'true'.
@@ -45,14 +48,23 @@ spec:
     # XL_DB_PASSWORD:
     # XL_DB_URL:
     # XL_DB_USERNAME:
+{{ .PostgresqlExternalConfigDeploy | indent 4 }}
+    {{- end }}
   UseExistingMQ:
+    {{- if eq .EnableRabbitmq true }}
     Enabled: false
-    # If you want to use a existing Message Queue, change the "rabbitmq.install to false"
-    # Set 'UseExistingMQ.Enabled' to 'true'.Uncomment the following lines and provide the values.
+    {{- else }}
+    Enabled: true
+    # If you want to use a existing Message Queue.
+    # Set the "rabbitmq.install to false"
+    # Set 'UseExistingMQ.Enabled' to 'true'.
+    # Uncomment the following lines and provide the values.
     # XLD_TASK_QUEUE_DRIVER_CLASS_NAME:
     # XLD_TASK_QUEUE_PASSWORD:
     # XLD_TASK_QUEUE_URL:
     # XLD_TASK_QUEUE_USERNAME:
+{{ .RabbitmqExternalConfigDeploy | indent 4 }}
+    {{- end }}
   XldMasterCount: {{ .XldMasterCount }}
   XldWorkerCount: {{ .XldWorkerCount }}
   affinity: {}
@@ -204,27 +216,21 @@ spec:
         annotations: {}
         enabled: false
         ingressClassName: ""
-        {{- `
         rules:
-          - host: '{{ .Release.Name }}.keycloak.example.com'
+          - host: {{ .KeycloakHost }}
             paths:
               - path: /auth/admin/
                 pathType: Prefix
-      ` -}}
       enabled: false
       ingressClassName: ""
       labels: {}
       rules:
-        - host: '{{ .KeycloakIngressHost }}'
+        - host: {{ .KeycloakHost }}
           paths:
             - path: /
               pathType: Prefix
       servicePort: http
-    {{- if and .UseEmbeddedKeycloak .EnableOidc }}
-    install: true
-    {{- else }}
-    install: false
-    {{- end }}
+    install: {{ eq .OidcConfigType == "embedded" }}
     lifecycleHooks: ""
     livenessProbe: |
       httpGet:
@@ -364,7 +370,7 @@ spec:
         enabled: true
         mountPath: /bitnami/postgresql
         selector: {}
-        size: 8Gi
+        size: {{ .PostgresqlPvcSize }}Gi
         subPath: ""
       postgresqlDataDir: /bitnami/postgresql/data
       postgresqlDatabase: keycloak
@@ -507,7 +513,7 @@ spec:
     route:
       annotations: {}
       enabled: true
-      host: '{{ .IngressHost }}'
+      host: '{{ .KeycloakHost }}'
       labels: {}
       path: /
       tls:
@@ -578,19 +584,8 @@ spec:
     topologySpreadConstraints: null
   nodeSelector: {}
   oidc:
-    accessTokenUri: null
-    clientId: null
-    clientSecret: null
-    enabled: {{ .EnableOidc }}
-    external: false
-    issuer: null
-    keyRetrievalUri: null
-    logoutUri: null
-    postLogoutRedirectUri: null
-    redirectUri: null
-    rolesClaimName: null
-    userAuthorizationUri: null
-    userNameClaimName: null
+    enabled: {{ not (eq .OidcConfigType "no-oidc") }}
+{{ .ExternalOidcConf | indent 4 }}
   postgresql:
     audit:
       clientMinMessages: error
@@ -657,7 +652,7 @@ spec:
     initdbScriptsConfigMap: ""
     initdbScriptsSecret: postgresql-init-sql-xld
     initdbUser: ""
-    install: {{ .EnablePostgresql }}
+    install: {{ or .EnablePostgresql .UseKeycloakWithEmbeddedDB }}
     ldap:
       baseDN: ""
       bind_password: ""
@@ -740,7 +735,7 @@ spec:
       existingClaim: ""
       mountPath: /bitnami/postgresql
       selector: {}
-      size: 8Gi
+      size: {{ .PostgresqlPvcSize }}Gi
       # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
       storageClass: '{{ .PostgresqlStorageClass }}'
       subPath: ""
@@ -1151,7 +1146,7 @@ spec:
       enabled: true
       existingClaim: ""
       selector: {}
-      size: 8Gi
+      size: {{ .RabbitmqPvcSize }}Gi
       # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
       storageClass: '{{ .RabbitmqStorageClass }}'
       volumes: []
@@ -1249,8 +1244,8 @@ spec:
   centralConfiguration:
     replicas: 1
     image:
-      repository: xebialabsunsupported/central-configuration
+      repository: {{ .RepositoryName }}/{{ .ImageNameCc }}
     persistence:
       annotations: {}
-      pvcSize: 500M
+      pvcSize: {{ .PvcSizeCc }}Gi
     migrateFromEmbedded: "false"

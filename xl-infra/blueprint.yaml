@@ -10,20 +10,20 @@ spec:
   parameters:
     - name: K8sSetup
       type: Select
-      prompt: "Select the Kubernetes setup where the digitalai Devops Platform will be installed or uninstalled:"
+      prompt: "Select the Kubernetes setup where the digitalai Devops Platform will be installed, updated or cleaned:"
       options:
         - label: Openshift
           value: Openshift
         - label: AWS EKS
-          value: AwsEKS
+          value: AWSEKS
         - label: Plain multi-node K8s cluster
-          value: PlainK8SCluster
+          value: PlainK8s
         - label: Azure AKS
           value: AzureAKS
         - label: Google Kubernetes Engine
           value: GoogleGKE
       saveInXlvals: true
-      description: "The flavour of Kubernetes to deploy or undeploy the digitalai Devops Platform to. Only the listed options are supported"
+      description: "The flavour of Kubernetes to deploy or undeploy the digitalai Devops Platform to. Only the listed options are supported."
 
     - name: OsType
       type: Input
@@ -40,17 +40,47 @@ spec:
 
     - name: UseCustomNamespace
       type: Confirm
-      default: true
+      default: false
       saveInXlvals: true
-      prompt: "Do you want to use an custom Kubernetes namespace (current default is 'digitalai')?"
-      description: "Use an already existing namespace in your kubernetes cluster for doing an upgrade of the Xebialabs Devops Platform."
+      prompt: "Do you want to use an custom Kubernetes namespace (current default is 'digitalai'):"
+      description: "Type yes to use an already existing namespace, not 'digitalai', in your kubernetes cluster for doing an install, update or clean of the Xebialabs Devops Platform."
 
     - name: Namespace
       type: Input
       promptIf: !expr "UseCustomNamespace"
-      prompt: "Enter the name of the existing Kubernetes namespace where the XebiaLabs DevOps Platform will be installed, updated or undeployed:"
+      prompt: "Enter the name of the existing Kubernetes namespace where the XebiaLabs DevOps Platform will be installed, updated or cleaned:"
       default: digitalai
       saveInXlvals: true
       ignoreIfSkipped: true
-      description: "The existing Kubernetes namespace to install, update or undeploy the XebiaLabs Devops Platform "
+      description: "Type the name of the existing Kubernetes namespace to install, update or clean the XebiaLabs Devops Platform."
+
+    - name: ServerType
+      type: Select
+      prompt: "Product server you want to perform upgrade for:"
+      options:
+        - label: Digital.ai Release
+          value: dai-release
+        - label: Digital.ai Deploy
+          value: dai-deploy
+      saveInXlvals: true
+      description: Select product server you want to perform upgrade for.
+
+    - name: ShortServerName
+      type: Input
+      saveInXlvals: true
+      value: !expr "ServerType == 'dai-release' ? 'xlr' : 'xld'"
+      description: Short product server used for filtering in the blueprints.
+
+    - name: GenerationDateTime
+      type: Input
+      saveInXlvals: true
+      value: !expr "os('_datetime')"
+      description: Generation date and time.
+
+    - name: CleanBefore
+      type: Confirm
+      overrideDefault: true
+      prompt: "Should cleqn occur before the apply files to cluster:"
+      saveInXlvals: true
+      
   files: []
