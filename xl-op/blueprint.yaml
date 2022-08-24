@@ -42,7 +42,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 22.3.0-819.113
+      default: 22.3.0-824.113
       description: Enter the image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -175,7 +175,7 @@ spec:
       prompt: "Provide DNS name for accessing UI of the server:"
       promptIf: !expr ProcessType == "install" && IngressType != "none"
       description: Provide DNS name for accessing UI of the server
-      validate: !expr "regex('^[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}$', IngressHost)" 
+      validate: !expr "regex('^[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}$', IngressHost)"
     - name: IngressTlsSecretName
       type: Select
       options:
@@ -251,7 +251,7 @@ spec:
       promptIf: !expr OidcConfigType == 'embedded' && (ProcessType == 'install' || ProcessType == 'upgrade')
       prompt: "Enter Keycloak public URL:"
       description: Enter Keycloak public URL that will be used for keycloak installation.
-      validate: !expr "regex('^[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}$', KeycloakHost)" 
+      validate: !expr "regex('^[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}$', KeycloakHost)"
     - name: ExternalOidcConf
       type: Editor
       prompt: "Configure external oidc setup:"
@@ -294,7 +294,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-deploy' && K8sSetup != 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:22.3.0-819.113
+      default: xebialabsunsupported/deploy-operator:22.3.0-824.113
       description: Enter the operator image to use
     - name: OperatorImageDeployOpenshift
       type: Input
@@ -303,7 +303,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-deploy' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:22.3.0-819.113-openshift
+      default: xebialabsunsupported/deploy-operator:22.3.0-824.113-openshift
       description: Enter the operator image to use
     - name: OperatorImageReleaseGeneric
       type: Input
@@ -312,7 +312,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-release' && K8sSetup != 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/release-operator:22.3.0-819.113
+      default: xebialabsunsupported/release-operator:22.3.0-824.113
       description: Enter the operator image to use
     - name: OperatorImageReleaseOpenshift
       type: Input
@@ -321,7 +321,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-release' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/release-operator:22.3.0-819.113-openshift
+      default: xebialabsunsupported/release-operator:22.3.0-824.113-openshift
       description: Enter the operator image to use
     - name: LicenseSource
       type: Select
@@ -352,7 +352,7 @@ spec:
       overrideDefault: true
       prompt: "Provide license file for the server:"
       promptIf: !expr ProcessType == "install" && LicenseSource == "file"
-      description: "Provide license file for the server"      
+      description: "Provide license file for the server"
       validate: !expr "isFile(LicenseFile)"
       default: ""
     - name: License
@@ -393,7 +393,7 @@ spec:
       promptIf: !expr "ProcessType == 'install' && RepositoryKeystoreSource == 'file'"
       description: "Provide repository keystore for the server, generated with: `keytool -genseckey -alias deployit-passsword-key -keyalg aes -keysize 128 -keypass deployit -keystore repository-keystore.jceks -storetype jceks -storepass <KeystorePassphrase>`"
       validate: !expr "isFile(RepositoryKeystoreFile)"
-      default: ""      
+      default: ""
     - name: RepositoryKeystore
       type: Input
       saveInXlvals: true
