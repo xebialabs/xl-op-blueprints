@@ -80,7 +80,7 @@ spec:
     - name: CleanBefore
       type: Confirm
       overrideDefault: true
-      prompt: "Should cleqn occur before the apply files to cluster:"
+      prompt: "Should clean occur before the apply files to cluster:"
       saveInXlvals: true
       
   files: []
