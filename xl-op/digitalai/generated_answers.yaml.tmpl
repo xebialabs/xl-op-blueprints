@@ -1,0 +1,84 @@
+K8sSetup: {{ .K8sSetup }}
+UseCustomNamespace: {{ .UseCustomNamespace }}
+Namespace: {{ .Namespace }}
+ServerType: {{ .ServerType }}
+RepositoryName: {{ .RepositoryName }}
+ImageTag: {{ .ImageTag }}
+{{- if eq .ServerType "dai-deploy" }}
+ImageNameDeploy: {{ .ImageNameDeploy }}
+ImageNameDeployTaskEngine: {{ .ImageNameDeployTaskEngine }}
+OperatorImageDeployGeneric: {{ .OperatorImageDeployGeneric }}
+OperatorImageDeployOpenshift: {{ .OperatorImageDeployOpenshift }}
+XldMasterCount: {{ .XldMasterCount }}
+XldWorkerCount: {{ .XldWorkerCount }}
+  {{- if eq .ProcessType "upgrade" }}
+PreserveCrValuesDeploy: |-
+{{ .PreserveCrValuesDeploy | indent 2 }}
+  {{- end }}
+PostgresqlExternalConfigDeploy: |-
+{{ .PostgresqlExternalConfigDeploy | indent 2 }}
+RabbitmqExternalConfigDeploy: |-
+{{ .RabbitmqExternalConfigDeploy | indent 2 }}
+{{- end }}
+{{- if eq .ServerType "dai-release" }}
+ImageNameRelease: {{ .ImageNameRelease }}
+OperatorImageReleaseGeneric: {{ .OperatorImageReleaseGeneric }}
+OperatorImageReleaseOpenshift: {{ .OperatorImageReleaseOpenshift }}
+XlrReplicaCount: {{ .XlrReplicaCount }}
+  {{- if eq .ProcessType "upgrade" }}
+PreserveCrValuesRelease: |-
+{{ .PreserveCrValuesRelease | indent 2 }}
+  {{- end }}
+PostgresqlExternalConfigRelease: |-
+{{ .PostgresqlExternalConfigRelease | indent 2  }}
+RabbitmqExternalConfigRelease: |-
+{{ .RabbitmqExternalConfigRelease | indent 2 }}
+{{- end }}
+OidcConfigTypeInstall: '{{ .OidcConfigTypeInstall }}'
+OidcConfigTypeUpgrade: '{{ .OidcConfigTypeUpgrade }}'
+ExternalOidcConf: |-
+{{ .ExternalOidcConf | indent 2 }}
+KeycloakHost: '{{ .KeycloakHost }}'
+UseKeycloakWithEmbeddedDB: '{{ .UseKeycloakWithEmbeddedDB }}'
+KeycloakIngressHost: '{{ .KeycloakIngressHost }}'
+{{- if eq .ProcessType "install" }}
+IngressType: '{{ .IngressType }}'
+ExternalIngressClass: '{{ .ExternalIngressClass }}'
+EnableIngressTls: {{ .EnableIngressTls }}
+IngressTlsSecretName: '{{ .IngressTlsSecretName }}'
+AdminPassword: '{{ .AdminPassword }}'
+StorageClass: '{{ .StorageClass }}'
+IngressHost: '{{ .IngressHost }}'
+EnablePostgresql: {{ .EnablePostgresql }}
+PostgresqlStorageClass: '{{ .PostgresqlStorageClass }}'
+EnableRabbitmq: {{ .EnableRabbitmq }}
+RabbitmqReplicaCount: '{{ .RabbitmqReplicaCount }}'
+RabbitmqStorageClass: '{{ .RabbitmqStorageClass }}'
+LicenseSource: '{{ .LicenseSource }}'
+LicenseEditor: '{{ .LicenseEditor }}'
+LicenseFile: '{{ .LicenseFile }}'
+RepositoryKeystoreSource: '{{ .RepositoryKeystoreSource }}'
+RepositoryKeystoreEditor: '{{ .RepositoryKeystoreEditor }}'
+RepositoryKeystoreFile: '{{ .RepositoryKeystoreFile }}'
+KeystorePassphrase: '{{ .KeystorePassphrase }}'
+PostgresqlPvcSize: '{{ .PostgresqlPvcSize }}'
+RabbitmqPvcSize: '{{ .RabbitmqPvcSize }}'
+  {{- if eq .ServerType "dai-release" }}
+PvcSizeRelease: '{{ .PvcSizeRelease }}'
+  {{- end }}
+  {{- if eq .ServerType "dai-deploy" }}
+PvcSizeDeploy: '{{ .PvcSizeDeploy }}'
+PvcSizeDeployTaskEngine: '{{ .PvcSizeDeployTaskEngine }}'
+PvcSizeCc: '{{ .PvcSizeCc }}'
+  {{- end }}
+{{- end }}
+{{- if eq .ProcessType "upgrade" }}
+UpgradeType: {{ .UpgradeType }}
+  {{- if eq .UpgradeType "operatorToOperator" }}
+CrdName: '{{ .CrdName }}'
+CrName: '{{ .CrName }}'
+  {{- end }}
+  {{- if eq .UpgradeType "helmToOperator" }}
+ReleaseName: '{{ .ReleaseName }}'
+  {{- end }}
+{{- end }}
