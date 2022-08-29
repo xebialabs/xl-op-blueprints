@@ -570,7 +570,7 @@ spec:
     topologySpreadConstraints: null
   nodeSelector: {}
   oidc:
-    enabled: {{ not eq (.OidcConfigType "no-oidc") }}
+    enabled: {{ not (eq .OidcConfigType "no-oidc") }}
 {{ .ExternalOidcConf | indent 4 }}
   postgresql:
     audit:
