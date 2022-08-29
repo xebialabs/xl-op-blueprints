@@ -36,7 +36,7 @@ spec:
   # https://docs.xebialabs.com/v.9.8/release/how-to/update-the-xl-release-digital-certificate/#view-the-certificate
   # Convert repository-keystore.jceks files content to base64
   # ( cat repository-keystore.jceks | base64 -w 0 ) and put the output here
-  RepositoryKeystore: '{{ .RepositoryKeystore }}'
+  RepositoryKeystore: '{{ trim .RepositoryKeystore }}'
   UseExistingDB:
     {{- if eq .EnablePostgresql true }}
     Enabled: false
@@ -1225,4 +1225,4 @@ spec:
     path: /
   tolerations: []
   # Convert xl-release.lic files content to base64 ( cat xl-release.lic | base64 -w 0 ) and put the output here
-  xlrLicense: '{{ .License }}'
+  xlrLicense: '{{ trim .License }}'

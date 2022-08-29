@@ -326,9 +326,9 @@ spec:
     - name: LicenseSource
       type: Select
       options:
-        - label: File
+        - label: Path to the license file (the file can be in clean text or base64 encoded)
           value: file
-        - label: Copy/Paste the license to editor
+        - label: Copy/Paste the license to editor (the text can be in clean text or base64 encoded)
           value: editor
       saveInXlvals: true
       ignoreIfSkipped: true
@@ -364,9 +364,9 @@ spec:
     - name: RepositoryKeystoreSource
       type: Select
       options:
-        - label: File
+        - label: Path to the repository keystore file (the file can be in the raw format or base64 encoded)
           value: file
-        - label: Copy/Paste the repositry keystore to editor
+        - label: Copy/Paste the repository keystore to editor (the content needs to be base64 encoded)
           value: editor
       saveInXlvals: true
       ignoreIfSkipped: true
