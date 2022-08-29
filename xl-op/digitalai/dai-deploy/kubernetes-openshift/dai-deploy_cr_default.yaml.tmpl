@@ -230,7 +230,7 @@ spec:
             - path: /
               pathType: Prefix
       servicePort: http
-    install: {{ eq .OidcConfigType == "embedded" }}
+    install: {{ eq .OidcConfigType "embedded" }}
     lifecycleHooks: ""
     livenessProbe: |
       httpGet:
