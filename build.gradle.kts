@@ -20,6 +20,9 @@ buildscript {
     dependencies {
         classpath("com.xebialabs.gradle.plugins:gradle-commit:${properties["gradleCommitPluginVersion"]}")
         classpath("com.xebialabs.gradle.plugins:gradle-xl-defaults-plugin:${properties["xlDefaultsPluginVersion"]}")
+        classpath("com.xebialabs.gradle.plugins:gradle-xl-plugins-plugin:${properties["xlPluginsPluginVersion"]}")
+        classpath("com.xebialabs.gradle.plugins:integration-server-gradle-plugin:${properties["integrationServerGradlePluginVersion"]}")
+
     }
 }
 
@@ -33,6 +36,9 @@ plugins {
 }
 
 apply(plugin = "ai.digital.gradle-commit")
+apply(plugin = "com.xebialabs.dependency")
+
+apply(plugin = "kotlin")
 
 group = "ai.digital.xlclient.blueprints"
 project.defaultTasks = listOf("build")
@@ -62,7 +68,6 @@ idea {
 dependencies {
     implementation(gradleApi())
     implementation(gradleKotlinDsl())
-
 }
 
 java {
@@ -70,8 +75,16 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-tasks.named<Test>("test") {
-    useJUnitPlatform()
+subprojects {
+    apply(plugin = "kotlin")
+
+    repositories {
+        mavenLocal()
+        gradlePluginPortal()
+        maven {
+            url = uri("https://plugins.gradle.org/m2/")
+        }
+    }
 }
 
 tasks {

@@ -35,7 +35,7 @@ spec:
   # https://docs.xebialabs.com/v.9.8/deploy/how-to/update-the-xl-deploy-digital-certificate/#get-started
   # Convert repository-keystore.jceks files content to base64
   # ( cat repository-keystore.jceks | base64 -w 0 ) and put the output here
-  RepositoryKeystore: '{{ .RepositoryKeystore }}'
+  RepositoryKeystore: '{{ trim .RepositoryKeystore }}'
   UseExistingDB:
     {{- if eq .EnablePostgresql true }}
     Enabled: false
@@ -1240,7 +1240,7 @@ spec:
     Enabled: false
   tolerations: []
   # Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
-  xldLicense: '{{ .License }}'
+  xldLicense: '{{ trim .License }}'
   centralConfiguration:
     replicas: 1
     image:
