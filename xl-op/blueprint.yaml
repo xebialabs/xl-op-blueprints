@@ -256,46 +256,208 @@ spec:
       prompt: "Enter Keycloak public URL:"
       description: Enter Keycloak public URL that will be used for keycloak installation.
       validate: !expr "regex('^[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}$', KeycloakHost)"
-    - name: ExternalOidcConfGeneric
+    - name: ExternalOidcConfGenericDeploy
       type: Editor
       prompt: "Configure external oidc setup:"
-      promptIf: !expr OidcConfigType == 'external' && (ProcessType == 'install' || ProcessType == 'upgrade')
+      promptIf: !expr ServerType == 'dai-deploy' && OidcConfigType == 'external' && (ProcessType == 'install' || ProcessType == 'upgrade')
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       default: |-
         external: true
-        accessTokenUri: null
-        clientId: null
-        clientSecret: null
-        emailClaim: null
-        fullNameClaim: null
-        issuer: null
-        keyRetrievalUri: null
-        logoutUri: null
-        postLogoutRedirectUri: null
-        redirectUri: null
-        rolesClaim: null
-        userAuthorizationUri: null
-        userNameClaim: null
+        accessTokenUri: ""
+        clientId: ""
+        clientSecret: ""
+        emailClaim: ""
+        issuer: ""
+        keyRetrievalUri: ""
+        logoutUri: ""
+        postLogoutRedirectUri: ""
+        redirectUri: ""
+        rolesClaimName: ""
+        userAuthorizationUri: ""
+        userNameClaimName: ""
+        scopes: ""
+        loginMethodDescription: ""
+        accessToken:
+          audience: ""
+          enable: false
+          issuer: ""
+          jwsAlg: ""
+          keyRetrievalUri: ""
+          secretKey: ""
+        clientAuthJwt:
+          enable: false
+          jwsAlg: ""
+          keyStore:
+            enable: false
+            path: ""
+            password: ""
+            type: ""
+          key:
+            alias: ""
+            enable: false
+            password: ""
+          tokenKeyId: ""
+        clientAuthMethod: ""
+        externalIdClaim: ""
+        idTokenJWSAlg: ""
+        proxyHost: ""
+        proxyPort: ""
+    - name: ExternalOidcConfGenericRelease
+      type: Editor
+      prompt: "Configure external oidc setup:"
+      promptIf: !expr ServerType == 'dai-release' && OidcConfigType == 'external' && (ProcessType == 'install' || ProcessType == 'upgrade')
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      default: |-
+        external: true
+        accessTokenUri: ""
+        clientId: ""
+        clientSecret: ""
+        emailClaim: ""
+        fullNameClaim: ""
+        issuer: ""
+        keyRetrievalUri: ""
+        logoutUri: ""
+        postLogoutRedirectUri: ""
+        redirectUri: ""
+        rolesClaim: ""
+        userAuthorizationUri: ""
+        userNameClaim: ""
         scopes: '["openid"]'
-    - name: IdentityServiceConf
+        accessToken:
+          audience: ""
+          enable: false
+          issuer: ""
+          jwsAlg: ""
+          keyRetrievalUri: ""
+          secretKey: ""
+        clientAuthJwt:
+          enable: false
+          jwsAlg: ""
+          keyStore:
+            enable: false
+            path: ""
+            password: ""
+            type: ""
+          key:
+            alias: ""
+            enable: false
+            password: ""
+          tokenKeyId: ""
+        clientAuthMethod: ""
+        externalIdClaim: ""
+        idTokenJWSAlg: ""
+        proxyHost: ""
+        proxyPort: ""
+    - name: ExternalOidcConfGeneric
+      type: Input
+      saveInXlvals: true
+      value: !expr "ServerType == 'dai-deploy' ? ExternalOidcConfGenericDeploy : ExternalOidcConfGenericRelease"
+      description: The type of the OIDC configuration
+    - name: IdentityServiceConfDeploy
       type: Editor
       prompt: "Configure Identity Service setup:"
-      promptIf: !expr OidcConfigType == 'identity-service' && (ProcessType == 'install' || ProcessType == 'upgrade')
+      promptIf: !expr ServerType == 'dai-deploy' && OidcConfigType == 'identity-service' && (ProcessType == 'install' || ProcessType == 'upgrade')
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       default: |-
         external: true
-        clientId: null
-        clientSecret: null
-        issuer: null
-        redirectUri: null
-        postLogoutRedirectUri: null
-        rolesClaim: null
-        userNameClaim: null
+        clientId: ""
+        clientSecret: ""
+        issuer: ""
+        redirectUri: ""
+        postLogoutRedirectUri: ""
+        rolesClaimName: ""
+        userNameClaimName: ""
         scopes: ["openid"]
+        emailClaim: ""
+        fullNameClaim: ""
+        keyRetrievalUri: ""
+        logoutUri: ""
+        userAuthorizationUri: ""
+        accessTokenUri: ""
+        accessToken:
+          audience: ""
+          enable: false
+          issuer: ""
+          jwsAlg: ""
+          keyRetrievalUri: ""
+          secretKey: ""
+        clientAuthJwt:
+          enable: false
+          jwsAlg: ""
+          keyStore:
+            enable: false
+            path: ""
+            password: ""
+            type: ""
+          key:
+            alias: ""
+            enable: false
+            password: ""
+          tokenKeyId: ""
+        clientAuthMethod: ""
+        externalIdClaim: ""
+        idTokenJWSAlg: ""
+        proxyHost: ""
+        proxyPort: ""
+    - name: IdentityServiceConfRelease
+      type: Editor
+      prompt: "Configure Identity Service setup:"
+      promptIf: !expr ServerType == 'dai-release' && OidcConfigType == 'identity-service' && (ProcessType == 'install' || ProcessType == 'upgrade')
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      default: |-
+        external: true
+        clientId: ""
+        clientSecret: ""
+        issuer: ""
+        redirectUri: ""
+        postLogoutRedirectUri: ""
+        rolesClaim: ""
+        userNameClaim: ""
+        scopes: ["openid"]
+        emailClaim: ""
+        fullNameClaim: ""
+        keyRetrievalUri: ""
+        logoutUri: ""
+        userAuthorizationUri: ""
+        accessTokenUri: ""
+        accessToken:
+          audience: ""
+          enable: false
+          issuer: ""
+          jwsAlg: ""
+          keyRetrievalUri: ""
+          secretKey: ""
+        clientAuthJwt:
+          enable: false
+          jwsAlg: ""
+          keyStore:
+            enable: false
+            path: ""
+            password: ""
+            type: ""
+          key:
+            alias: ""
+            enable: false
+            password: ""
+          tokenKeyId: ""
+        clientAuthMethod: ""
+        externalIdClaim: ""
+        idTokenJWSAlg: ""
+        proxyHost: ""
+        proxyPort: ""
+    - name: IdentityServiceConf
+      type: Input
+      saveInXlvals: true
+      value: !expr "ServerType == 'dai-deploy' ? IdentityServiceConfDeploy : IdentityServiceConfRelease"
+      description: The type of the OIDC configuration
     - name: ExternalOidcConf
       type: Input
       saveInXlvals: true
