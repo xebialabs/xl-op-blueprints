@@ -463,18 +463,6 @@ spec:
       saveInXlvals: true
       value: !expr "OidcConfigType == 'identity-service' ? IdentityServiceConf : ExternalOidcConfGeneric"
       description: The type of the OIDC configuration
-    - name: UpgradeType
-      type: Select
-      prompt: "Select the type of upgrade you want:"
-      ignoreIfSkipped: true
-      options:
-        - label: Operator to Operator
-          value: operatorToOperator
-        - label: Helm to Operator
-          value: helmToOperator
-      promptIf: !expr ProcessType == "upgrade"
-      saveInXlvals: true
-      description: Type of upgrade you want?
     - name: OperatorImageDeployGeneric
       type: Input
       saveInXlvals: true
@@ -552,6 +540,8 @@ spec:
     - name: RepositoryKeystoreSource
       type: Select
       options:
+        - label: Generate the repository keystore during installation (you need to have keytool utility installed in your path)
+          value: generate
         - label: Path to the repository keystore file (the file can be in the raw format or base64 encoded)
           value: file
         - label: Copy/Paste the repository keystore to editor (the content needs to be base64 encoded)
@@ -562,7 +552,7 @@ spec:
       prompt: "Select source of the repository keystore:"
       promptIf: !expr ProcessType == "install"
       description: "Provide source of the license file"
-      default: file
+      default: generate
     - name: RepositoryKeystoreEditor
       type: Editor
       saveInXlvals: true
@@ -596,6 +586,7 @@ spec:
       prompt: "Provide keystore passphrase:"
       promptIf: !expr ProcessType == "install"
       description: Keystore passphrase for the server
+      default: !expr "RepositoryKeystoreSource == 'generate' ? randPassword() : ''"
     - name: StorageClass
       type: Select
       options:
