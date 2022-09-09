@@ -509,7 +509,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Select source of the licenase:"
+      prompt: "Select source of the license:"
       promptIf: !expr ProcessType == "install"
       description: "Provide source of the license file"
       default: file
