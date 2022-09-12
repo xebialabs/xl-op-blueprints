@@ -140,14 +140,15 @@ spec:
           value: nginx
         - label: HAProxy
           value: haproxy
-        - label: External
+        - label: External - IngressClass resource should already exist
           value: external
-        - label: None
+        - label: None - Ingress will not be set up during installation
           value: none
-      promptIf: !expr ProcessType == "install"
+      promptIf: !expr ProcessType == "install" && K8sSetup != 'Openshift'
       saveInXlvals: true
       default: !expr "K8sSetup == 'PlainK8s' ? 'none' : 'nginx'"
       description: Select between supported ingress types?
+      validate: !expr "regex('.*external.*', IngressType) ? length(k8sResources(Namespace, 'ingressclasses')) > '0' : true"
     - name: ExternalIngressClass
       type: Select
       options:
@@ -156,7 +157,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide external ingress class:"
-      promptIf: !expr ProcessType == "install" && IngressType == "external"
+      promptIf: !expr ProcessType == "install" && K8sSetup != 'Openshift' && IngressType == "external"
       description: External ingress class
     - name: EnableIngressTls
       type: Confirm
@@ -165,7 +166,7 @@ spec:
       ignoreIfSkipped: false
       overrideDefault: true
       prompt: "Do you want to enable an TLS/SSL configuration:"
-      promptIf: !expr ProcessType == "install" && IngressType != "none"
+      promptIf: !expr ProcessType == "install" && K8sSetup != 'Openshift' && IngressType != "none"
       description: "Enable TLS/SSL in the Ingress configuration."
     - name: IngressHost
       type: Input
@@ -183,8 +184,8 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Provide DNS name for accessing UI of the server:"
-      promptIf: !expr EnableIngressTls && ProcessType == "install" && IngressType != "none"
+      prompt: "Provide the TLS secret name with the key and certificate:"
+      promptIf: !expr EnableIngressTls && ProcessType == "install" && K8sSetup != 'Openshift' && IngressType != "none"
       description: Provide the TLS secret name with the key and certificate
     - name: AdminPassword
       type: Input
