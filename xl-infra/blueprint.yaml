@@ -72,7 +72,7 @@ spec:
         - label: Digital.ai Deploy
           value: dai-deploy
       saveInXlvals: true
-      description: !expr "'Select product server you want to perform ' + ProcessType + ' for:'"
+      description: !expr "'Select product server you want to perform ' + ProcessType + ' for.'"
 
     - name: ShortServerName
       type: Input
