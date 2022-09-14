@@ -65,14 +65,14 @@ spec:
       
     - name: ServerType
       type: Select
-      prompt: "Product server you want to perform upgrade for:"
+      prompt: !expr "'Product server you want to perform ' + ProcessType + ' for:'"
       options:
         - label: Digital.ai Release
           value: dai-release
         - label: Digital.ai Deploy
           value: dai-deploy
       saveInXlvals: true
-      description: Select product server you want to perform upgrade for.
+      description: !expr "'Select product server you want to perform ' + ProcessType + ' for.'"
 
     - name: ShortServerName
       type: Input
