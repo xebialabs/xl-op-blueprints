@@ -1105,7 +1105,11 @@ spec:
   nodeSelector: {}
   oidc:
     enabled: {{ not (eq .OidcConfigType "no-oidc") }}
+{{- if eq .OidcConfigType "embedded" }}
+    external: false
+{{- else }}
 {{ .ExternalOidcConf | indent 4 }}
+{{ end }}
   postgresql:
     audit:
       clientMinMessages: error
