@@ -462,8 +462,8 @@ spec:
     - name: ExternalOidcConf
       type: Input
       saveInXlvals: true
-      value: !expr "OidcConfigType == 'identity-service' ? IdentityServiceConf : ExternalOidcConfGeneric"
-      description: The type of the OIDC configuration
+      value: !expr "OidcConfigType == 'identity-service' ? IdentityServiceConf : (OidcConfigType == 'external' ? ExternalOidcConfGeneric : 'external: false')"
+      description: The external OIDC configuration based on OIDC type. Default OIDC configuration for embedded keycloak and No OIDC Configuration will have disabled external OIDC setup
     - name: OperatorImageDeployGeneric
       type: Input
       saveInXlvals: true
