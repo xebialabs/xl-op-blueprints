@@ -30,7 +30,7 @@ spec:
   UseIpAsHostname: false
   ForceRemoveMissingTypes: false
   Persistence:
-    AccessMode: ReadWriteOnce
+    AccessMode: {{ .AccessModeRelease }}
     Annotations:
       helm.sh/resource-policy: "keep"
     Enabled: true
