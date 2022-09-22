@@ -82,6 +82,18 @@ spec:
       default: 10
       description: "Enter PVC size for Deploy master"
       validate: !expr "regex('^([0-9])+(\\.)?([0-9])*$', PvcSizeDeploy)"
+    - name: AccessModeDeploy
+      type: Select
+      prompt: "Select between supported Access Modes:"
+      options:
+        - label: ReadWriteOnce
+          value: ReadWriteOnce
+        - label: ReadWriteMany
+          value: ReadWriteMany
+      promptIf: !expr "ServerType == 'dai-deploy' && ProcessType == 'install'"
+      saveInXlvals: true
+      default: ReadWriteOnce
+      description: Select between supported Access Modes to define if the volume can be mounted as read-write by a single node (ReadWriteOnce) or by many nodes (ReadWriteMany).
     - name: XldWorkerCount
       type: Input
       saveInXlvals: true
@@ -132,6 +144,18 @@ spec:
       default: 8
       description: Enter PVC size for Release
       validate: !expr "regex('^([0-9])+(\\.)?([0-9])*$', PvcSizeRelease)"
+    - name: AccessModeRelease
+      type: Select
+      prompt: "Select between supported Access Modes:"
+      options:
+        - label: ReadWriteOnce
+          value: ReadWriteOnce
+        - label: ReadWriteMany
+          value: ReadWriteMany
+      promptIf: !expr "ServerType == 'dai-release' && ProcessType == 'install'"
+      saveInXlvals: true
+      default: ReadWriteMany
+      description: Select between supported Access Modes to define if the volume can be mounted as read-write by a single node (ReadWriteOnce) or by many nodes (ReadWriteMany).
     - name: IngressType
       type: Select
       prompt: "Select between supported ingress types:"
@@ -768,6 +792,7 @@ spec:
         .spec.ingress
         .spec.KeystorePassphrase
         .spec.Persistence.StorageClass
+        .spec.Persistence.AccessMode
         .spec.Persistence.XldMasterPvcSize
         .spec.Persistence.XldWorkerPvcSize
         .spec.RepositoryKeystore
@@ -815,6 +840,7 @@ spec:
         .spec.RepositoryKeystore
         .spec.postgresql.persistence.size
         .spec.postgresql.persistence.storageClass
+        .spec.Persistence.AccessMode
         .spec.postgresql.postgresqlMaxConnections
         .spec.haproxy-ingress.install
         .spec.nginx-ingress-controller.install
