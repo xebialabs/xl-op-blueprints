@@ -750,10 +750,10 @@ spec:
         - !expr k8sResources(Namespace, 'crd')
       saveInXlvals: true
       promptIf: !expr "((CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, 'crd', '', ShortServerName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator')"
-      prompt: "Enter the name of custom resource definition:"
+      prompt: "Enter the name of custom resource definition you want to reuse or replace:"
       ignoreIfSkipped: true
       overrideDefault: true
-      description: The name of your custom resource definition.
+      description: The name of custom resource definition that you want to reuse or replace (delete).
       default: !expr "CleanBefore || ProcessType == 'clean' || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator') ? k8sResource(Namespace, 'crd', ShortServerName) : ''"
     - name: IsCrdReused
       type: Confirm
