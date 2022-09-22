@@ -25,7 +25,7 @@ spec:
   # ImagePullSecret: xlDeploy
   KeystorePassphrase: '{{ .KeystorePassphrase }}'
   Persistence:
-    AccessMode: ReadWriteOnce
+    AccessMode: {{ .AccessModeDeploy }}
     Annotations: {}
     Enabled: true
     # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
