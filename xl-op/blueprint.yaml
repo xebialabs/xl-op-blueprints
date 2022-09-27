@@ -96,7 +96,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-      default: xebialabsunsupported/release-operator:22.0.9
+      default: xebialabs/release-operator:22.0.9
       description: Enter the operator image to use
     - name: OperatorImageReleaseOpenshift
       type: Input
@@ -105,7 +105,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-      default: xebialabsunsupported/release-operator:22.0.9-openshift
+      default: xebialabs/release-operator:22.0.9-openshift
       description: Enter the operator image to use
     - name: UseOperatorZipDeploy
       type: Confirm
