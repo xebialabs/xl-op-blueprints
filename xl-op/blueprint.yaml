@@ -189,10 +189,10 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: false
       overrideDefault: true
-      prompt: "Do you want to enable an TLS/SSL configuration:"
+      prompt: "Do you want to enable an TLS/SSL configuration (if yes, requires existing TLS secret in the namespace):"
       promptIf: !expr ProcessType == "install" && K8sSetup != 'Openshift' && IngressType != "none"
       description: "Enable TLS/SSL in the Ingress configuration if you already have the TLS secret with the key and certificate created."
-      validate: !expr "length(k8sResources(Namespace, 'secrets')) > '0'"
+      validate: !expr "EnableIngressTls ? length(k8sResources(Namespace, 'secrets')) > '0' : true"
     - name: IngressHost
       type: Input
       saveInXlvals: true
