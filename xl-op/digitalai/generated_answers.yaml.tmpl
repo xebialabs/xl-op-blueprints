@@ -37,8 +37,14 @@ RabbitmqExternalConfigRelease: |-
 {{- end }}
 OidcConfigTypeInstall: '{{ .OidcConfigTypeInstall }}'
 OidcConfigTypeUpgrade: '{{ .OidcConfigTypeUpgrade }}'
-ExternalOidcConf: |-
-{{ .ExternalOidcConf | indent 2 }}
+ExternalOidcConfGenericDeploy: |-
+{{ .ExternalOidcConfGenericDeploy | indent 2 }}
+ExternalOidcConfGenericRelease: |-
+{{ .ExternalOidcConfGenericRelease | indent 2 }}
+IdentityServiceConfDeploy: |-
+{{ .IdentityServiceConfDeploy | indent 2 }}
+IdentityServiceConfRelease: |-
+{{ .IdentityServiceConfRelease | indent 2 }}
 KeycloakHost: '{{ .KeycloakHost }}'
 UseKeycloakWithEmbeddedDB: '{{ .UseKeycloakWithEmbeddedDB }}'
 KeycloakIngressHost: '{{ .KeycloakIngressHost }}'
@@ -66,11 +72,13 @@ PostgresqlPvcSize: '{{ .PostgresqlPvcSize }}'
 RabbitmqPvcSize: '{{ .RabbitmqPvcSize }}'
   {{- if eq .ServerType "dai-release" }}
 PvcSizeRelease: '{{ .PvcSizeRelease }}'
+AccessModeRelease: '{{ .AccessModeRelease }}'
   {{- end }}
   {{- if eq .ServerType "dai-deploy" }}
 PvcSizeDeploy: '{{ .PvcSizeDeploy }}'
 PvcSizeDeployTaskEngine: '{{ .PvcSizeDeployTaskEngine }}'
 PvcSizeCc: '{{ .PvcSizeCc }}'
+AccessModeDeploy: '{{ .AccessModeDeploy }}'
   {{- end }}
 {{- end }}
 {{- if eq .ProcessType "upgrade" }}
