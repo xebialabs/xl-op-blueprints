@@ -431,10 +431,10 @@ spec:
         mountPath: "/realm/"
         readOnly: true
     {{- `
-      extraVolumes: |
-        - name: realm-config
-          configMap:
-            name: {{ .Release.Name }}-realm
+    extraVolumes: |
+      - name: realm-config
+        configMap:
+          name: {{ .Release.Name }}-realm
     ` -}}
     fullnameOverride: ""
     global: {}
