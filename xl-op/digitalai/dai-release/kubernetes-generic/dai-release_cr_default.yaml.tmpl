@@ -47,13 +47,13 @@ spec:
     {{- else }}
     Enabled: true
     # If you want to use an existing database.
-    # Set 'postgresql.install' to 'false', Only when we use existing Database for both Deploy and keycloak.
+    # Set 'postgresql.install' to 'false', Only when we use existing Database for both Release and keycloak.
     # Set 'UseExistingDB.Enabled' to 'true'.
     # Uncomment the following lines and provide the values.
     # XL_DB_PASSWORD:
     # XL_DB_URL:
     # XL_DB_USERNAME:
-{{ .PostgresqlExternalConfigDeploy | indent 4 }}
+{{ .PostgresqlExternalConfigRelease | indent 4 }}
     {{- end }}
   UseExistingMQ:
     {{- if eq .EnableRabbitmq true }}
@@ -68,7 +68,7 @@ spec:
     # XLD_TASK_QUEUE_PASSWORD:
     # XLD_TASK_QUEUE_URL:
     # XLD_TASK_QUEUE_USERNAME:
-{{ .RabbitmqExternalConfigDeploy | indent 4 }}
+{{ .RabbitmqExternalConfigRelease | indent 4 }}
     {{- end }}
   affinity: {}
   release:

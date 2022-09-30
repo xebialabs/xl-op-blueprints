@@ -629,7 +629,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Do you want to enable an PostgreSQL:"
+      prompt: "Do you want to install a new PostgreSQL on the cluster:"
       promptIf: !expr ProcessType == "install"
       description: "Enable PostgreSQL."
     - name: PostgresqlStorageClass
@@ -657,9 +657,9 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Edit PostgreSQL external setup:"
+      prompt: "Edit database external setup:"
       promptIf: !expr "ServerType == 'dai-release' && ProcessType == 'install' && EnablePostgresql == false"
-      description: Setup the PostgreSQL external parameters
+      description: Setup the PostgreSQL external parameters (JDBC URL, username, password)
       default: |-
         XLR_DB_URL: jdbc:postgresql://<xlr-db-host>:5432/<xlr-database-name>
         XLR_DB_USER: <xlr-username>
@@ -672,9 +672,9 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Edit PostgreSQL external setup:"
+      prompt: "Edit database external setup:"
       promptIf: !expr "ServerType == 'dai-deploy' && ProcessType == 'install' && EnablePostgresql == false"
-      description: Setup the PostgreSQL external parameters
+      description: Setup the PostgreSQL external parameters (JDBC URL, username, password)
       default: |-
         XL_DB_URL: jdbc:postgresql://<xld-db-host>:5432/<xlr-database-name>
         XL_DB_USERNAME: <xld-username>
@@ -685,7 +685,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Do you want to enable an RabbitMQ:"
+      prompt: "Do you want to install a new RabbitMQ on the cluster:"
       promptIf: !expr ProcessType == "install"
       description: "Enable RabbitMQ."
     - name: RabbitmqReplicaCount
