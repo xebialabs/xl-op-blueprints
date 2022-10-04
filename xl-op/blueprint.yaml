@@ -348,7 +348,7 @@ spec:
         redirectUri: ""
         postLogoutRedirectUri: ""
         rolesClaimName: ""
-        userNameClaimName: ""
+        userNameClaimName: "preferred_username"
         scopes: ["openid"]
     - name: IdentityServiceConfRelease
       type: Editor
@@ -365,7 +365,7 @@ spec:
         redirectUri: ""
         postLogoutRedirectUri: ""
         rolesClaim: ""
-        userNameClaim: ""
+        userNameClaim: "preferred_username"
         scopes: ["openid"]
     - name: IdentityServiceConf
       type: Input
