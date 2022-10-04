@@ -303,33 +303,8 @@ spec:
         rolesClaimName: ""
         userAuthorizationUri: ""
         userNameClaimName: ""
-        scopes: ""
-        loginMethodDescription: ""
-        accessToken:
-          audience: ""
-          enable: false
-          issuer: ""
-          jwsAlg: ""
-          keyRetrievalUri: ""
-          secretKey: ""
-        clientAuthJwt:
-          enable: false
-          jwsAlg: ""
-          keyStore:
-            enable: false
-            path: ""
-            password: ""
-            type: ""
-          key:
-            alias: ""
-            enable: false
-            password: ""
-          tokenKeyId: ""
-        clientAuthMethod: ""
-        externalIdClaim: ""
-        idTokenJWSAlg: ""
-        proxyHost: ""
-        proxyPort: ""
+        fullNameClaim: ""
+        scopes: '["openid"]'
     - name: ExternalOidcConfGenericRelease
       type: Editor
       prompt: "Configure external oidc setup:"
@@ -353,31 +328,6 @@ spec:
         userAuthorizationUri: ""
         userNameClaim: ""
         scopes: '["openid"]'
-        accessToken:
-          audience: ""
-          enable: false
-          issuer: ""
-          jwsAlg: ""
-          keyRetrievalUri: ""
-          secretKey: ""
-        clientAuthJwt:
-          enable: false
-          jwsAlg: ""
-          keyStore:
-            enable: false
-            path: ""
-            password: ""
-            type: ""
-          key:
-            alias: ""
-            enable: false
-            password: ""
-          tokenKeyId: ""
-        clientAuthMethod: ""
-        externalIdClaim: ""
-        idTokenJWSAlg: ""
-        proxyHost: ""
-        proxyPort: ""
     - name: ExternalOidcConfGeneric
       type: Input
       saveInXlvals: true
@@ -398,39 +348,8 @@ spec:
         redirectUri: ""
         postLogoutRedirectUri: ""
         rolesClaimName: ""
-        userNameClaimName: ""
+        userNameClaimName: "preferred_username"
         scopes: ["openid"]
-        emailClaim: ""
-        fullNameClaim: ""
-        keyRetrievalUri: ""
-        logoutUri: ""
-        userAuthorizationUri: ""
-        accessTokenUri: ""
-        accessToken:
-          audience: ""
-          enable: false
-          issuer: ""
-          jwsAlg: ""
-          keyRetrievalUri: ""
-          secretKey: ""
-        clientAuthJwt:
-          enable: false
-          jwsAlg: ""
-          keyStore:
-            enable: false
-            path: ""
-            password: ""
-            type: ""
-          key:
-            alias: ""
-            enable: false
-            password: ""
-          tokenKeyId: ""
-        clientAuthMethod: ""
-        externalIdClaim: ""
-        idTokenJWSAlg: ""
-        proxyHost: ""
-        proxyPort: ""
     - name: IdentityServiceConfRelease
       type: Editor
       prompt: "Configure Identity Service setup:"
@@ -446,39 +365,8 @@ spec:
         redirectUri: ""
         postLogoutRedirectUri: ""
         rolesClaim: ""
-        userNameClaim: ""
+        userNameClaim: "preferred_username"
         scopes: ["openid"]
-        emailClaim: ""
-        fullNameClaim: ""
-        keyRetrievalUri: ""
-        logoutUri: ""
-        userAuthorizationUri: ""
-        accessTokenUri: ""
-        accessToken:
-          audience: ""
-          enable: false
-          issuer: ""
-          jwsAlg: ""
-          keyRetrievalUri: ""
-          secretKey: ""
-        clientAuthJwt:
-          enable: false
-          jwsAlg: ""
-          keyStore:
-            enable: false
-            path: ""
-            password: ""
-            type: ""
-          key:
-            alias: ""
-            enable: false
-            password: ""
-          tokenKeyId: ""
-        clientAuthMethod: ""
-        externalIdClaim: ""
-        idTokenJWSAlg: ""
-        proxyHost: ""
-        proxyPort: ""
     - name: IdentityServiceConf
       type: Input
       saveInXlvals: true
