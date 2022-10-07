@@ -3,7 +3,7 @@ kind: Blueprint
 metadata:
   name: XL OP
   description: |
-    This blueprint deploys DAI Deploy operator, DAI Release operator, and XL-k8s-foundation into an existing Kubernetes installation (local single-node Kubernetes, on-premises multi-node Kubernetes cluster, Google Kubernetes Engine cluster, or Amazon EKS cluster).
+    This blueprint deploys Digital.ai Deploy operator, Digital.ai Release operator, and XL-k8s-foundation into an existing Kubernetes installation (local single-node Kubernetes, on-premises multi-node Kubernetes cluster, Google Kubernetes Engine cluster, or Amazon EKS cluster).
   author: digitalai
   version: 1.0
 spec:
