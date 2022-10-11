@@ -638,7 +638,7 @@ spec:
       options:
         - !expr k8sResources(Namespace, 'crd')
       saveInXlvals: true
-      promptIf: !expr "((CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, 'crd', '', ShortServerName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator')"
+      promptIf: !expr "((CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, 'crd', '', ShortServerName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrdName == '')"
       prompt: "Enter the name of custom resource definition you want to reuse or replace:"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -658,7 +658,7 @@ spec:
       options:
         - !expr k8sResources(Namespace, CrdName)
       saveInXlvals: true
-      promptIf: !expr "(CrdName != '' && (CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, CrdName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator')"
+      promptIf: !expr "(CrdName != '' && (CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, CrdName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrName == '')"
       prompt: "Enter the name of custom resource:"
       ignoreIfSkipped: true
       overrideDefault: true
