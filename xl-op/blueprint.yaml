@@ -91,6 +91,7 @@ spec:
         - label: ReadWriteMany
           value: ReadWriteMany
       promptIf: !expr "ServerType == 'dai-deploy' && ProcessType == 'install'"
+      ignoreIfSkipped: true
       saveInXlvals: true
       default: ReadWriteOnce
       description: Select between supported Access Modes to define if the volume can be mounted as read-write by a single node (ReadWriteOnce) or by many nodes (ReadWriteMany).
@@ -154,6 +155,7 @@ spec:
           value: ReadWriteMany
       promptIf: !expr "ServerType == 'dai-release' && ProcessType == 'install'"
       saveInXlvals: true
+      ignoreIfSkipped: true
       default: ReadWriteMany
       description: Select between supported Access Modes to define if the volume can be mounted as read-write by a single node (ReadWriteOnce) or by many nodes (ReadWriteMany).
     - name: IngressType
@@ -187,7 +189,7 @@ spec:
       type: Confirm
       default: false
       saveInXlvals: true
-      ignoreIfSkipped: false
+      ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Do you want to enable an TLS/SSL configuration (if yes, requires existing TLS secret in the namespace):"
       promptIf: !expr ProcessType == "install" && K8sSetup != 'Openshift' && IngressType != "none"
@@ -262,6 +264,7 @@ spec:
     - name: OidcConfigType
       type: Input
       saveInXlvals: true
+      ignoreIfSkipped: true
       value: !expr "ProcessType == 'install' ? OidcConfigTypeInstall : OidcConfigTypeUpgrade"
       description: The type of the OIDC configuration
     - name: UseKeycloakWithEmbeddedDB
@@ -331,7 +334,8 @@ spec:
     - name: ExternalOidcConfGeneric
       type: Input
       saveInXlvals: true
-      value: !expr "ServerType == 'dai-deploy' ? ExternalOidcConfGenericDeploy : ExternalOidcConfGenericRelease"
+      ignoreIfSkipped: true
+      value: !expr "OidcConfigType == 'external' ? (ServerType == 'dai-deploy' ? ExternalOidcConfGenericDeploy : ExternalOidcConfGenericRelease) : ''"
       description: The type of the OIDC configuration
     - name: IdentityServiceConfDeploy
       type: Editor
@@ -370,11 +374,13 @@ spec:
     - name: IdentityServiceConf
       type: Input
       saveInXlvals: true
-      value: !expr "ServerType == 'dai-deploy' ? IdentityServiceConfDeploy : IdentityServiceConfRelease"
+      ignoreIfSkipped: true
+      value: !expr "OidcConfigType == 'identity-service' ? (ServerType == 'dai-deploy' ? IdentityServiceConfDeploy : IdentityServiceConfRelease) : ''"
       description: The type of the OIDC configuration
     - name: ExternalOidcConf
       type: Input
       saveInXlvals: true
+      ignoreIfSkipped: true
       value: !expr "OidcConfigType == 'identity-service' ? IdentityServiceConf : (OidcConfigType == 'external' ? ExternalOidcConfGeneric : 'external: false')"
       description: The external OIDC configuration based on OIDC type. Default OIDC configuration for embedded keycloak and No OIDC Configuration will have disabled external OIDC setup
     - name: OperatorImageDeployGeneric
