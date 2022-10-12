@@ -558,9 +558,9 @@ spec:
         XLR_DB_URL: jdbc:postgresql://<xlr-db-host>:5432/<xlr-database-name>
         XLR_DB_USER: <xlr-username>
         XLR_DB_PASS: <xlr-password>
-        XLR_REPORT_DB_URL: jdbc:postgresql://<xlr-report-db-host>:5432/<xlr-report-database-name>
-        XLR_REPORT_DB_USER: <xlr-report-username>
-        XLR_REPORT_DB_PASS: <xlr-report-password>
+        XLR_REPORT_DB_URL: jdbc:postgresql://<xlr-report-db-host>:5432/<xl-report-database-name>
+        XLR_REPORT_DB_USER: <xl-report-username>
+        XLR_REPORT_DB_PASS: <xl-report-password>
     - name: PostgresqlExternalConfigDeploy
       type: Editor
       saveInXlvals: true
@@ -573,9 +573,6 @@ spec:
         XL_DB_URL: jdbc:postgresql://<xld-db-host>:5432/<xlr-database-name>
         XL_DB_USERNAME: <xld-username>
         XL_DB_PASSWORD: <xld-password>
-        XL_REPORT_DB_URL: jdbc:postgresql://<xld-report-db-host>:5432/<xld-report-database-name>
-        XL_REPORT_DB_USER: <xld-report-username>
-        XL_REPORT_DB_PASS: <xld-report-username>
     - name: EnableRabbitmq
       type: Confirm
       default: true
