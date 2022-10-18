@@ -42,7 +42,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.1.0-1017.113
+      default: 23.1.0-1018.811
       description: Enter the image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -390,7 +390,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-deploy' && K8sSetup != 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:23.1.0-1017.113
+      default: xebialabsunsupported/deploy-operator:23.1.0-1018.811
       description: Enter the operator image to use
     - name: OperatorImageDeployOpenshift
       type: Input
@@ -399,7 +399,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-deploy' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:23.1.0-1017.113-openshift
+      default: xebialabsunsupported/deploy-operator:23.1.0-1018.811-openshift
       description: Enter the operator image to use
     - name: OperatorImageReleaseGeneric
       type: Input
