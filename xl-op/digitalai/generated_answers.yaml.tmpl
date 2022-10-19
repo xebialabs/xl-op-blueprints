@@ -62,7 +62,8 @@ EnableRabbitmq: {{ .EnableRabbitmq }}
 RabbitmqReplicaCount: '{{ .RabbitmqReplicaCount }}'
 RabbitmqStorageClass: '{{ .RabbitmqStorageClass }}'
 LicenseSource: '{{ .LicenseSource }}'
-LicenseEditor: '{{ trim .LicenseEditor }}'
+LicenseEditor:  |-
+{{ trim .LicenseEditor | indent 2 }}
 LicenseFile: '{{ .LicenseFile }}'
 RepositoryKeystoreSource: '{{ .RepositoryKeystoreSource }}'
 RepositoryKeystoreEditor: '{{ trim .RepositoryKeystoreEditor }}'
