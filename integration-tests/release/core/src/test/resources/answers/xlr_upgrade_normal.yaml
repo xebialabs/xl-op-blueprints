@@ -1,0 +1,114 @@
+UseCustomNamespace: false
+Namespace: digitalai
+ServerType: dai-release
+RepositoryName: xebialabsunsupported
+ImageTag: 22.3.1
+ImageNameRelease: xl-release
+OperatorImageReleaseGeneric: xebialabsunsupported/release-operator:22.3.1
+OperatorImageReleaseOpenshift: xebialabsunsupported/release-operator:22.3.1-openshift
+XlrReplicaCount: 2
+PreserveCrValuesRelease: |-
+  .metadata.name
+  .spec.AdminPassword
+  .spec.replicaCount
+  .spec.UseExistingDB
+  .spec.UseExistingMQ
+  .spec.ingress
+  .spec.KeystorePassphrase
+  .spec.Persistence.Size
+  .spec.Persistence.StorageClass
+  .spec.RepositoryKeystore
+  .spec.postgresql.persistence.size
+  .spec.postgresql.persistence.storageClass
+  .spec.Persistence.AccessMode
+  .spec.postgresql.postgresqlMaxConnections
+  .spec.haproxy-ingress.install
+  .spec.nginx-ingress-controller.install
+  .spec.postgresql.install
+  .spec.rabbitmq.install
+  .spec.oidc
+  .spec.keycloak.install
+  .spec.keycloak.route
+  .spec.keycloak.postgresql.persistence.size
+  .spec.keycloak.postgresql.postgresqlMaxConnections
+  .spec.keycloak.ingress.console.rules
+  .spec.keycloak.ingress.rules
+  .spec.rabbitmq.persistence.storageClass
+  .spec.rabbitmq.persistence.size
+  .spec.rabbitmq.replicaCount
+  .spec.rabbitmq.persistence.replicaCount
+  .spec.route.hosts
+  .spec.xlrLicense
+  .spec.release.configurationManagement
+PostgresqlExternalConfigRelease: |-
+  XLR_DB_URL: jdbc:postgresql://<xlr-db-host>:5432/<xlr-database-name>
+  XLR_DB_USER: <xlr-username>
+  XLR_DB_PASS: <xlr-password>
+  XLR_REPORT_DB_URL: jdbc:postgresql://<xlr-report-db-host>:5432/<xl-report-database-name>
+  XLR_REPORT_DB_USER: <xl-report-username>
+  XLR_REPORT_DB_PASS: <xl-report-password>
+RabbitmqExternalConfigRelease: |-
+  XLR_TASK_QUEUE_USERNAME: <username>
+  XLR_TASK_QUEUE_PASSWORD: <password>
+  XLR_TASK_QUEUE_NAME: <queue-name>
+  XLR_TASK_QUEUE_URL: <queue-url>
+OidcConfigTypeInstall: 'no-oidc'
+OidcConfigTypeUpgrade: 'no-oidc'
+ExternalOidcConfGenericDeploy: |-
+  external: true
+  accessTokenUri: ""
+  clientId: ""
+  clientSecret: ""
+  emailClaim: ""
+  issuer: ""
+  keyRetrievalUri: ""
+  logoutUri: ""
+  postLogoutRedirectUri: ""
+  redirectUri: ""
+  rolesClaimName: ""
+  userAuthorizationUri: ""
+  userNameClaimName: ""
+  fullNameClaim: ""
+  scopes: '["openid"]'
+ExternalOidcConfGenericRelease: |-
+  external: true
+  accessTokenUri: ""
+  clientId: ""
+  clientSecret: ""
+  emailClaim: ""
+  fullNameClaim: ""
+  issuer: ""
+  keyRetrievalUri: ""
+  logoutUri: ""
+  postLogoutRedirectUri: ""
+  redirectUri: ""
+  rolesClaim: ""
+  userAuthorizationUri: ""
+  userNameClaim: ""
+  scopes: '["openid"]'
+IdentityServiceConfDeploy: |-
+  external: true
+  clientId: ""
+  clientSecret: ""
+  issuer: ""
+  redirectUri: ""
+  postLogoutRedirectUri: ""
+  rolesClaimName: ""
+  userNameClaimName: "preferred_username"
+  scopes: ["openid"]
+IdentityServiceConfRelease: |-
+  external: true
+  clientId: ""
+  clientSecret: ""
+  issuer: ""
+  redirectUri: ""
+  postLogoutRedirectUri: ""
+  rolesClaim: ""
+  userNameClaim: "preferred_username"
+  scopes: ["openid"]
+KeycloakHost: ''
+UseKeycloakWithEmbeddedDB: 'false'
+KeycloakIngressHost: '<no value>'
+UpgradeType: operatorToOperator
+IsCrdReused: true
+PreservePvc: true

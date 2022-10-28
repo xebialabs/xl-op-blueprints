@@ -1,0 +1,5 @@
+UseCustomNamespace: false
+Namespace: digitalai
+ServerType: dai-release
+IsCrdReused: false
+PreservePvc: false
