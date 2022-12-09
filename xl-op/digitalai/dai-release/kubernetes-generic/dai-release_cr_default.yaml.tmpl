@@ -18,10 +18,16 @@ spec:
   ImageTag: "{{ .ImageTag }}"
   ## xebialabs/tiny-tools image version
   ## Ref: https://hub.docker.com/r/xebialabs/tiny-tools/tags
+  {{- if eq .IsCustomImageRegistry true }}
+  TinyToolsImageRepository: "{{ .RepositoryName }}/tiny-tools"
+  {{- else }}
   TinyToolsImageRepository: "xebialabs/tiny-tools"
+  {{- end }}
   TinyToolsImageTag: "22.2.0"
   # Secrets must be manually created in the namespace
+  # {{- if eq .IsCustomImageRegistry true }}
   # ImagePullSecret: xlRelease
+  # {{- end }}
   K8sSetup:
     Platform: {{ .K8sSetup }}
   KeystorePassphrase: '{{ .KeystorePassphrase }}'
@@ -112,7 +118,11 @@ spec:
       hostNetwork: false
       image:
         pullPolicy: IfNotPresent
+        {{- if eq .IsCustomImageRegistry true }}
+        repository: {{ .RepositoryName }}/haproxy-ingress
+        {{- else }}
         repository: quay.io/jcmoraisjr/haproxy-ingress
+        {{- end }}
         tag: v0.13.4
       imagePullSecrets: []
       {{- if eq .UseCustomNamespace true }}
@@ -441,7 +451,11 @@ spec:
     hostAliases: []
     image:
       pullPolicy: IfNotPresent
+      {{- if eq .IsCustomImageRegistry true }}
+      repository: {{ .RepositoryName }}/keycloak
+      {{- else}}
       repository: docker.io/jboss/keycloak
+      {{- end }}
       tag: ""
     imagePullSecrets: []
     ingress:
@@ -537,8 +551,15 @@ spec:
       image:
         debug: false
         pullPolicy: IfNotPresent
+        {{- if eq .IsCustomImageRegistry true }}
+        registry: {{ .CustomImageRegistryName }}
+        {{- /* repository name contains image registry hostname also */}}
+        {{- $repoName := split "/" .RepositoryName }}
+        repository: {{ $repoName._1 }}/postgresql
+        {{- else }}
         registry: docker.io
         repository: bitnami/postgresql
+        {{- end }}
         tag: 11.11.0-debian-10-r31
       ldap:
         baseDN: ""
@@ -824,6 +845,9 @@ spec:
     tolerations: []
     topologySpreadConstraints: null
   nginx-ingress-controller:
+    global:
+      imageRegistry: {{ .CustomImageRegistryName }}
+      imagePullSecrets: []
     addHeaders: {}
     affinity: {}
     args: []
@@ -1107,6 +1131,11 @@ spec:
     enabled: {{ not (eq .OidcConfigType "no-oidc") }}
 {{ .ExternalOidcConf | indent 4 }}
   postgresql:
+    {{- if eq .IsCustomImageRegistry true }}
+    global:      
+      imageRegistry: {{ .CustomImageRegistryName }}
+      imagePullSecrets: []
+    {{- end }}
     audit:
       clientMinMessages: error
       logConnections: false
@@ -1412,6 +1441,11 @@ spec:
       securityContext:
         runAsUser: 0
   rabbitmq:
+    {{- if eq .IsCustomImageRegistry true }}
+    global:      
+      imageRegistry: {{ .CustomImageRegistryName }}
+      imagePullSecrets: []
+    {{- end }}
     advancedConfiguration: ""
     affinity: {}
     args: []

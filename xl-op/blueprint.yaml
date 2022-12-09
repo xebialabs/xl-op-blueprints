@@ -8,6 +8,22 @@ metadata:
   version: 1.0
 spec:
   parameters:
+    - name: IsCustomImageRegistry
+      type: Confirm
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Do you want to use a custom docker image registry"
+      default: false
+      description: Do you want installer to use a private image registry for pulling all the images required for this installation
+    - name: CustomImageRegistryName
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      promptIf: !expr "IsCustomImageRegistry == true"
+      prompt: "Enter the custom docker image registry hostname"
+      description: Enter the private image registry host for pulling all the images required for this installation  
     - name: RepositoryName
       type: Input
       saveInXlvals: true

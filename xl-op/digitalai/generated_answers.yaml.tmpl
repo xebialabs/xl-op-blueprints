@@ -3,6 +3,8 @@ UseCustomNamespace: {{ .UseCustomNamespace }}
 Namespace: {{ .Namespace }}
 ServerType: {{ .ServerType }}
 RepositoryName: {{ .RepositoryName }}
+IsCustomImageRegistry: {{ .IsCustomImageRegistry }}
+CustomImageRegistryName: {{ .CustomImageRegistryName }}
 ImageTag: {{ .ImageTag }}
 {{- if eq .ServerType "dai-deploy" }}
 ImageNameDeploy: {{ .ImageNameDeploy }}
