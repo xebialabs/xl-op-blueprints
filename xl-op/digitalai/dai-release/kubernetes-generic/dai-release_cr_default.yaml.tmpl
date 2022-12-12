@@ -552,7 +552,7 @@ spec:
         debug: false
         pullPolicy: IfNotPresent
         {{- if eq .IsCustomImageRegistry true }}
-        registry: {{ .CustomImageRegistryName }}
+        # registry: "{{ .CustomImageRegistryName }}"
         {{- /* repository name contains image registry hostname also */}}
         {{- $repoName := split "/" .RepositoryName }}
         repository: {{ $repoName._1 }}/postgresql
@@ -587,8 +587,15 @@ spec:
         extraEnvVars: {}
         image:
           pullPolicy: IfNotPresent
+          {{- if eq .IsCustomImageRegistry true }}
+          # registry: "{{ .CustomImageRegistryName }}"
+          {{- /* repository name contains image registry hostname also */}}
+          {{- $repoName := split "/" .RepositoryName }}
+          repository: {{ $repoName._1 }}/postgres-exporter
+          {{- else }}
           registry: docker.io
           repository: bitnami/postgres-exporter
+          {{- end }}          
           tag: 0.9.0-debian-10-r6
         livenessProbe:
           enabled: true
@@ -749,8 +756,15 @@ spec:
         enabled: false
         image:
           pullPolicy: Always
+          {{- if eq .IsCustomImageRegistry true }}
+          # registry: "{{ .CustomImageRegistryName }}"
+          {{- /* repository name contains image registry hostname also */}}
+          {{- $repoName := split "/" .RepositoryName }}
+          repository: {{ $repoName._1 }}/bitnami-shell
+          {{- else }}
           registry: docker.io
           repository: bitnami/bitnami-shell
+          {{- end }}           
           tag: "10"
         securityContext:
           runAsUser: 0
@@ -845,9 +859,6 @@ spec:
     tolerations: []
     topologySpreadConstraints: null
   nginx-ingress-controller:
-    global:
-      imageRegistry: {{ .CustomImageRegistryName }}
-      imagePullSecrets: []
     addHeaders: {}
     affinity: {}
     args: []
@@ -902,8 +913,15 @@ spec:
       image:
         pullPolicy: IfNotPresent
         pullSecrets: []
+        {{- if eq .IsCustomImageRegistry true }}
+        {{- /* repository name contains image registry hostname also */}}
+        {{- $repoName := split "/" .RepositoryName }}
+        # registry: {{ .CustomImageRegistryName }}
+        repository: {{ $repoName._1 }}/nginx
+        {{- else }}
         registry: docker.io
         repository: bitnami/nginx
+        {{- end }}
         tag: 1.21.3-debian-10-r48
       livenessProbe:
         enabled: true
@@ -979,15 +997,28 @@ spec:
     extraVolumes: []
     fullnameOverride: ""
     global:
+      {{- /* overrides the image registry hostname specified elsewhere for nginx-ingress-controller */}}
+      {{- if eq .IsCustomImageRegistry true }}
+      imageRegistry: {{ .CustomImageRegistryName }}
+      imagePullSecrets: []
+      {{- else }}
       imagePullSecrets: []
       imageRegistry: ""
+      {{- end }}
     hostAliases: []
     hostNetwork: false
     image:
       pullPolicy: IfNotPresent
       pullSecrets: []
+      {{- if eq .IsCustomImageRegistry true }}
+      {{- /* repository name contains image registry hostname also */}}
+      {{- $repoName := split "/" .RepositoryName }}
+      # registry: {{ .CustomImageRegistryName }}
+      repository: {{ $repoName._1 }}/nginx-ingress-controller
+      {{- else }}
       registry: docker.io
       repository: bitnami/nginx-ingress-controller
+      {{- end }}
       tag: 1.0.4-debian-10-r13
     {{- if eq .UseCustomNamespace true }}
     ingressClassResource:
@@ -1131,11 +1162,7 @@ spec:
     enabled: {{ not (eq .OidcConfigType "no-oidc") }}
 {{ .ExternalOidcConf | indent 4 }}
   postgresql:
-    {{- if eq .IsCustomImageRegistry true }}
-    global:      
-      imageRegistry: {{ .CustomImageRegistryName }}
-      imagePullSecrets: []
-    {{- end }}
+
     audit:
       clientMinMessages: error
       logConnections: false
@@ -1179,8 +1206,14 @@ spec:
     extraEnvVarsCM: ""
     fullnameOverride: ""
     global:
+      {{- /* overrides the image registry hostname specified elsewhere for postgres */}}
+      {{- if eq .IsCustomImageRegistry true }}
+      imageRegistry: {{ .CustomImageRegistryName }}
+      imagePullSecrets: []
+      {{- else }}
       imagePullSecrets: []
       imageRegistry: ""
+      {{- end }}
       postgresql:
         existingSecret: ""
         postgresqlDatabase: ""
@@ -1193,8 +1226,15 @@ spec:
       debug: false
       pullPolicy: IfNotPresent
       pullSecrets: []
+      {{- if eq .IsCustomImageRegistry true }}
+      {{- /* repository name contains image registry hostname also */}}
+      {{- $repoName := split "/" .RepositoryName }}
+      # registry: {{ .CustomImageRegistryName }}
+      repository: {{ $repoName._1 }}/postgresql
+      {{- else }}
       registry: docker.io
       repository: bitnami/postgresql
+      {{- end }}
       tag: 11.13.0-debian-10-r73
     initdbPassword: ""
     initdbScripts: {}
@@ -1435,17 +1475,19 @@ spec:
       image:
         pullPolicy: IfNotPresent
         pullSecrets: []
+        {{- if eq .IsCustomImageRegistry true }}
+        # registry: "{{ .CustomImageRegistryName }}"
+        {{- /* repository name contains image registry hostname also */}}
+        {{- $repoName := split "/" .RepositoryName }}
+        repository: {{ $repoName._1 }}/bitnami-shell
+        {{- else }}
         registry: docker.io
         repository: bitnami/bitnami-shell
+        {{- end }}        
         tag: 10-debian-10-r233
       securityContext:
         runAsUser: 0
   rabbitmq:
-    {{- if eq .IsCustomImageRegistry true }}
-    global:      
-      imageRegistry: {{ .CustomImageRegistryName }}
-      imagePullSecrets: []
-    {{- end }}
     advancedConfiguration: ""
     affinity: {}
     args: []
@@ -1606,16 +1648,30 @@ spec:
     extraVolumes: []
     fullnameOverride: ""
     global:
+      {{- /* overrides the image registry hostname specified elsewhere for postgres */}}
+      {{- if eq .IsCustomImageRegistry true }}
+      imagePullSecrets: []
+      imageRegistry: {{ .CustomImageRegistryName }}
+      storageClass: ""
+      {{- else }}
       imagePullSecrets: []
       imageRegistry: ""
       storageClass: ""
+      {{- end }}
     hostAliases: []
     image:
       debug: false
       pullPolicy: IfNotPresent
       pullSecrets: []
+      {{- if eq .IsCustomImageRegistry true }}
+      # registry: {{ .CustomImageRegistryName }}
+      {{- /* repository name contains image registry hostname also */}}
+      {{- $repoName := split "/" .RepositoryName }}
+      repository: {{ $repoName._1 }}/rabbitmq
+      {{- else }}
       registry: docker.io
       repository: bitnami/rabbitmq
+      {{- end }}
       tag: 3.9.8-debian-10-r6
     ingress:
       annotations: {}
@@ -1774,8 +1830,15 @@ spec:
       image:
         pullPolicy: IfNotPresent
         pullSecrets: []
+        {{- if eq .IsCustomImageRegistry true }}
+        # registry: "{{ .CustomImageRegistryName }}"
+        {{- /* repository name contains image registry hostname also */}}
+        {{- $repoName := split "/" .RepositoryName }}
+        repository: {{ $repoName._1 }}/bitnami-shell
+        {{- else }}
         registry: docker.io
         repository: bitnami/bitnami-shell
+        {{- end }}        
         tag: 10-debian-10-r233
       resources:
         limits: {}
