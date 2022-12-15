@@ -2,9 +2,15 @@ K8sSetup: {{ .K8sSetup }}
 UseCustomNamespace: {{ .UseCustomNamespace }}
 Namespace: {{ .Namespace }}
 ServerType: {{ .ServerType }}
-RepositoryName: {{ .RepositoryName }}
-IsCustomImageRegistry: {{ .IsCustomImageRegistry }}
+ImageRegistryType: {{ .ImageRegistryType }}
+{{- if eq .ImageRegistryType "public" }}
 CustomImageRegistryName: {{ .CustomImageRegistryName }}
+{{- end }}
+{{- if eq .ImageRegistryType "private" }}
+CustomImageRegistryName: {{ .CustomImageRegistryName }}
+CustomPrivateImageRegistrySecret: {{ .CustomPrivateImageRegistrySecret }}
+{{- end }}
+RepositoryName: {{ .RepositoryName }}
 ImageTag: {{ .ImageTag }}
 {{- if eq .ServerType "dai-deploy" }}
 ImageNameDeploy: {{ .ImageNameDeploy }}

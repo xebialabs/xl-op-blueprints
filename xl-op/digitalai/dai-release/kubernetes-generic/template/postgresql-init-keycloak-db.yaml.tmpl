@@ -17,6 +17,10 @@ spec:
       name: dai-xlr-postgresql-init-keycloak-db
       {{- end }}
     spec:
+      {{- if eq .ImageRegistryType "private" }}
+      imagePullSecrets:
+        - name:  {{ .CustomPrivateImageRegistrySecret }}
+      {{- end }}    
       initContainers:
         - name: wait-for-postgresql
           {{- if eq .IsCustomImageRegistry true }}
@@ -47,7 +51,7 @@ spec:
           image: {{ .RepositoryName }}/tiny-tools:22.2.0
           {{- else }}
           image: xebialabs/tiny-tools:22.2.0
-          {{- end }}
+          {{- end }}          
           command:
             - sh
             - -c

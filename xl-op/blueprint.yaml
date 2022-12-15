@@ -8,22 +8,46 @@ metadata:
   version: 1.0
 spec:
   parameters:
-    - name: IsCustomImageRegistry
-      type: Confirm
-      saveInXlvals: true
+    - name: ImageRegistryType
+      type: Select
+      prompt: "Select the type of Image Registry:"
+      options:
+        - label: Default (Uses various default public image registries for the images)
+          value: default
+        - label: Custom Public Registry (Overrides defaults to use a specific custom public registry)
+          value: public
+        - label: Custom Private Registry - Password protected (Overrides defaults to use a specific custom private registry)
+          value: private
+      promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
       ignoreIfSkipped: true
-      overrideDefault: true
-      prompt: "Do you want to use a custom docker image registry"
-      default: false
-      description: Do you want installer to use a private image registry for pulling all the images required for this installation
+      saveInXlvals: true
+      default: DefaultImageRegistry
+      description: Select the type of the Image Registry to use for pulling all images required for the installation.
     - name: CustomImageRegistryName
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      promptIf: !expr "IsCustomImageRegistry == true"
-      prompt: "Enter the custom docker image registry hostname"
-      description: Enter the private image registry host for pulling all the images required for this installation  
+      promptIf: !expr "ImageRegistryType == 'public' || ImageRegistryType == 'private' && (ProcessType == 'install' || ProcessType == 'upgrade')"
+      prompt: "Enter the custom docker image registry name"
+      description: Enter the custom image registry name for pulling all the images required for this installation
+    - name: CustomPrivateImageRegistrySecret
+      type: Select
+      options:
+        - !expr k8sResources(Namespace, 'secrets')
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide the custom docker image registry secret"
+      promptIf: !expr "ImageRegistryType == 'private' && (ProcessType == 'install' || ProcessType == 'upgrade')"
+      description: Provide the imagePullSecrets name for the custom image registry
+    - name: IsCustomImageRegistry
+      type: Confirm
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      value: !expr "ImageRegistryType == 'public' || ImageRegistryType == 'private' ? true : false"
+      description: Is Custom Image Repository
+      default: true          
     - name: RepositoryName
       type: Input
       saveInXlvals: true
@@ -32,7 +56,7 @@ spec:
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
       prompt: "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
       default: xebialabsunsupported
-      description: Enter the repository name to use
+      description: Enter the repository name to use. When using custom Image Registry, enter <imageRegistryName>/<repositoryName>
     - name: ImageNameDeploy
       type: Input
       saveInXlvals: true

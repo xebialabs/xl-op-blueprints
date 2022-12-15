@@ -25,9 +25,9 @@ spec:
   {{- end }}
   TinyToolsImageTag: "22.2.0"
   # Secrets must be manually created in the namespace
-  # {{- if eq .IsCustomImageRegistry true }}
-  # ImagePullSecret: xlRelease
-  # {{- end }}
+  {{- if eq .ImageRegistryType "private" }}
+  ImagePullSecret: {{ .CustomPrivateImageRegistrySecret }}
+  {{- end }}
   K8sSetup:
     Platform: {{ .K8sSetup }}
   KeystorePassphrase: '{{ .KeystorePassphrase }}'
@@ -124,7 +124,9 @@ spec:
         repository: quay.io/jcmoraisjr/haproxy-ingress
         {{- end }}
         tag: v0.13.4
-      imagePullSecrets: []
+      {{- if eq .ImageRegistryType "private" }}
+      imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
+      {{- end }}
       {{- if eq .UseCustomNamespace true }}
       ingressClass: haproxy-dai-xlr-{{ .Namespace }}
       {{- else }}
@@ -457,7 +459,12 @@ spec:
       repository: docker.io/jboss/keycloak
       {{- end }}
       tag: ""
+    {{- if eq .ImageRegistryType "private" }}
+    imagePullSecrets: 
+      - name: {{ .CustomPrivateImageRegistrySecret }}
+    {{- else }}
     imagePullSecrets: []
+    {{- end }}
     ingress:
       annotations:
         {{- if eq .UseCustomNamespace true }}
@@ -552,7 +559,6 @@ spec:
         debug: false
         pullPolicy: IfNotPresent
         {{- if eq .IsCustomImageRegistry true }}
-        # registry: "{{ .CustomImageRegistryName }}"
         {{- /* repository name contains image registry hostname also */}}
         {{- $repoName := split "/" .RepositoryName }}
         repository: {{ $repoName._1 }}/postgresql
@@ -561,6 +567,12 @@ spec:
         repository: bitnami/postgresql
         {{- end }}
         tag: 11.11.0-debian-10-r31
+      {{- if eq .ImageRegistryType "private" }}
+      imagePullSecrets: 
+        - name: {{ .CustomPrivateImageRegistrySecret }} ]
+      {{- else }}
+      imagePullSecrets: []
+      {{- end }}
       ldap:
         baseDN: ""
         bind_password: null
@@ -588,7 +600,6 @@ spec:
         image:
           pullPolicy: IfNotPresent
           {{- if eq .IsCustomImageRegistry true }}
-          # registry: "{{ .CustomImageRegistryName }}"
           {{- /* repository name contains image registry hostname also */}}
           {{- $repoName := split "/" .RepositoryName }}
           repository: {{ $repoName._1 }}/postgres-exporter
@@ -757,7 +768,6 @@ spec:
         image:
           pullPolicy: Always
           {{- if eq .IsCustomImageRegistry true }}
-          # registry: "{{ .CustomImageRegistryName }}"
           {{- /* repository name contains image registry hostname also */}}
           {{- $repoName := split "/" .RepositoryName }}
           repository: {{ $repoName._1 }}/bitnami-shell
@@ -916,7 +926,6 @@ spec:
         {{- if eq .IsCustomImageRegistry true }}
         {{- /* repository name contains image registry hostname also */}}
         {{- $repoName := split "/" .RepositoryName }}
-        # registry: {{ .CustomImageRegistryName }}
         repository: {{ $repoName._1 }}/nginx
         {{- else }}
         registry: docker.io
@@ -997,13 +1006,14 @@ spec:
     extraVolumes: []
     fullnameOverride: ""
     global:
-      {{- /* overrides the image registry hostname specified elsewhere for nginx-ingress-controller */}}
+      {{- /* global overrides the other occurences */}}
       {{- if eq .IsCustomImageRegistry true }}
       imageRegistry: {{ .CustomImageRegistryName }}
-      imagePullSecrets: []
       {{- else }}
-      imagePullSecrets: []
       imageRegistry: ""
+      {{- end }}
+      {{- if eq .ImageRegistryType "private" }}
+      imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
       {{- end }}
     hostAliases: []
     hostNetwork: false
@@ -1013,7 +1023,6 @@ spec:
       {{- if eq .IsCustomImageRegistry true }}
       {{- /* repository name contains image registry hostname also */}}
       {{- $repoName := split "/" .RepositoryName }}
-      # registry: {{ .CustomImageRegistryName }}
       repository: {{ $repoName._1 }}/nginx-ingress-controller
       {{- else }}
       registry: docker.io
@@ -1162,7 +1171,6 @@ spec:
     enabled: {{ not (eq .OidcConfigType "no-oidc") }}
 {{ .ExternalOidcConf | indent 4 }}
   postgresql:
-
     audit:
       clientMinMessages: error
       logConnections: false
@@ -1206,14 +1214,15 @@ spec:
     extraEnvVarsCM: ""
     fullnameOverride: ""
     global:
-      {{- /* overrides the image registry hostname specified elsewhere for postgres */}}
+      {{- /*  global overrides the other occurences */}}
       {{- if eq .IsCustomImageRegistry true }}
       imageRegistry: {{ .CustomImageRegistryName }}
-      imagePullSecrets: []
       {{- else }}
-      imagePullSecrets: []
       imageRegistry: ""
       {{- end }}
+      {{- if eq .ImageRegistryType "private" }}
+      imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
+      {{- end }}      
       postgresql:
         existingSecret: ""
         postgresqlDatabase: ""
@@ -1229,7 +1238,6 @@ spec:
       {{- if eq .IsCustomImageRegistry true }}
       {{- /* repository name contains image registry hostname also */}}
       {{- $repoName := split "/" .RepositoryName }}
-      # registry: {{ .CustomImageRegistryName }}
       repository: {{ $repoName._1 }}/postgresql
       {{- else }}
       registry: docker.io
@@ -1271,8 +1279,14 @@ spec:
       image:
         pullPolicy: IfNotPresent
         pullSecrets: []
+        {{- if eq .IsCustomImageRegistry true }}
+        {{- /* repository name contains image registry hostname also */}}
+        {{- $repoName := split "/" .RepositoryName }}
+        repository: {{ $repoName._1 }}/postgres-exporter
+        {{- else }}
         registry: docker.io
         repository: bitnami/postgres-exporter
+        {{- end }}        
         tag: 0.10.0-debian-10-r101
       livenessProbe:
         enabled: true
@@ -1476,7 +1490,6 @@ spec:
         pullPolicy: IfNotPresent
         pullSecrets: []
         {{- if eq .IsCustomImageRegistry true }}
-        # registry: "{{ .CustomImageRegistryName }}"
         {{- /* repository name contains image registry hostname also */}}
         {{- $repoName := split "/" .RepositoryName }}
         repository: {{ $repoName._1 }}/bitnami-shell
@@ -1648,23 +1661,23 @@ spec:
     extraVolumes: []
     fullnameOverride: ""
     global:
-      {{- /* overrides the image registry hostname specified elsewhere for postgres */}}
+      {{- /* global overrides the other occurences */}}
       {{- if eq .IsCustomImageRegistry true }}
-      imagePullSecrets: []
       imageRegistry: {{ .CustomImageRegistryName }}
       storageClass: ""
       {{- else }}
-      imagePullSecrets: []
       imageRegistry: ""
       storageClass: ""
       {{- end }}
+      {{- if eq .ImageRegistryType "private" }}
+      imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
+      {{- end }}      
     hostAliases: []
     image:
       debug: false
       pullPolicy: IfNotPresent
       pullSecrets: []
       {{- if eq .IsCustomImageRegistry true }}
-      # registry: {{ .CustomImageRegistryName }}
       {{- /* repository name contains image registry hostname also */}}
       {{- $repoName := split "/" .RepositoryName }}
       repository: {{ $repoName._1 }}/rabbitmq
@@ -1831,7 +1844,6 @@ spec:
         pullPolicy: IfNotPresent
         pullSecrets: []
         {{- if eq .IsCustomImageRegistry true }}
-        # registry: "{{ .CustomImageRegistryName }}"
         {{- /* repository name contains image registry hostname also */}}
         {{- $repoName := split "/" .RepositoryName }}
         repository: {{ $repoName._1 }}/bitnami-shell
