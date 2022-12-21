@@ -207,7 +207,7 @@ spec:
       tag: ""
     {{- if eq .ImageRegistryType "private" }}
     imagePullSecrets: 
-      - name: {{ .CustomPrivateImageRegistrySecret }} ]
+      - name: {{ .CustomPrivateImageRegistrySecret }}
     {{- else }}
     imagePullSecrets: []
     {{- end }}

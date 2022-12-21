@@ -54,7 +54,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
-      prompt: "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>). For Custom Image Registry enter <imageRegistryName>/<repositoryName>: "
       default: xebialabsunsupported
       description: Enter the repository name to use. When using custom Image Registry, enter <imageRegistryName>/<repositoryName>
     - name: ImageNameDeploy
@@ -428,7 +428,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>). For Custom Image Registry (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-deploy' && K8sSetup != 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
       default: xebialabsunsupported/deploy-operator:23.1.0-beta.6
       description: Enter the operator image to use
@@ -437,7 +437,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>). For Custom Image Registry (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-deploy' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
       default: xebialabsunsupported/deploy-operator:23.1.0-beta.6-openshift
       description: Enter the operator image to use
@@ -446,7 +446,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>). For Custom Image Registry (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-release' && K8sSetup != 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
       default: xebialabsunsupported/release-operator:23.1.0-beta.6
       description: Enter the operator image to use
@@ -455,7 +455,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>). For Custom Image Registry (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-release' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
       default: xebialabsunsupported/release-operator:23.1.0-beta.6-openshift
       description: Enter the operator image to use
