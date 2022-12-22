@@ -3,13 +3,8 @@ UseCustomNamespace: {{ .UseCustomNamespace }}
 Namespace: {{ .Namespace }}
 ServerType: {{ .ServerType }}
 ImageRegistryType: {{ .ImageRegistryType }}
-{{- if eq .ImageRegistryType "public" }}
-CustomImageRegistryName: {{ .CustomImageRegistryName }}
-{{- end }}
-{{- if eq .ImageRegistryType "private" }}
 CustomImageRegistryName: {{ .CustomImageRegistryName }}
 CustomPrivateImageRegistrySecret: {{ .CustomPrivateImageRegistrySecret }}
-{{- end }}
 RepositoryName: {{ .RepositoryName }}
 ImageTag: {{ .ImageTag }}
 {{- if eq .ServerType "dai-deploy" }}
