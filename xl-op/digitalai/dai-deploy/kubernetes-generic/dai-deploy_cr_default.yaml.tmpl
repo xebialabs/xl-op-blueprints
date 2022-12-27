@@ -140,7 +140,10 @@ spec:
         {{- end }}
         tag: v0.13.4
       {{- if eq .ImageRegistryType "private" }}
-      imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
+      imagePullSecrets: 
+        - name: {{ .CustomPrivateImageRegistrySecret }}
+      {{- else }}
+      imagePullSecrets: []
       {{- end }}
       {{- if eq .UseCustomNamespace true }}
       ingressClass: haproxy-dai-xld-{{ .Namespace }}
@@ -1028,6 +1031,8 @@ spec:
       {{- end }}
       {{- if eq .ImageRegistryType "private" }}
       imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
+      {{- else }}
+      imagePullSecrets: []
       {{- end }}
     hostAliases: []
     hostNetwork: false
@@ -1236,6 +1241,8 @@ spec:
       {{- end }}
       {{- if eq .ImageRegistryType "private" }}
       imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
+      {{- else }}
+      imagePullSecrets: []
       {{- end }}    
       postgresql:
         existingSecret: ""
@@ -1678,14 +1685,15 @@ spec:
       {{- /* global overrides the other occurences */}}
       {{- if eq .IsCustomImageRegistry true }}
       imageRegistry: {{ .CustomImageRegistryName }}
-      storageClass: ""
       {{- else }}
       imageRegistry: ""
-      storageClass: ""
       {{- end }}
       {{- if eq .ImageRegistryType "private" }}
       imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
+      {{- else }}
+      imagePullSecrets: []
       {{- end }}
+      storageClass: ""
     hostAliases: []
     image:
       debug: false

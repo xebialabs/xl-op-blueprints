@@ -664,6 +664,8 @@ spec:
       {{- end }}
       {{- if eq .ImageRegistryType "private" }}
       imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
+      {{- else }}
+      imagePullSecrets: []
       {{- end }}
       postgresql:
         existingSecret: ""
@@ -1113,6 +1115,8 @@ spec:
       {{- end }}
       {{- if eq .ImageRegistryType "private" }}
       imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
+      {{- else }}
+      imagePullSecrets: []
       {{- end }}
     hostAliases: []
     image:

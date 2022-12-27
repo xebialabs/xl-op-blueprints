@@ -36,7 +36,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "IsCustomImageRegistry && (ProcessType == 'install' || ProcessType == 'upgrade')"
-      prompt: "Enter the custom docker image registry name"
+      prompt: "Enter the custom docker image registry name:"
       description: Enter the custom image registry name for pulling all the images required for this installation
     - name: CustomPrivateImageRegistrySecret
       type: Select
@@ -45,7 +45,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Provide the custom docker image registry secret"
+      prompt: "Provide the custom docker image registry secret:"
       promptIf: !expr "(ImageRegistryType == 'private') && (ProcessType == 'install' || ProcessType == 'upgrade')"
       description: Provide the imagePullSecrets name for the custom image registry
     - name: RepositoryName
