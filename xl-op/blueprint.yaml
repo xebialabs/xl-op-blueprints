@@ -390,7 +390,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-deploy' && K8sSetup != 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:23.1.0-102.113
+      default: xebialabsunsupported/deploy-operator:23.1.0-103.113
       description: Enter the operator image to use
     - name: OperatorImageDeployOpenshift
       type: Input
@@ -399,7 +399,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-deploy' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:23.1.0-102.113-openshift
+      default: xebialabsunsupported/deploy-operator:23.1.0-103.113-openshift
       description: Enter the operator image to use
     - name: OperatorImageReleaseGeneric
       type: Input
