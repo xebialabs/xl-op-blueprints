@@ -21,7 +21,7 @@ spec:
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
       ignoreIfSkipped: true
       saveInXlvals: true
-      default: DefaultImageRegistry
+      default: default
       description: Select the type of the Image Registry to use for pulling all images required for the installation.
     - name: IsCustomImageRegistry
       type: Confirm
