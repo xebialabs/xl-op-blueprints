@@ -15,7 +15,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
       prompt: "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
-      default: xebialabsunsupported
+      default: xebialabs
       description: Enter the repository name to use
     - name: ImageNameDeploy
       type: Input
@@ -390,7 +390,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-deploy' && K8sSetup != 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:22.3.6
+      default: xebialabs/deploy-operator:22.3.6
       description: Enter the operator image to use
     - name: OperatorImageDeployOpenshift
       type: Input
@@ -399,7 +399,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-deploy' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:22.3.6-openshift
+      default: xebialabs/deploy-operator:22.3.6-openshift
       description: Enter the operator image to use
     - name: OperatorImageReleaseGeneric
       type: Input
@@ -408,7 +408,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-release' && K8sSetup != 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/release-operator:22.3.6
+      default: xebialabs/release-operator:22.3.6
       description: Enter the operator image to use
     - name: OperatorImageReleaseOpenshift
       type: Input
@@ -417,7 +417,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-release' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/release-operator:22.3.6-openshift
+      default: xebialabs/release-operator:22.3.6-openshift
       description: Enter the operator image to use
     - name: LicenseSource
       type: Select
