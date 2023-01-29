@@ -24,7 +24,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Enter the repository name (eg: <repositoryName>/<imageName>:<tagName>)"
-      default: xebialabs
+      default: xebialabsunsupported
       description: Enter the image tag to use
     - name: ImageNameDeploy
       type: Input
@@ -50,7 +50,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Enter the image tag (eg: <repositoryName>/<imageName>:<tagName>)"
-      default: 22.2.8
+      default: 22.2.0-129.1953
       description: Enter the image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -167,7 +167,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup != 'Openshift'
-      default: xebialabs/release-operator:22.2.8
+      default: xebialabsunsupported/release-operator:22.2.0-129.1953
       description: Enter the operator image to use
     - name: OperatorImageReleaseOpenshift
       type: Input
@@ -176,7 +176,7 @@ spec:
       overrideDefault: true
       prompt: "Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>)"
       promptIf: !expr ServerType == 'daiRelease' && K8sSetup == 'Openshift'
-      default: xebialabs/release-operator:22.2.8-openshift
+      default: xebialabsunsupported/release-operator:22.2.0-129.1953-openshift
       description: Enter the operator image to use
     - name: UseOperatorZipDeploy
       type: Confirm
