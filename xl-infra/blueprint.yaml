@@ -62,7 +62,7 @@ spec:
       promptIf: !expr "k8sResource(Namespace, 'namespace', Namespace) == ''"
       prompt:  !expr "'Do you want to create custom Kubernetes namespace ' + Namespace + ', it does not exist:'"
       description: "Type yes to create a namespace in your kubernetes cluster."
-      
+
     - name: ServerType
       type: Select
       prompt: !expr "'Product server you want to perform ' + ProcessType + ' for:'"
@@ -71,6 +71,8 @@ spec:
           value: dai-release
         - label: Digital.ai Deploy
           value: dai-deploy
+        - label: Remote Runner for Digital.ai Release
+          value: dai-release-runner
       saveInXlvals: true
       description: !expr "'Select product server you want to perform ' + ProcessType + ' for.'"
 
@@ -91,7 +93,7 @@ spec:
       overrideDefault: true
       prompt: "Should clean occur before the apply files to cluster:"
       saveInXlvals: true
-      
+
     - name: UpgradeType
       type: Select
       prompt: "Select the type of upgrade you want:"
