@@ -2,6 +2,9 @@ K8sSetup: {{ .K8sSetup }}
 UseCustomNamespace: {{ .UseCustomNamespace }}
 Namespace: {{ .Namespace }}
 ServerType: {{ .ServerType }}
+ImageRegistryType: {{ .ImageRegistryType }}
+CustomImageRegistryName: {{ .CustomImageRegistryName }}
+CustomPrivateImageRegistrySecret: {{ .CustomPrivateImageRegistrySecret }}
 RepositoryName: {{ .RepositoryName }}
 ImageTag: {{ .ImageTag }}
 {{- if eq .ServerType "dai-deploy" }}
