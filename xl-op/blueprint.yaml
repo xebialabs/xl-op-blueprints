@@ -27,17 +27,17 @@ spec:
       type: Confirm
       saveInXlvals: true
       ignoreIfSkipped: true
-      value: !expr "ImageRegistryType == 'public' || ImageRegistryType == 'private' ? true : false"
+      value: !expr "ImageRegistryType == 'public' || ImageRegistryType == 'private'"
       description: Is Custom Image Repository
-      default: true
     - name: CustomImageRegistryName
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "IsCustomImageRegistry && (ProcessType == 'install' || ProcessType == 'upgrade')"
-      prompt: "Enter the custom docker image registry name:"
+      prompt: "Enter the custom docker image registry name (eg: <imageRegistryName> from <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):"
       description: Enter the custom image registry name for pulling all the images required for this installation
+      default: docker.io
     - name: CustomPrivateImageRegistrySecret
       type: Select
       options:
@@ -54,8 +54,8 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
-      prompt: !expr "IsCustomImageRegistry ? 'Enter the repository name (eg: <imageRegistryName>/<repositoryName> from <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):'"
-      # default: !expr "xebialabsunsupported"
+      prompt: !expr "IsCustomImageRegistry ? 'Enter the repository name (eg: <repositoryName> from <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):'"
+      default: xebialabs
       description: Enter the repository name to use
     - name: ImageNameDeploy
       type: Input
@@ -118,7 +118,7 @@ spec:
       overrideDefault: true
       promptIf: !expr ServerType == 'dai-release-runner'
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 0.1.27
+      default: 0.1.32
       description: Enter the image tag to use
     - name: XldMasterCount
       type: Input
@@ -316,7 +316,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Type of the OIDC configuration:"
-      promptIf: !expr ProcessType == "upgrade"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "upgrade"
       description: Provide the type of the OIDC configuration
       default: existing
     - name: OidcConfigType
@@ -819,7 +819,7 @@ spec:
     - name: PreservePvc
       type: Confirm
       saveInXlvals: true
-      promptIf: !expr "ProcessType == 'clean' || CleanBefore"
+      promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'clean' || CleanBefore)"
       prompt: "Should we preserve persisted volume claims? If not all volume data will be lost:"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -989,6 +989,6 @@ spec:
       writeIf: !expr ServerType == 'dai-release' && OidcConfigType == 'embedded' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
       renameTo: !expr "'digitalai/dai-release/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/postgresql-init-keycloak-db.yaml.tmpl'"
     # Remote runner
-    - path: digitalai/dai-remote-runner/values.yaml.tmpl
+    - path: digitalai/dai-remote-runner/values-cli.yaml.tmpl
       writeIf: !expr ServerType == 'dai-release-runner'
-      renameTo: !expr "'digitalai/dai-remote-runner/' + Namespace + '/' + GenerationDateTime + '/kubernetes/values.yaml.tmpl'"
+      renameTo: !expr "'digitalai/dai-remote-runner/' + Namespace + '/' + GenerationDateTime + '/kubernetes/values-cli.yaml.tmpl'"

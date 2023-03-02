@@ -79,7 +79,7 @@ spec:
     - name: ShortServerName
       type: Input
       saveInXlvals: true
-      value: !expr "ServerType == 'dai-release' ? 'xlr' : 'xld'"
+      value: !expr "ServerType == 'dai-release' ? 'xlr' : (ServerType == 'dai-deploy' ? 'xld' : 'other')"
       description: Short product server used for filtering in the blueprints.
 
     - name: GenerationDateTime
@@ -103,7 +103,7 @@ spec:
           value: operatorToOperator
         - label: Helm to Operator
           value: helmToOperator
-      promptIf: !expr "ProcessType == 'upgrade'"
+      promptIf: !expr "ServerType != 'dai-release-runner' && ProcessType == 'upgrade'"
       saveInXlvals: true
       description: Type of upgrade you want?
 
