@@ -125,8 +125,8 @@ spec:
         {{- end }}
         tag: v0.13.4
       {{- if eq .ImageRegistryType "private" }}
-      imagePullSecrets: 
-        - name: {{ .CustomPrivateImageRegistrySecret }} ]
+      imagePullSecrets:
+        - name: {{ .CustomPrivateImageRegistrySecret }}
       {{- else }}
       imagePullSecrets: []
       {{- end }}
@@ -463,7 +463,7 @@ spec:
       {{- end }}
       tag: ""
     {{- if eq .ImageRegistryType "private" }}
-    imagePullSecrets: 
+    imagePullSecrets:
       - name: {{ .CustomPrivateImageRegistrySecret }}
     {{- else }}
     imagePullSecrets: []
@@ -571,8 +571,8 @@ spec:
         {{- end }}
         tag: 11.11.0-debian-10-r31
       {{- if eq .ImageRegistryType "private" }}
-      imagePullSecrets: 
-        - name: {{ .CustomPrivateImageRegistrySecret }} ]
+      imagePullSecrets:
+        - name: {{ .CustomPrivateImageRegistrySecret }}
       {{- else }}
       imagePullSecrets: []
       {{- end }}
@@ -609,7 +609,7 @@ spec:
           {{- else }}
           registry: docker.io
           repository: bitnami/postgres-exporter
-          {{- end }}          
+          {{- end }}
           tag: 0.9.0-debian-10-r6
         livenessProbe:
           enabled: true
@@ -777,7 +777,7 @@ spec:
           {{- else }}
           registry: docker.io
           repository: bitnami/bitnami-shell
-          {{- end }}           
+          {{- end }}
           tag: "10"
         securityContext:
           runAsUser: 0
@@ -1229,7 +1229,7 @@ spec:
       imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
       {{- else }}
       imagePullSecrets: []
-      {{- end }}      
+      {{- end }}
       postgresql:
         existingSecret: ""
         postgresqlDatabase: ""
@@ -1293,7 +1293,7 @@ spec:
         {{- else }}
         registry: docker.io
         repository: bitnami/postgres-exporter
-        {{- end }}        
+        {{- end }}
         tag: 0.10.0-debian-10-r101
       livenessProbe:
         enabled: true
@@ -1503,7 +1503,7 @@ spec:
         {{- else }}
         registry: docker.io
         repository: bitnami/bitnami-shell
-        {{- end }}        
+        {{- end }}
         tag: 10-debian-10-r233
       securityContext:
         runAsUser: 0
@@ -1678,7 +1678,7 @@ spec:
       imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
       {{- else }}
       imagePullSecrets: []
-      {{- end }}      
+      {{- end }}
       storageClass: ""
     hostAliases: []
     image:
@@ -1858,7 +1858,7 @@ spec:
         {{- else }}
         registry: docker.io
         repository: bitnami/bitnami-shell
-        {{- end }}        
+        {{- end }}
         tag: 10-debian-10-r233
       resources:
         limits: {}
