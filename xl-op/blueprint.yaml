@@ -10,13 +10,13 @@ spec:
   parameters:
     - name: ImageRegistryType
       type: Select
-      prompt: "Select the type of Image Registry:"
+      prompt: "Select type of image registry:"
       options:
-        - label: Default (Uses various default public image registries for the images)
+        - label: Default (Uses various public image registries for the installation images)
           value: default
-        - label: Custom Public Registry (Overrides defaults to use a specific custom public registry)
+        - label: Custom Public Registry (Uses a specific custom registry)
           value: public
-        - label: Custom Private Registry - Password protected (Overrides defaults to use a specific custom private registry)
+        - label: Custom Private Registry - Password protected (Uses a specific custom registry with password)
           value: private
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
       ignoreIfSkipped: true
