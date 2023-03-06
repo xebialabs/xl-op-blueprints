@@ -59,7 +59,7 @@ spec:
       type: Confirm
       default: true
       saveInXlvals: true
-      promptIf: !expr "k8sResource(Namespace, 'namespace', Namespace) == ''"
+      promptIf: !expr "ProcessType != 'clean' && k8sResource(Namespace, 'namespace', Namespace) == ''"
       prompt:  !expr "'Do you want to create custom Kubernetes namespace ' + Namespace + ', it does not exist:'"
       description: "Type yes to create a namespace in your kubernetes cluster."
 
