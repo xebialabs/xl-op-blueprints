@@ -112,7 +112,7 @@ spec:
         image:
           pullPolicy: IfNotPresent
           repository: haproxy
-          tag: 2.3.14-alpine
+          tag: 2.4.22-alpine
         resources: {}
       healthzPort: 10253
       hostNetwork: false
@@ -569,7 +569,7 @@ spec:
         registry: docker.io
         repository: bitnami/postgresql
         {{- end }}
-        tag: 11.11.0-debian-10-r31
+        tag: 14.5.0-debian-11-r35
       {{- if eq .ImageRegistryType "private" }}
       imagePullSecrets:
         - name: {{ .CustomPrivateImageRegistrySecret }}
@@ -1033,7 +1033,7 @@ spec:
       registry: docker.io
       repository: bitnami/nginx-ingress-controller
       {{- end }}
-      tag: 1.0.4-debian-10-r13
+      tag: 1.6.4-debian-11-r5
     {{- if eq .UseCustomNamespace true }}
     ingressClassResource:
       controllerClass: k8s.io/ingress-nginx-dai-xlr-{{ .Namespace }}
@@ -1231,13 +1231,12 @@ spec:
       imagePullSecrets: []
       {{- end }}
       postgresql:
-        existingSecret: ""
-        postgresqlDatabase: ""
-        postgresqlPassword: "postgres"
-        postgresqlUsername: ""
-        replicationPassword: ""
-        servicePort: ""
-      storageClass: ""
+        auth:
+         postgresqlPassword: "postgres"
+      storageClass: '{{ .PostgresqlStorageClass }}'
+    auth:
+      enablePostgresUser: true
+      postgresPassword: "postgres"
     image:
       debug: false
       pullPolicy: IfNotPresent
@@ -1251,11 +1250,6 @@ spec:
       repository: bitnami/postgresql
       {{- end }}
       tag: 11.13.0-debian-10-r73
-    initdbPassword: ""
-    initdbScripts: {}
-    initdbScriptsConfigMap: ""
-    initdbScriptsSecret: postgresql-init-sql-xlr
-    initdbUser: ""
     install: {{ or .EnablePostgresql .UseKeycloakWithEmbeddedDB }}
     ldap:
       baseDN: ""
@@ -1375,6 +1369,10 @@ spec:
       extraPodSpec: {}
       extraVolumeMounts: []
       extraVolumes: []
+      initdb:
+        scriptsSecret: "postgresql-init-sql-xlr"
+        user: "postgres"
+        password: "postgres"
       labels: {}
       nodeAffinityPreset:
         key: ""
@@ -1385,11 +1383,19 @@ spec:
       podAnnotations: {}
       podAntiAffinityPreset: soft
       podLabels: {}
+      persistence:
+        enabled: true
+        storageClass: '{{ .PostgresqlStorageClass }}'
+        size: 8Gi
+        existingClaim: ""
       priorityClassName: ""
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 250m
       service:
-        clusterIP: ""
-        nodePort: ""
-        type: ""
+        type: "ClusterIP"
+        port: "5432"
       sidecars: []
       tolerations: []
     primaryAsStandBy:
@@ -1693,7 +1699,7 @@ spec:
       registry: docker.io
       repository: bitnami/rabbitmq
       {{- end }}
-      tag: 3.9.8-debian-10-r6
+      tag: 3.11.10-debian-11-r0
     ingress:
       annotations: {}
       enabled: false
@@ -1726,6 +1732,7 @@ spec:
     loadDefinition:
       enabled: true
       existingSecret: xlr-load-definition
+      file: /app/xlr-load_definition.json
     logs: '-'
     maxAvailableSchedulers: ""
     memoryHighWatermark:
