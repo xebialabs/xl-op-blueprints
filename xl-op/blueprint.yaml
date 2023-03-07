@@ -54,8 +54,8 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
-      prompt: !expr "IsCustomImageRegistry ? 'Enter the repository name (eg: <imageRegistryName>/<repositoryName> from <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):'"
-      default: !expr "xebialabsunsupported"
+      prompt: !expr "IsCustomImageRegistry ? 'Enter the repository name (eg: <repositoryName> from <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):'"
+      default: xebialabsunsupported
       description: Enter the repository name to use
     - name: ImageNameDeploy
       type: Input
