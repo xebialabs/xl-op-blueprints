@@ -14,12 +14,16 @@ spec:
   HealthProbesLivenessTimeout: 60
   HealthProbesReadinessTimeout: 60
   ImagePullPolicy: Always
+  {{- if eq .IsCustomImageRegistry true }}
+  ImageRepository: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/{{ .ImageNameRelease }}
+  {{- else }}
   ImageRepository: {{ .RepositoryName }}/{{ .ImageNameRelease }}
+  {{- end }}
   ImageTag: "{{ .ImageTag }}"
   ## xebialabs/tiny-tools image version
   ## Ref: https://hub.docker.com/r/xebialabs/tiny-tools/tags
   {{- if eq .IsCustomImageRegistry true }}
-  TinyToolsImageRepository: "{{ .RepositoryName }}/tiny-tools"
+  TinyToolsImageRepository: "{{ .CustomImageRegistryName }}/{{ .RepositoryName }}/tiny-tools"
   {{- else }}
   TinyToolsImageRepository: "xebialabs/tiny-tools"
   {{- end }}
@@ -119,7 +123,7 @@ spec:
       image:
         pullPolicy: IfNotPresent
         {{- if eq .IsCustomImageRegistry true }}
-        repository: {{ .RepositoryName }}/haproxy-ingress
+        repository: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/haproxy-ingress
         {{- else }}
         repository: quay.io/jcmoraisjr/haproxy-ingress
         {{- end }}
@@ -457,7 +461,7 @@ spec:
     image:
       pullPolicy: IfNotPresent
       {{- if eq .IsCustomImageRegistry true }}
-      repository: {{ .RepositoryName }}/keycloak
+      repository: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/keycloak
       {{- else}}
       repository: docker.io/jboss/keycloak
       {{- end }}
@@ -562,9 +566,8 @@ spec:
         debug: false
         pullPolicy: IfNotPresent
         {{- if eq .IsCustomImageRegistry true }}
-        {{- /* repository name contains image registry hostname also */}}
-        {{- $repoName := split "/" .RepositoryName }}
-        repository: {{ $repoName._1 }}/postgresql
+        registry: {{ .CustomImageRegistryName }}
+        repository: {{ .RepositoryName }}/postgresql
         {{- else }}
         registry: docker.io
         repository: bitnami/postgresql
@@ -603,9 +606,8 @@ spec:
         image:
           pullPolicy: IfNotPresent
           {{- if eq .IsCustomImageRegistry true }}
-          {{- /* repository name contains image registry hostname also */}}
-          {{- $repoName := split "/" .RepositoryName }}
-          repository: {{ $repoName._1 }}/postgres-exporter
+          registry: {{ .CustomImageRegistryName }}
+          repository: {{ .RepositoryName }}/postgres-exporter
           {{- else }}
           registry: docker.io
           repository: bitnami/postgres-exporter
@@ -771,9 +773,8 @@ spec:
         image:
           pullPolicy: Always
           {{- if eq .IsCustomImageRegistry true }}
-          {{- /* repository name contains image registry hostname also */}}
-          {{- $repoName := split "/" .RepositoryName }}
-          repository: {{ $repoName._1 }}/bitnami-shell
+          registry: {{ .CustomImageRegistryName }}
+          repository: {{ .RepositoryName }}/bitnami-shell
           {{- else }}
           registry: docker.io
           repository: bitnami/bitnami-shell
@@ -927,9 +928,8 @@ spec:
         pullPolicy: IfNotPresent
         pullSecrets: []
         {{- if eq .IsCustomImageRegistry true }}
-        {{- /* repository name contains image registry hostname also */}}
-        {{- $repoName := split "/" .RepositoryName }}
-        repository: {{ $repoName._1 }}/nginx
+        {{- /* registry name defined in global section */}}
+        repository: {{ .RepositoryName }}/nginx
         {{- else }}
         registry: docker.io
         repository: bitnami/nginx
@@ -1026,9 +1026,8 @@ spec:
       pullPolicy: IfNotPresent
       pullSecrets: []
       {{- if eq .IsCustomImageRegistry true }}
-      {{- /* repository name contains image registry hostname also */}}
-      {{- $repoName := split "/" .RepositoryName }}
-      repository: {{ $repoName._1 }}/nginx-ingress-controller
+      {{- /* registry name defined in global section */}}
+      repository: {{ .RepositoryName }}/nginx-ingress-controller
       {{- else }}
       registry: docker.io
       repository: bitnami/nginx-ingress-controller
@@ -1243,9 +1242,8 @@ spec:
       pullPolicy: IfNotPresent
       pullSecrets: []
       {{- if eq .IsCustomImageRegistry true }}
-      {{- /* repository name contains image registry hostname also */}}
-      {{- $repoName := split "/" .RepositoryName }}
-      repository: {{ $repoName._1 }}/postgresql
+      {{- /* registry name defined in global section */}}}
+      repository: {{ .RepositoryName }}/postgresql
       {{- else }}
       registry: docker.io
       repository: bitnami/postgresql
@@ -1287,9 +1285,8 @@ spec:
         pullPolicy: IfNotPresent
         pullSecrets: []
         {{- if eq .IsCustomImageRegistry true }}
-        {{- /* repository name contains image registry hostname also */}}
-        {{- $repoName := split "/" .RepositoryName }}
-        repository: {{ $repoName._1 }}/postgres-exporter
+        {{- /* registry name defined in global section */}}
+        repository: {{ .RepositoryName }}/postgres-exporter
         {{- else }}
         registry: docker.io
         repository: bitnami/postgres-exporter
@@ -1497,9 +1494,8 @@ spec:
         pullPolicy: IfNotPresent
         pullSecrets: []
         {{- if eq .IsCustomImageRegistry true }}
-        {{- /* repository name contains image registry hostname also */}}
-        {{- $repoName := split "/" .RepositoryName }}
-        repository: {{ $repoName._1 }}/bitnami-shell
+        {{- /* registry name defined in global section */}}
+        repository: {{ .RepositoryName }}/bitnami-shell
         {{- else }}
         registry: docker.io
         repository: bitnami/bitnami-shell
@@ -1686,9 +1682,8 @@ spec:
       pullPolicy: IfNotPresent
       pullSecrets: []
       {{- if eq .IsCustomImageRegistry true }}
-      {{- /* repository name contains image registry hostname also */}}
-      {{- $repoName := split "/" .RepositoryName }}
-      repository: {{ $repoName._1 }}/rabbitmq
+      {{- /* registry name defined in global section */}}
+      repository: {{ .RepositoryName }}/rabbitmq
       {{- else }}
       registry: docker.io
       repository: bitnami/rabbitmq
@@ -1852,9 +1847,8 @@ spec:
         pullPolicy: IfNotPresent
         pullSecrets: []
         {{- if eq .IsCustomImageRegistry true }}
-        {{- /* repository name contains image registry hostname also */}}
-        {{- $repoName := split "/" .RepositoryName }}
-        repository: {{ $repoName._1 }}/bitnami-shell
+        {{- /* registry name defined in global section */}}
+        repository: {{ .RepositoryName }}/bitnami-shell
         {{- else }}
         registry: docker.io
         repository: bitnami/bitnami-shell
