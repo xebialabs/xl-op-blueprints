@@ -610,7 +610,7 @@ spec:
           registry: docker.io
           repository: bitnami/postgres-exporter
           {{- end }}
-          tag: 0.9.0-debian-10-r6
+          tag: 0.11.1-debian-11-r64
         livenessProbe:
           enabled: true
           failureThreshold: 6
@@ -934,7 +934,7 @@ spec:
         registry: docker.io
         repository: bitnami/nginx
         {{- end }}
-        tag: 1.21.3-debian-10-r48
+        tag: 1.22.1-debian-11-r44
       livenessProbe:
         enabled: true
         failureThreshold: 3
@@ -1227,7 +1227,7 @@ spec:
       registry: docker.io
       repository: bitnami/postgresql
       {{- end }}
-      tag: 11.13.0-debian-10-r73
+      tag: 14.5.0-debian-11-r35
     install: {{ or .EnablePostgresql .UseKeycloakWithEmbeddedDB }}
     ldap:
       baseDN: ""
@@ -1485,7 +1485,7 @@ spec:
         registry: docker.io
         repository: bitnami/bitnami-shell
         {{- end }}
-        tag: 10-debian-10-r233
+        tag: 11-debian-11-r90
       containerSecurityContext:
         runAsUser: 0
   rabbitmq:
@@ -1841,7 +1841,7 @@ spec:
         registry: docker.io
         repository: bitnami/bitnami-shell
         {{- end }}
-        tag: 10-debian-10-r233
+        tag: 11-debian-11-r92
       resources:
         limits: {}
         requests: {}
