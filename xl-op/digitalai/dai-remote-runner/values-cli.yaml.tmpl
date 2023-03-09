@@ -1,10 +1,10 @@
 global:
   {{- if eq .K8sSetup "PlainK8s" }}
   cloudInstallation: false
+  baseHostPath: "{{ .RemoteRunnerBaseHostPath }}"
   {{- else }}
   cloudInstallation: true
   {{- end }}
-  baseHostPath: "/workspace"
   {{- if eq .ImageRegistryType "private" }}
   imagePullSecrets:
     - {{ .CustomPrivateImageRegistrySecret }}

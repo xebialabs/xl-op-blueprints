@@ -340,8 +340,8 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr OidcConfigType == 'embedded' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Enter Keycloak public URL:"
-      description: Enter Keycloak public URL that will be used for keycloak installation.
+      prompt: "Enter Keycloak public hostname:"
+      description: Enter Keycloak public hostname that will be used for keycloak installation.
       validate: !expr "regex('^[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}$', KeycloakHost)"
     - name: ExternalOidcConfGenericDeploy
       type: Editor
@@ -849,6 +849,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       description: The Release URL.
+      validate: !expr "regex('^https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$', RemoteRunnerReleaseUrl)"
     - name: RemoteRunnerToken
       type: Input
       saveInXlvals: true
@@ -866,6 +867,14 @@ spec:
       overrideDefault: true
       prompt: "Provide storage class for the remote runner:"
       promptIf: !expr ServerType == 'dai-release-runner'
+    - name: RemoteRunnerBaseHostPath
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide storage class base host path:"
+      promptIf: !expr ServerType == 'dai-release-runner' && K8sSetup == 'PlainK8s'
+      description: The host path for the k3d cluster. It is not required if you are installing remote runner in the cloud (AWS, Azure or GCP).
   files:
     # Generic
     - path: digitalai/generated_answers.yaml.tmpl
