@@ -342,7 +342,7 @@ spec:
       promptIf: !expr OidcConfigType == 'embedded' && (ProcessType == 'install' || ProcessType == 'upgrade')
       prompt: "Enter Keycloak public hostname:"
       description: Enter Keycloak public hostname that will be used for keycloak installation.
-      validate: !expr "regex('^[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}$', KeycloakHost)"
+      validate: !expr "regex('^[-a-zA-Z0-9@:%._\\+~#=]{2,256}$', KeycloakHost)"
     - name: ExternalOidcConfGenericDeploy
       type: Editor
       prompt: "Configure external oidc setup:"
@@ -849,7 +849,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       description: The Release URL.
-      validate: !expr "regex('^https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$', RemoteRunnerReleaseUrl)"
+      validate: !expr "regex('^https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$', RemoteRunnerReleaseUrl)"
     - name: RemoteRunnerToken
       type: Input
       saveInXlvals: true
