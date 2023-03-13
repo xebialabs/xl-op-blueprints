@@ -865,7 +865,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide storage class for the remote runner:"
-      promptIf: !expr ServerType == 'dai-release-runner' &&  && (ProcessType == 'install' || ProcessType == 'upgrade')
+      promptIf: !expr ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
   files:
     # Generic
     - path: digitalai/generated_answers.yaml.tmpl
