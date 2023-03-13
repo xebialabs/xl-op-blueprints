@@ -212,7 +212,7 @@ spec:
           value: none
       promptIf: !expr ProcessType == "install" && K8sSetup != 'Openshift'
       saveInXlvals: true
-      default: !expr "K8sSetup == 'PlainK8s' ? 'none' : 'nginx'"
+      default: nginx
       description: Select between supported ingress types. If None is selected, the application will not be exposed and therefore will not be accessible from the browser.
       validate: !expr "regex('.*external.*', IngressType) ? length(k8sResources(Namespace, 'ingressclasses')) > '0' : true"
     - name: ExternalIngressClass
