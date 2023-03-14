@@ -734,6 +734,7 @@ spec:
         .spec.Persistence.XldMasterPvcSize
         .spec.Persistence.XldWorkerPvcSize
         .spec.RepositoryKeystore
+        .spec.postgresql.image.tag
         .spec.postgresql.persistence.size
         .spec.postgresql.persistence.storageClass
         .spec.postgresql.postgresqlMaxConnections
@@ -777,6 +778,7 @@ spec:
         .spec.Persistence.StorageClass
         .spec.Persistence.AccessMode
         .spec.RepositoryKeystore
+        .spec.postgresql.image.tag
         .spec.postgresql.persistence.size
         .spec.postgresql.persistence.storageClass
         .spec.postgresql.postgresqlMaxConnections
