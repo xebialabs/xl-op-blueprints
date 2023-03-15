@@ -55,7 +55,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
       prompt: !expr "IsCustomImageRegistry ? 'Enter the repository name (eg: <imageRegistryName>/<repositoryName> from <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):'"
-      default: !expr "xebialabsearlyaccess"
+      default: !expr "xebialabsunsupported"
       description: Enter the repository name to use
     - name: ImageNameDeploy
       type: Input
@@ -82,7 +82,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.1.0-beta.9
+      default: 23.1.0-315.113
       description: Enter the image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -448,7 +448,7 @@ spec:
       overrideDefault: true
       prompt: !expr "IsCustomImageRegistry ? 'Enter the operator image to use (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):'"
       promptIf: !expr ServerType == 'dai-release' && K8sSetup != 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsearlyaccess/release-operator:23.1.0-beta.9
+      default: xebialabsunsupported/release-operator:23.1.0-315.113
       description: Enter the operator image to use
     - name: OperatorImageReleaseOpenshift
       type: Input
@@ -457,7 +457,7 @@ spec:
       overrideDefault: true
       prompt: !expr "IsCustomImageRegistry ? 'Enter the operator image to use (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):'"
       promptIf: !expr ServerType == 'dai-release' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsearlyaccess/release-operator:23.1.0-beta.9-openshift
+      default: xebialabsunsupported/release-operator:23.1.0-315.113-openshift
       description: Enter the operator image to use
     - name: LicenseSource
       type: Select
