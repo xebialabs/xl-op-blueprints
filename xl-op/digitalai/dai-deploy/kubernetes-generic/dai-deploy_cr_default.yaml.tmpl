@@ -21,7 +21,7 @@ spec:
   ## Ref: https://hub.docker.com/r/xebialabs/tiny-tools/tags
   {{- if eq .IsCustomImageRegistry true }}
   TinyToolsImageRepository: "{{ .RepositoryName }}/tiny-tools"
-  {{- else }}  
+  {{- else }}
   TinyToolsImageRepository: "xebialabs/tiny-tools"
   {{- end }}
   TinyToolsImageTag: "22.2.0"
@@ -135,12 +135,12 @@ spec:
         pullPolicy: IfNotPresent
         {{- if eq .IsCustomImageRegistry true }}
         repository: {{ .RepositoryName }}/haproxy-ingress
-        {{- else }}        
+        {{- else }}
         repository: quay.io/jcmoraisjr/haproxy-ingress
         {{- end }}
         tag: v0.13.4
       {{- if eq .ImageRegistryType "private" }}
-      imagePullSecrets: 
+      imagePullSecrets:
         - name: {{ .CustomPrivateImageRegistrySecret }}
       {{- else }}
       imagePullSecrets: []
@@ -473,16 +473,16 @@ spec:
       pullPolicy: IfNotPresent
       {{- if eq .IsCustomImageRegistry true }}
       repository: {{ .RepositoryName }}/keycloak
-      {{- else}}      
+      {{- else}}
       repository: docker.io/jboss/keycloak
       {{- end }}
       tag: ""
     {{- if eq .ImageRegistryType "private" }}
-    imagePullSecrets: 
+    imagePullSecrets:
       - name: {{ .CustomPrivateImageRegistrySecret }}
     {{- else }}
     imagePullSecrets: []
-    {{- end }}      
+    {{- end }}
     ingress:
       annotations:
         {{- if eq .UseCustomNamespace true }}
@@ -579,17 +579,17 @@ spec:
         {{- /* repository name contains image registry hostname also */}}
         {{- $repoName := split "/" .RepositoryName }}
         repository: {{ $repoName._1 }}/postgresql
-        {{- else }}        
+        {{- else }}
         registry: docker.io
         repository: bitnami/postgresql
         {{- end }}
         tag: 11.11.0-debian-10-r31
       {{- if eq .ImageRegistryType "private" }}
-      imagePullSecrets: 
-        - name: {{ .CustomPrivateImageRegistrySecret }} ]
+      imagePullSecrets:
+        - name: {{ .CustomPrivateImageRegistrySecret }}
       {{- else }}
       imagePullSecrets: []
-      {{- end }}        
+      {{- end }}
       ldap:
         baseDN: ""
         bind_password: null
@@ -620,10 +620,10 @@ spec:
           {{- /* repository name contains image registry hostname also */}}
           {{- $repoName := split "/" .RepositoryName }}
           repository: {{ $repoName._1 }}/postgres-exporter
-          {{- else }}          
+          {{- else }}
           registry: docker.io
           repository: bitnami/postgres-exporter
-          {{- end }}          
+          {{- end }}
           tag: 0.9.0-debian-10-r6
         livenessProbe:
           enabled: true
@@ -788,7 +788,7 @@ spec:
           {{- /* repository name contains image registry hostname also */}}
           {{- $repoName := split "/" .RepositoryName }}
           repository: {{ $repoName._1 }}/bitnami-shell
-          {{- else }}          
+          {{- else }}
           registry: docker.io
           repository: bitnami/bitnami-shell
           {{- end }}
@@ -944,7 +944,7 @@ spec:
         {{- /* repository name contains image registry hostname also */}}
         {{- $repoName := split "/" .RepositoryName }}
         repository: {{ $repoName._1 }}/nginx
-        {{- else }}        
+        {{- else }}
         registry: docker.io
         repository: bitnami/nginx
         {{- end }}
@@ -1043,7 +1043,7 @@ spec:
       {{- /* repository name contains image registry hostname also */}}
       {{- $repoName := split "/" .RepositoryName }}
       repository: {{ $repoName._1 }}/nginx-ingress-controller
-      {{- else }}      
+      {{- else }}
       registry: docker.io
       repository: bitnami/nginx-ingress-controller
       {{- end }}
@@ -1243,7 +1243,7 @@ spec:
       imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
       {{- else }}
       imagePullSecrets: []
-      {{- end }}    
+      {{- end }}
       postgresql:
         existingSecret: ""
         postgresqlDatabase: ""
@@ -1260,7 +1260,7 @@ spec:
       {{- /* repository name contains image registry hostname also */}}
       {{- $repoName := split "/" .RepositoryName }}
       repository: {{ $repoName._1 }}/postgresql
-      {{- else }}      
+      {{- else }}
       registry: docker.io
       repository: bitnami/postgresql
       {{- end }}
@@ -1304,7 +1304,7 @@ spec:
         {{- /* repository name contains image registry hostname also */}}
         {{- $repoName := split "/" .RepositoryName }}
         repository: {{ $repoName._1 }}/postgres-exporter
-        {{- else }}        
+        {{- else }}
         registry: docker.io
         repository: bitnami/postgres-exporter
         {{- end }}
@@ -1514,10 +1514,10 @@ spec:
         {{- /* repository name contains image registry hostname also */}}
         {{- $repoName := split "/" .RepositoryName }}
         repository: {{ $repoName._1 }}/bitnami-shell
-        {{- else }}        
+        {{- else }}
         registry: docker.io
         repository: bitnami/bitnami-shell
-        {{- end }}        
+        {{- end }}
         tag: 10-debian-10-r233
       securityContext:
         runAsUser: 0
@@ -1703,7 +1703,7 @@ spec:
       {{- /* repository name contains image registry hostname also */}}
       {{- $repoName := split "/" .RepositoryName }}
       repository: {{ $repoName._1 }}/rabbitmq
-      {{- else }}      
+      {{- else }}
       registry: docker.io
       repository: bitnami/rabbitmq
       {{- end }}
@@ -1869,10 +1869,10 @@ spec:
         {{- /* repository name contains image registry hostname also */}}
         {{- $repoName := split "/" .RepositoryName }}
         repository: {{ $repoName._1 }}/bitnami-shell
-        {{- else }}        
+        {{- else }}
         registry: docker.io
         repository: bitnami/bitnami-shell
-        {{- end }}        
+        {{- end }}
         tag: 10-debian-10-r233
       resources:
         limits: {}
