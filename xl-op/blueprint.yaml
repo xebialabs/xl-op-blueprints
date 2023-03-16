@@ -10,13 +10,13 @@ spec:
   parameters:
     - name: ImageRegistryType
       type: Select
-      prompt: "Select the type of Image Registry:"
+      prompt: "Select type of image registry:"
       options:
-        - label: Default (Uses various default public image registries for the images)
+        - label: Default (Uses various public image registries for the installation images)
           value: default
-        - label: Custom Public Registry (Overrides defaults to use a specific custom public registry)
+        - label: Custom Public Registry (Uses a specific custom registry)
           value: public
-        - label: Custom Private Registry - Password protected (Overrides defaults to use a specific custom private registry)
+        - label: Custom Private Registry - Password protected (Uses a specific custom registry with password)
           value: private
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
       ignoreIfSkipped: true
@@ -27,17 +27,17 @@ spec:
       type: Confirm
       saveInXlvals: true
       ignoreIfSkipped: true
-      value: !expr "ImageRegistryType == 'public' || ImageRegistryType == 'private' ? true : false"
+      value: !expr "ImageRegistryType == 'public' || ImageRegistryType == 'private'"
       description: Is Custom Image Repository
-      default: true
     - name: CustomImageRegistryName
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "IsCustomImageRegistry && (ProcessType == 'install' || ProcessType == 'upgrade')"
-      prompt: "Enter the custom docker image registry name:"
+      prompt: "Enter the custom docker image registry name (eg: <imageRegistryName> from <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):"
       description: Enter the custom image registry name for pulling all the images required for this installation
+      default: docker.io
     - name: CustomPrivateImageRegistrySecret
       type: Select
       options:
@@ -54,8 +54,8 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
-      prompt: !expr "IsCustomImageRegistry ? 'Enter the repository name (eg: <imageRegistryName>/<repositoryName> from <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):'"
-      default: !expr "xebialabsunsupported"
+      prompt: !expr "IsCustomImageRegistry ? 'Enter the repository name (eg: <repositoryName> from <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):'"
+      default: xebialabs
       description: Enter the repository name to use
     - name: ImageNameDeploy
       type: Input
@@ -80,7 +80,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
+      promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
       default: 23.1.0-315.113
       description: Enter the image tag to use
@@ -102,6 +102,24 @@ spec:
       prompt: "Enter the central configuration image name for version 22 and above (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       default: central-configuration
       description: Enter the central configuration image name to use
+    - name: ImageNameRemoteRunner
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      promptIf: !expr ServerType == 'dai-release-runner'
+      prompt: "Enter the remote runner image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
+      default: xlr-remote-runner
+      description: Enter the image name to use
+    - name: ImageTagRemoteRunner
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      promptIf: !expr ServerType == 'dai-release-runner'
+      prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
+      default: 0.1.32
+      description: Enter the image tag to use
     - name: XldMasterCount
       type: Input
       saveInXlvals: true
@@ -210,7 +228,7 @@ spec:
           value: external
         - label: None - Ingress will not be set up during installation
           value: none
-      promptIf: !expr ProcessType == "install" && K8sSetup != 'Openshift'
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && K8sSetup != 'Openshift'
       saveInXlvals: true
       default: nginx
       description: Select between supported ingress types. If None is selected, the application will not be exposed and therefore will not be accessible from the browser.
@@ -232,7 +250,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Do you want to enable an TLS/SSL configuration (if yes, requires existing TLS secret in the namespace):"
-      promptIf: !expr ProcessType == "install" && K8sSetup != 'Openshift' && IngressType != "none"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && K8sSetup != 'Openshift' && IngressType != "none"
       description: "Enable TLS/SSL in the Ingress configuration if you already have the TLS secret with the key and certificate created in the working namespace."
       validate: !expr "EnableIngressTls ? length(k8sResources(Namespace, 'secrets')) > '0' : true"
     - name: IngressHost
@@ -241,7 +259,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide DNS name for accessing UI of the server:"
-      promptIf: !expr ProcessType == "install" && IngressType != "none"
+      promptIf: !expr ServerType != 'dai-release-runner' ProcessType == "install" && IngressType != "none"
       description: "Provide DNS name for accessing UI of the server. For OpenShift, this is used with Routing, while for other providers this is set up only when Ingress is used."
       validate: !expr "regex('^[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}$', IngressHost)"
     - name: IngressTlsSecretName
@@ -260,7 +278,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide administrator password:"
-      promptIf: !expr ProcessType == "install"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
       description: Administrator password
       default: !expr "randPassword()"
     - name: OidcConfigTypeInstall
@@ -278,7 +296,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Type of the OIDC configuration:"
-      promptIf: !expr ProcessType == "install"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
       description: Provide the type of the OIDC configuration
       default: no-oidc
     - name: OidcConfigTypeUpgrade
@@ -298,7 +316,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Type of the OIDC configuration:"
-      promptIf: !expr ProcessType == "upgrade"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "upgrade"
       description: Provide the type of the OIDC configuration
       default: existing
     - name: OidcConfigType
@@ -322,9 +340,9 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr OidcConfigType == 'embedded' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Enter Keycloak public URL:"
-      description: Enter Keycloak public URL that will be used for keycloak installation.
-      validate: !expr "regex('^[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}$', KeycloakHost)"
+      prompt: "Enter Keycloak public hostname:"
+      description: Enter Keycloak public hostname that will be used for keycloak installation.
+      validate: !expr "regex('^[-a-zA-Z0-9@:%._\\+~#=]{2,256}$', KeycloakHost)"
     - name: ExternalOidcConfGenericDeploy
       type: Editor
       prompt: "Configure external oidc setup:"
@@ -470,7 +488,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Select source of the license:"
-      promptIf: !expr ProcessType == "install"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
       description: "Provide source of the license file"
       default: file
     - name: LicenseEditor
@@ -478,8 +496,8 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       prompt: "Provide license for the server:"
-      promptIf: !expr ProcessType == "install" && LicenseSource == "editor"
-      description: "Provide license file for the server"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && LicenseSource == "editor"
+      description: "Provide license for the server"
       default: ""
     - name: LicenseFile
       type: Input
@@ -487,7 +505,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide license file for the server:"
-      promptIf: !expr ProcessType == "install" && LicenseSource == "file"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && LicenseSource == "file"
       description: "Provide license file for the server"
       validate: !expr "isFile(LicenseFile)"
       default: ""
@@ -510,7 +528,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Select source of the repository keystore:"
-      promptIf: !expr ProcessType == "install"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
       description: "Provide source of the license file"
       default: generate
     - name: RepositoryKeystoreEditor
@@ -544,7 +562,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide keystore passphrase:"
-      promptIf: !expr ProcessType == "install"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
       description: Keystore passphrase for the server
       default: !expr "RepositoryKeystoreSource == 'generate' ? randPassword() : ''"
     - name: StorageClass
@@ -555,16 +573,16 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide storage class for the server:"
-      promptIf: !expr ProcessType == "install"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
       description: Provide storage class for the server
     - name: EnablePostgresql
       type: Confirm
-      default: true
+      default: !expr ServerType != 'dai-release-runner'
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Do you want to install a new PostgreSQL on the cluster:"
-      promptIf: !expr ProcessType == "install"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
       description: "Enable PostgreSQL."
     - name: PostgresqlStorageClass
       type: Select
@@ -618,12 +636,12 @@ spec:
         XL_REPORT_DB_PASS: <xld-report-username>
     - name: EnableRabbitmq
       type: Confirm
-      default: true
+      default: !expr ServerType != 'dai-release-runner'
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Do you want to install a new RabbitMQ on the cluster:"
-      promptIf: !expr ProcessType == "install"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
       description: "Enable RabbitMQ."
     - name: RabbitmqReplicaCount
       type: Input
@@ -801,7 +819,7 @@ spec:
     - name: PreservePvc
       type: Confirm
       saveInXlvals: true
-      promptIf: !expr "ProcessType == 'clean' || CleanBefore"
+      promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'clean' || CleanBefore)"
       prompt: "Should we preserve persisted volume claims? If not all volume data will be lost:"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -815,6 +833,48 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       description: The name of your custom resource definition.
+    - name: RemoteRunnerHelmChartUrl
+      type: Input
+      saveInXlvals: true
+      promptIf: !expr ServerType == 'dai-release-runner'
+      prompt: "Enter the Remote Runner Helm Chart path (URL or local path):"
+      ignoreIfSkipped: true
+      overrideDefault: true
+      description: Remote Runner Helm Chart local filesystem path or URL to the Remote Runner Helm Chart package.
+    - name: RemoteRunnerReleaseUrl
+      type: Input
+      saveInXlvals: true
+      promptIf: !expr ServerType == 'dai-release-runner'
+      prompt: "Enter the Release URL that will be used by remote runner:"
+      ignoreIfSkipped: true
+      overrideDefault: true
+      description: The Release URL.
+      validate: !expr "regex('^https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$', RemoteRunnerReleaseUrl)"
+    - name: RemoteRunnerToken
+      type: Input
+      saveInXlvals: true
+      promptIf: !expr ServerType == 'dai-release-runner'
+      prompt: "Enter the Release Token that will be used by remote runner:"
+      ignoreIfSkipped: true
+      overrideDefault: true
+      description: The Release Token.
+    - name: RemoteRunnerStorageClass
+      type: Select
+      options:
+        - !expr k8sResources(Namespace, 'storageclasses')
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide storage class for the remote runner:"
+      promptIf: !expr ServerType == 'dai-release-runner'
+    - name: RemoteRunnerBaseHostPath
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide storage class base host path:"
+      promptIf: !expr ServerType == 'dai-release-runner' && K8sSetup == 'PlainK8s'
+      description: The host path for the k3d cluster. It is not required if you are installing remote runner in the cloud (AWS, Azure or GCP).
   files:
     # Generic
     - path: digitalai/generated_answers.yaml.tmpl
@@ -937,3 +997,7 @@ spec:
     - path: digitalai/dai-release/kubernetes-openshift/template/postgresql-init-keycloak-db.yaml.tmpl
       writeIf: !expr ServerType == 'dai-release' && OidcConfigType == 'embedded' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
       renameTo: !expr "'digitalai/dai-release/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/postgresql-init-keycloak-db.yaml.tmpl'"
+    # Remote runner
+    - path: digitalai/dai-remote-runner/values-cli.yaml.tmpl
+      writeIf: !expr ServerType == 'dai-release-runner'
+      renameTo: !expr "'digitalai/dai-remote-runner/' + Namespace + '/' + GenerationDateTime + '/kubernetes/values-cli.yaml.tmpl'"
