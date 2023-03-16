@@ -206,7 +206,7 @@ spec:
       {{- end }}
       tag: ""
     {{- if eq .ImageRegistryType "private" }}
-    imagePullSecrets: 
+    imagePullSecrets:
       - name: {{ .CustomPrivateImageRegistrySecret }}
     {{- else }}
     imagePullSecrets: []
@@ -302,17 +302,17 @@ spec:
         {{- /* repository name contains image registry hostname also */}}
         {{- $repoName := split "/" .RepositoryName }}
         repository: {{ $repoName._1 }}/postgresql
-        {{- else }}        
+        {{- else }}
         registry: docker.io
         repository: bitnami/postgresql
         {{- end }}
         tag: 11.11.0-debian-10-r31
       {{- if eq .ImageRegistryType "private" }}
-      imagePullSecrets: 
-        - name: {{ .CustomPrivateImageRegistrySecret }} ]
+      imagePullSecrets:
+        - name: {{ .CustomPrivateImageRegistrySecret }}
       {{- else }}
       imagePullSecrets: []
-      {{- end }}        
+      {{- end }}
       ldap:
         baseDN: ""
         bind_password: null
@@ -346,7 +346,7 @@ spec:
           {{- else }}
           registry: docker.io
           repository: bitnami/postgres-exporter
-          {{- end }}          
+          {{- end }}
           tag: 0.9.0-debian-10-r6
         livenessProbe:
           enabled: true
@@ -511,10 +511,10 @@ spec:
           {{- /* repository name contains image registry hostname also */}}
           {{- $repoName := split "/" .RepositoryName }}
           repository: {{ $repoName._1 }}/bitnami-shell
-          {{- else }}          
+          {{- else }}
           registry: docker.io
           repository: bitnami/bitnami-shell
-          {{- end }}           
+          {{- end }}
           tag: "10"
         securityContext:
           runAsUser: 0
@@ -683,7 +683,7 @@ spec:
       {{- /* repository name contains image registry hostname also */}}
       {{- $repoName := split "/" .RepositoryName }}
       repository: {{ $repoName._1 }}/postgresql
-      {{- else }}      
+      {{- else }}
       registry: docker.io
       repository: bitnami/postgresql
       {{- end }}
@@ -937,7 +937,7 @@ spec:
         {{- /* repository name contains image registry hostname also */}}
         {{- $repoName := split "/" .RepositoryName }}
         repository: {{ $repoName._1 }}/bitnami-shell
-        {{- else }}        
+        {{- else }}
         registry: docker.io
         repository: bitnami/bitnami-shell
         {{- end }}
@@ -1127,7 +1127,7 @@ spec:
       {{- /* repository name contains image registry hostname also */}}
       {{- $repoName := split "/" .RepositoryName }}
       repository: {{ $repoName._1 }}/rabbitmq
-      {{- else }}      
+      {{- else }}
       registry: docker.io
       repository: bitnami/rabbitmq
       {{- end }}
@@ -1293,10 +1293,10 @@ spec:
         {{- /* repository name contains image registry hostname also */}}
         {{- $repoName := split "/" .RepositoryName }}
         repository: {{ $repoName._1 }}/bitnami-shell
-        {{- else }}        
+        {{- else }}
         registry: docker.io
         repository: bitnami/bitnami-shell
-        {{- end }}        
+        {{- end }}
         tag: 10-debian-10-r233
       resources:
         limits: {}

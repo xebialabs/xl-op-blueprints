@@ -572,7 +572,7 @@ spec:
         tag: 11.11.0-debian-10-r31
       {{- if eq .ImageRegistryType "private" }}
       imagePullSecrets:
-        - name: {{ .CustomPrivateImageRegistrySecret }} ]
+        - name: {{ .CustomPrivateImageRegistrySecret }}
       {{- else }}
       imagePullSecrets: []
       {{- end }}
