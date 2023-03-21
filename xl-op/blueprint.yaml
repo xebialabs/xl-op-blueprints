@@ -595,6 +595,7 @@ spec:
       prompt: "Provide Storage Class to be defined for PostgreSQL:"
       promptIf: !expr ProcessType == "install" && EnablePostgresql
       description: Provide Storage Class to be defined for PostgreSQL
+      validate: !expr "length(k8sResources(Namespace, 'storageclasses')) != '0'"
     - name: PostgresqlPvcSize
       type: Input
       saveInXlvals: true
@@ -665,6 +666,7 @@ spec:
       default: !expr StorageClass
       promptIf: !expr "ProcessType == 'install' && EnableRabbitmq"
       description: Storage Class to be defined for RabbitMQ
+      validate: !expr "length(k8sResources(Namespace, 'storageclasses')) != '0'"
     - name: RabbitmqPvcSize
       type: Input
       saveInXlvals: true
@@ -868,6 +870,7 @@ spec:
       overrideDefault: true
       prompt: "Provide storage class for the remote runner:"
       promptIf: !expr ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
+      validate: !expr "length(k8sResources(Namespace, 'storageclasses')) != '0'"
     - name: RemoteRunnerBaseHostPath
       type: Input
       saveInXlvals: true
