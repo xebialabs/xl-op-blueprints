@@ -575,6 +575,7 @@ spec:
       prompt: "Provide storage class for the server:"
       promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
       description: Provide storage class for the server
+      validate: !expr "length(k8sResources(Namespace, 'storageclasses')) != '0'"
     - name: EnablePostgresql
       type: Confirm
       default: !expr ServerType != 'dai-release-runner'
