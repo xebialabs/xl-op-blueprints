@@ -21,7 +21,7 @@ spec:
       containers:
       - name: kube-rbac-proxy
         {{- if eq .IsCustomImageRegistry true }}
-        image: {{ .RepositoryName }}/kube-rbac-proxy:v0.8.0
+        image: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/kube-rbac-proxy:v0.8.0
         {{- else }}
         image: gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0
         {{- end }}

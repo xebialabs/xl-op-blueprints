@@ -24,7 +24,7 @@ spec:
       initContainers:
         - name: wait-for-postgresql
           {{- if eq .IsCustomImageRegistry true }}
-          image: {{ .RepositoryName }}/tiny-tools:22.2.0
+          image: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/tiny-tools:22.2.0
           {{- else }}        
           image: xebialabs/tiny-tools:22.2.0
           {{- end }}
@@ -48,7 +48,7 @@ spec:
       containers:
         - name: postgresql-init-keycloak-db
           {{- if eq .IsCustomImageRegistry true }}
-          image: {{ .RepositoryName }}/tiny-tools:22.2.0
+          image: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/tiny-tools:22.2.0
           {{- else }}        
           image: xebialabs/tiny-tools:22.2.0
           {{- end }}

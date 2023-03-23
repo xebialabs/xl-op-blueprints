@@ -29,6 +29,7 @@ spec:
       ignoreIfSkipped: true
       value: !expr "ImageRegistryType == 'public' || ImageRegistryType == 'private'"
       description: Is Custom Image Repository
+      default: false
     - name: CustomImageRegistryName
       type: Input
       saveInXlvals: true
