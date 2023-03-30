@@ -130,11 +130,23 @@ tasks {
         dependsOn(named("docBuild"))
     }
 
+    register<CleanChartsTask>(CleanChartsTask.NAME) {
+    }
+
+    register<GetHelmChartTask>("getRemoteRunnerHelmChart") {
+        helmChartName = "xlr-remote-runner-helm-chart"
+    }
+
     register<Zip>("blueprintsArchives") {
+
+        dependsOn(named("getRemoteRunnerHelmChart"))
+
         from("./") {
             include("xl-infra/**/*")
             include("xl-op/**/*")
             include("*.json")
+            include("build/charts/**/*")
+            exclude("**/*/.git*")
             archiveBaseName.set("xl-op-blueprints")
             archiveVersion.set(releasedVersion)
             archiveExtension
