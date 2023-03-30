@@ -1,17 +1,25 @@
 global:
-  {{- if eq .K8sSetup "PlainK8s" }}
-  cloudInstallation: false
-  baseHostPath: "{{ .RemoteRunnerBaseHostPath }}"
-  {{- else }}
-  cloudInstallation: true
-  {{- end }}
-  {{- if eq .ImageRegistryType "private" }}
-  imagePullSecrets:
-    - {{ .CustomPrivateImageRegistrySecret }}
-  {{- end }}
-  namespace:
-    create: false
-    name: {{ .Namespace }}
+  persistence:
+    storageClass: {{ .RemoteRunnerStorageClass }}
+    {{- if eq .K8sSetup "PlainK8s" }}
+    baseHostPath: "{{ .RemoteRunnerBaseHostPath }}"
+    {{- end }}
+
+release:
+  url: {{ .RemoteRunnerReleaseUrl }}
+  registrationToken: "{{ .RemoteRunnerToken }}"
+
+replicaCount: {{ .RemoteRunnerCount }}
+
+{{- if eq .K8sSetup "PlainK8s" }}
+persistence:
+  work:
+    volume:
+      create: true
+      accessModes:
+        - ReadWriteOnce
+{{- end }}
+
 image:
   {{- if eq .IsCustomImageRegistry true }}
   registry: {{ .CustomImageRegistryName }}
@@ -19,11 +27,7 @@ image:
   repository: {{ .RepositoryName }}
   name: {{ .ImageNameRemoteRunner }}
   tag: {{ .ImageTagRemoteRunner }}
-release:
-  url: {{ .RemoteRunnerReleaseUrl }}
-  registrationToken: {{ .RemoteRunnerToken }}
-remote-runner-env:
-  volume:
-    storageClass: {{ .RemoteRunnerStorageClass }}
-runner:
-  truststore: false
+  {{- if eq .ImageRegistryType "private" }}
+  pullSecrets:
+    - {{ .CustomPrivateImageRegistrySecret }}
+  {{- end }}

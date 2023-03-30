@@ -130,7 +130,7 @@ spec:
       prompt: "Enter the deploy master server replica count:"
       default: 3
       description: Enter the deploy master server replica count
-      validate: !expr "regex('^([0-9])+$', XldMasterCount)"
+      validate: !expr "regex('^([1-9])+$', XldMasterCount)"
     - name: PvcSizeDeploy
       type: Input
       saveInXlvals: true
@@ -163,7 +163,7 @@ spec:
       prompt: "Enter the deploy worker replica count:"
       default: 3
       description: Enter the deploy worker replica count
-      validate: !expr "regex('^([0-9])+$', XldWorkerCount)"
+      validate: !expr "regex('^([1-9])+$', XldWorkerCount)"
     - name: PvcSizeDeployTaskEngine
       type: Input
       saveInXlvals: true
@@ -193,7 +193,7 @@ spec:
       prompt: "Enter the release server replica count:"
       default: 3
       description: Enter the release server replica count
-      validate: !expr "regex('^([0-9])+$', XlrReplicaCount)"
+      validate: !expr "regex('^([1-9])+$', XlrReplicaCount)"
     - name: PvcSizeRelease
       type: Input
       saveInXlvals: true
@@ -653,7 +653,7 @@ spec:
       default: 3
       promptIf: !expr "ProcessType == 'install' && EnableRabbitmq"
       description: Replica count to be defined for RabbitMQ
-      validate: !expr "regex('^([0-9])+$', RabbitmqReplicaCount)"
+      validate: !expr "regex('^([1-9])+$', RabbitmqReplicaCount)"
     - name: RabbitmqStorageClass
       type: Select
       options:
@@ -834,10 +834,26 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       description: The name of your custom resource definition.
+    - name: RemoteRunnerReleaseName
+      type: Input
+      saveInXlvals: true
+      promptIf: !expr ServerType == 'dai-release-runner'
+      prompt: "Enter the Remote Runner Helm Chart release name:"
+      ignoreIfSkipped: true
+      overrideDefault: true
+      description: Remote Runner Helm Chart release name that will be used with helm command during installation.
+      default: remote-runner
+    - name: RemoteRunnerUseDefaultLocation
+      type: Confirm
+      default: true
+      saveInXlvals: true
+      promptIf: !expr ServerType == 'dai-release-runner'
+      prompt:  "Use default version of the Remote Runner helm chart."
+      description: "Type yes to use default internal version of the Remote Runner helm chart, in other way you need to provide path to the helm chart."
     - name: RemoteRunnerHelmChartUrl
       type: Input
       saveInXlvals: true
-      promptIf: !expr ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
+      promptIf: !expr ServerType == 'dai-release-runner' && !RemoteRunnerUseDefaultLocation && (ProcessType == 'install' || ProcessType == 'upgrade')
       prompt: "Enter the Remote Runner Helm Chart path (URL or local path):"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -859,6 +875,16 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       description: The Release Token.
+    - name: RemoteRunnerCount
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      promptIf: !expr ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
+      prompt: "Enter the remote runner replica count:"
+      default: 1
+      description: Enter the remote runner replica count, it will spin given number of replicas
+      validate: !expr "regex('^([1-9])+$', RemoteRunnerCount)"
     - name: RemoteRunnerStorageClass
       type: Select
       options:
