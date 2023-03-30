@@ -217,6 +217,59 @@ spec:
       ignoreIfSkipped: true
       default: ReadWriteMany
       description: Select between supported Access Modes to define if the volume can be mounted as read-write by a single node (ReadWriteOnce) or by many nodes (ReadWriteMany).
+    - name: Http2EnabledRelease
+      type: Confirm
+      prompt: "Do you want to enable http2 backend for release:"
+      default: false
+      promptIf: !expr "ServerType == 'dai-release' && ProcessType == 'install'"
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      description: Select yes to enable http2 for the release backend
+    - name: EnableSslRelease
+      type: Confirm
+      default: false
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Do you want to enable ssl for release:"
+      promptIf: !expr "ServerType == 'dai-release' && ProcessType == 'install' && Http2EnabledRelease"
+      description: "Enable SSL for release."
+    - name: ReleaseKeystoreFile
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide keystore file for the server:"
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == 'install' && EnableSslRelease
+      description: Provide the keystore file for the server
+      validate: !expr "isFile(ReleaseKeystoreFile)"
+      default: ""
+    - name: ReleaseKeystore
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      description: Provide the keystore for the server
+      value: !expr "ifBase64(ifFileReadBytes(ReleaseKeystoreFile))"
+      default: ""      
+    - name: ReleaseKeystorePassword
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide the server keystore password:"
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && EnableSslRelease
+      description: Keystore passphrase for the server
+      default: ""  
+    - name: ReleaseKeystoreKeyPassword
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide the server keystore key passphrase:"
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && EnableSslRelease
+      description: Keystore key passphrase for the server
+      default: ""    
     - name: IngressType
       type: Select
       prompt: "Select between supported ingress types:"

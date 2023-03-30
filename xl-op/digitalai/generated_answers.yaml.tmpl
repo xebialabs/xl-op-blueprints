@@ -78,6 +78,11 @@ RabbitmqPvcSize: '{{ .RabbitmqPvcSize }}'
   {{- if eq .ServerType "dai-release" }}
 PvcSizeRelease: '{{ .PvcSizeRelease }}'
 AccessModeRelease: '{{ .AccessModeRelease }}'
+Http2EnabledRelease: '{{ .Http2EnabledRelease }}'
+EnableSslRelease: '{{ .EnableSslRelease }}'
+ReleaseKeystore: '{{ .ReleaseKeystore }}'
+ReleaseKeystorePassword: '{{ .ReleaseKeystorePassword }}'
+ReleaseKeystoreKeyPassword: '{{ .ReleaseKeystoreKeyPassword }}'
   {{- end }}
   {{- if eq .ServerType "dai-deploy" }}
 PvcSizeDeploy: '{{ .PvcSizeDeploy }}'
