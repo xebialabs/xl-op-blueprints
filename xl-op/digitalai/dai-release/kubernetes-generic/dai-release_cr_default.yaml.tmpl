@@ -1249,7 +1249,7 @@ spec:
       pullPolicy: IfNotPresent
       pullSecrets: []
       {{- if eq .IsCustomImageRegistry true }}
-      {{- /* registry name defined in global section */}}}
+      {{- /* registry name defined in global section */}}
       repository: {{ .RepositoryName }}/postgresql
       {{- else }}
       registry: docker.io
