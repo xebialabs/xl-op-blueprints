@@ -701,7 +701,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       description: !expr "'Should CRD be reused? If Yes it will not be deleted, if No we will delete the CRD ' + CrdName + ', and all related CRs will be deleted with it. Put Yes if you have on the same cluster multiple installation of the ' + ServerType"
-      default: !expr "ProcessType == 'upgrade' &&  UpgradeType == 'OperatorToOperator'"
+      default: !expr "ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator'"
     - name: CrName
       type: Select
       options:
