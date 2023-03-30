@@ -78,6 +78,13 @@ spec:
 {{ .RabbitmqExternalConfigRelease | indent 4 }}
     {{- end }}
   affinity: {}
+  http2:
+    enabled: false
+  ssl:
+    enabled: false
+    keystorePassword: 
+    keystoreKeypassword: 
+    keystore:
   release:
     configurationManagement:
       configuration:
