@@ -20,7 +20,7 @@ class HelmUtil {
 
         fun helmPackage(project: Project, chartDir: String, targetDir: String): String {
             val result = ProcessUtil.executeCommand(project,
-                "helm package $chartDir --destination \"$targetDir\"",
+                "helm package \"$chartDir\" --destination \"$targetDir\"",
                 logOutput = true, throwErrorOnFailure = true)
             val version = result.substringAfterLast("$targetDir/remote-runner-", "")
                 .substringBefore(".tgz", "")
