@@ -219,38 +219,64 @@ spec:
       description: Select between supported Access Modes to define if the volume can be mounted as read-write by a single node (ReadWriteOnce) or by many nodes (ReadWriteMany).
     - name: Http2EnabledRelease
       type: Confirm
-      prompt: "Do you want to enable http2 backend for release:"
+      prompt: "Do you want to enable http2 for release:"
       default: false
       promptIf: !expr "ServerType == 'dai-release' && ProcessType == 'install'"
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       description: Select yes to enable http2 for the release backend
-    - name: EnableSslRelease
-      type: Confirm
-      default: false
+    - name: ReleaseKeystoreSource
+      type: Select
+      options:
+        - label: Path to the keystore file (the file can be in the raw format or base64 encoded)
+          value: file
+        - label: Copy/Paste the keystore to editor (the content needs to be base64 encoded)
+          value: editor
+        - label: Generic Secret containing keystore file with key as ssl-keystore.p12
+          value: secret
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Do you want to enable ssl for release:"
-      promptIf: !expr "ServerType == 'dai-release' && ProcessType == 'install' && Http2EnabledRelease"
-      description: "Enable SSL for release."
+      prompt: "Select source of the keystore for the server:"
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && Http2EnabledRelease
+      description: "Provide source of the keystore"
+      default: ""
+    - name: ReleaseKeystoreEditor
+      type: Editor
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide keystore for the server:"
+      promptIf: !expr "ServerType == 'dai-release' && ProcessType == 'install' && ReleaseKeystoreSource == 'editor'"
+      description: "Provide keystore for the server in pkcs12 format, generated with openssl"
+      default: ""
     - name: ReleaseKeystoreFile
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide keystore file for the server:"
-      promptIf: !expr ServerType == 'dai-release' && ProcessType == 'install' && EnableSslRelease
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == 'install' && ReleaseKeystoreSource == 'file'
       description: Provide the keystore file for the server
       validate: !expr "isFile(ReleaseKeystoreFile)"
       default: ""
+    - name: ReleaseKeystoreSecretName
+      type: Select
+      options:
+        - !expr k8sResources(Namespace, 'secrets')
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide the generic secret name with the release server keystore added as key ssl-keystore.p12:"
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && ReleaseKeystoreSource == 'secret'
+      description: Provide the Generic secret name with the keystore release server
     - name: ReleaseKeystore
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       description: Provide the keystore for the server
-      value: !expr "ifBase64(ifFileReadBytes(ReleaseKeystoreFile))"
+      value: !expr "ReleaseKeystoreSource == 'editor' ? ifBase64(ReleaseKeystoreEditor) : ifBase64(ifFileReadBytes(ReleaseKeystoreFile))"
       default: ""      
     - name: ReleaseKeystorePassword
       type: Input
@@ -258,7 +284,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide the server keystore password:"
-      promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && EnableSslRelease
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && Http2EnabledRelease
       description: Keystore passphrase for the server
       default: ""  
     - name: ReleaseKeystoreKeyPassword
@@ -267,7 +293,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide the server keystore key passphrase:"
-      promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && EnableSslRelease
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && Http2EnabledRelease
       description: Keystore key passphrase for the server
       default: ""    
     - name: IngressType
@@ -872,6 +898,8 @@ spec:
         .spec.route.hosts
         .spec.xlrLicense
         .spec.release.configurationManagement
+        .spec.http2.enabled
+        .spec.ssl
     - name: PreservePvc
       type: Confirm
       saveInXlvals: true

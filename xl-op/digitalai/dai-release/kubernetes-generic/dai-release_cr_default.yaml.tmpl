@@ -82,12 +82,20 @@ spec:
     {{- end }}
   affinity: {}
   http2:
-    enabled: {{ .Http2EnabledRelease}}
+    enabled: {{ .Http2EnabledRelease }}
   ssl:
-    enabled: {{ .EnableSslRelease }}
+    enabled: {{ .Http2EnabledRelease }}
     keystorePassword: {{ .ReleaseKeystorePassword }}
     keystoreKeypassword: {{ .ReleaseKeystoreKeyPassword }}
+    {{- if eq .ReleaseKeystoreSource "secret" }}
+    keystore:
+      valueFrom:
+        secretKeyRef:
+          name: {{ .ReleaseKeystoreSecretName }}
+          key: ssl-keystore.p12
+    {{- else }}
     keystore: {{ .ReleaseKeystore }}
+    {{- end }}
   release:
     configurationManagement:
       configuration:
