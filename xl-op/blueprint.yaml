@@ -706,7 +706,7 @@ spec:
       options:
         - !expr k8sResources(Namespace, 'crd')
       saveInXlvals: true
-      promptIf: !expr "((CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, 'crd', '', ShortServerName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrdName == '')"
+      promptIf: !expr "ServerType != 'dai-release-runner' && ((CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, 'crd', '', ShortServerName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrdName == '')"
       prompt: "Enter the name of custom resource definition you want to reuse or replace:"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -715,7 +715,7 @@ spec:
     - name: IsCrdReused
       type: Confirm
       saveInXlvals: true
-      promptIf: !expr "(CleanBefore || ProcessType == 'clean' || ProcessType == 'upgrade') && CrdName != ''"
+      promptIf: !expr "ServerType != 'dai-release-runner' && (CleanBefore || ProcessType == 'clean' || ProcessType == 'upgrade') && CrdName != ''"
       prompt: !expr "'Should CRD be reused, if No we will delete the CRD ' + CrdName + ', and all related CRs will be deleted with it:'"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -726,7 +726,7 @@ spec:
       options:
         - !expr k8sResources(Namespace, CrdName)
       saveInXlvals: true
-      promptIf: !expr "(CrdName != '' && (CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, CrdName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrName == '')"
+      promptIf: !expr "ServerType != 'dai-release-runner' && ((CrdName != '' && (CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, CrdName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrName == ''))"
       prompt: "Enter the name of custom resource:"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -829,7 +829,7 @@ spec:
     - name: ReleaseName
       type: Input
       saveInXlvals: true
-      promptIf: !expr UpgradeType == 'helmToOperator' && ProcessType == 'upgrade'
+      promptIf: !expr ServerType != 'dai-release-runner' && UpgradeType == 'helmToOperator' && ProcessType == 'upgrade'
       prompt: "Enter the helm release name:"
       ignoreIfSkipped: true
       overrideDefault: true
