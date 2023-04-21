@@ -64,7 +64,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
-      prompt: !expr "IsCustomImageRegistry ? 'Enter the repository name (eg: <repositoryName> from <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):'"
+      prompt: !expr "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
       default: xebialabs
       description: Enter the repository name to use
     - name: ImageNameDeploy
