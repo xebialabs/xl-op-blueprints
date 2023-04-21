@@ -55,7 +55,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
-      prompt: !expr "IsCustomImageRegistry ? 'Enter the repository name (eg: <repositoryName> from <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):'"
+      prompt: !expr "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
       default: xebialabsunsupported
       description: Enter the repository name to use
     - name: ImageNameDeploy
@@ -83,7 +83,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-418.113
+      default: 23.3.0-420.113
       description: Enter the image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -528,7 +528,7 @@ spec:
       overrideDefault: true
       prompt: !expr "IsCustomImageRegistry ? 'Enter the operator image to use (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):'"
       promptIf: !expr ServerType == 'dai-deploy' && K8sSetup != 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:23.3.0-418.113
+      default: xebialabsunsupported/deploy-operator:23.3.0-420.113
       description: Enter the operator image to use
     - name: OperatorImageDeployOpenshift
       type: Input
@@ -537,7 +537,7 @@ spec:
       overrideDefault: true
       prompt: !expr "IsCustomImageRegistry ? 'Enter the operator image to use (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):'"
       promptIf: !expr ServerType == 'dai-deploy' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:23.3.0-418.113-openshift
+      default: xebialabsunsupported/deploy-operator:23.3.0-420.113-openshift
       description: Enter the operator image to use
     - name: OperatorImageReleaseGeneric
       type: Input
@@ -696,9 +696,11 @@ spec:
         XLR_DB_URL: jdbc:postgresql://<xlr-db-host>:5432/<xlr-database-name>
         XLR_DB_USER: <xlr-username>
         XLR_DB_PASS: <xlr-password>
+        XLR_DB_MAX_POOL_SIZE: 10
         XLR_REPORT_DB_URL: jdbc:postgresql://<xlr-report-db-host>:5432/<xlr-report-database-name>
         XLR_REPORT_DB_USER: <xlr-report-username>
         XLR_REPORT_DB_PASS: <xlr-report-password>
+        XLR_REPORT_DB_MAX_POOL_SIZE: 10
     - name: PostgresqlExternalConfigDeploy
       type: Editor
       saveInXlvals: true
@@ -785,7 +787,7 @@ spec:
       options:
         - !expr k8sResources(Namespace, 'crd')
       saveInXlvals: true
-      promptIf: !expr "((CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, 'crd', '', ShortServerName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrdName == '')"
+      promptIf: !expr "ServerType != 'dai-release-runner' && ((CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, 'crd', '', ShortServerName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrdName == '')"
       prompt: "Enter the name of custom resource definition you want to reuse or replace:"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -794,7 +796,7 @@ spec:
     - name: IsCrdReused
       type: Confirm
       saveInXlvals: true
-      promptIf: !expr "(CleanBefore || ProcessType == 'clean' || ProcessType == 'upgrade') && CrdName != ''"
+      promptIf: !expr "ServerType != 'dai-release-runner' && (CleanBefore || ProcessType == 'clean' || ProcessType == 'upgrade') && CrdName != ''"
       prompt: !expr "'Should CRD be reused, if No we will delete the CRD ' + CrdName + ', and all related CRs will be deleted with it:'"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -805,7 +807,7 @@ spec:
       options:
         - !expr k8sResources(Namespace, CrdName)
       saveInXlvals: true
-      promptIf: !expr "(CrdName != '' && (CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, CrdName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrName == '')"
+      promptIf: !expr "ServerType != 'dai-release-runner' && ((CrdName != '' && (CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, CrdName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrName == ''))"
       prompt: "Enter the name of custom resource:"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -912,7 +914,7 @@ spec:
     - name: ReleaseName
       type: Input
       saveInXlvals: true
-      promptIf: !expr UpgradeType == 'helmToOperator' && ProcessType == 'upgrade'
+      promptIf: !expr ServerType != 'dai-release-runner' && UpgradeType == 'helmToOperator' && ProcessType == 'upgrade'
       prompt: "Enter the helm release name:"
       ignoreIfSkipped: true
       overrideDefault: true
