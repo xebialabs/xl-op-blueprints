@@ -24,7 +24,7 @@ image:
   {{- if eq .IsCustomImageRegistry true }}
   registry: {{ .CustomImageRegistryName }}
   {{- end }}
-  repository: {{ .RepositoryName }}
+  repository: {{ .RemoteRunnerRepositoryName }}
   name: {{ .ImageNameRemoteRunner }}
   tag: {{ .ImageTagRemoteRunner }}
   {{- if eq .ImageRegistryType "private" }}

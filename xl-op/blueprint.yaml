@@ -54,9 +54,18 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
+      promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: !expr "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
       default: xebialabsunsupported
+      description: Enter the repository name to use
+    - name: RemoteRunnerRepositoryName
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      promptIf: !expr "ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
+      prompt: !expr "IsCustomImageRegistry ? 'Enter the repository name (eg: <repositoryName> from <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):'"
+      default: xebialabs
       description: Enter the repository name to use
     - name: ImageNameDeploy
       type: Input
@@ -119,7 +128,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 0.1.32
+      default: 0.1.33
       description: Enter the image tag to use
     - name: XldMasterCount
       type: Input
@@ -905,7 +914,7 @@ spec:
     - name: PreservePvc
       type: Confirm
       saveInXlvals: true
-      promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'clean' || CleanBefore)"
+      promptIf: !expr "ProcessType == 'clean' || CleanBefore"
       prompt: "Should we preserve persisted volume claims? If not all volume data will be lost:"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -932,7 +941,7 @@ spec:
       type: Confirm
       default: true
       saveInXlvals: true
-      promptIf: !expr ServerType == 'dai-release-runner'
+      promptIf: !expr ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
       prompt: "Use default version of the Remote Runner helm chart."
       description: "Type yes to use default internal version of the Remote Runner helm chart, in other way you need to provide path to the helm chart."
     - name: RemoteRunnerHelmChartUrl
@@ -985,7 +994,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide storage class base host path:"
-      promptIf: !expr ServerType == 'dai-release-runner' && K8sSetup == 'PlainK8s'
+      promptIf: !expr ServerType == 'dai-release-runner' && K8sSetup == 'PlainK8s' && (ProcessType == 'install' || ProcessType == 'upgrade')
       description: The host path for the k3d cluster. It is not required if you are installing remote runner in the cloud (AWS, Azure or GCP).
   files:
     # Generic
