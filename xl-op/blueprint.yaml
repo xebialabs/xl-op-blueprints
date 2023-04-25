@@ -993,9 +993,10 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Provide storage class base host path:"
+      prompt: "Provide storage class base host path (input '-' to skip the usage of base host path):"
       promptIf: !expr ServerType == 'dai-release-runner' && K8sSetup == 'PlainK8s' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      description: The host path for the k3d cluster. It is not required if you are installing remote runner in the cloud (AWS, Azure or GCP).
+      description: The host path for the k3d cluster. It is not required if you are installing remote runner in the cloud (Docker Desktop, AWS, Azure or GCP).
+      default: "-"
   files:
     # Generic
     - path: digitalai/generated_answers.yaml.tmpl
