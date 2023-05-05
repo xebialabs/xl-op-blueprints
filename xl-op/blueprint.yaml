@@ -217,14 +217,14 @@ spec:
       type: Select
       prompt: "Select between supported Access Modes:"
       options:
-        - label: ReadWriteOnce
-          value: ReadWriteOnce
         - label: ReadWriteMany
           value: ReadWriteMany
+        - label: ReadWriteOnce
+          value: ReadWriteOnce
       promptIf: !expr "ServerType == 'dai-release' && ProcessType == 'install'"
       saveInXlvals: true
       ignoreIfSkipped: true
-      default: ReadWriteOnce
+      default: ReadWriteMany
       description: Select between supported Access Modes to define if the volume can be mounted as read-write by a single node (ReadWriteOnce) or by many nodes (ReadWriteMany).
     - name: Http2EnabledRelease
       type: Confirm
