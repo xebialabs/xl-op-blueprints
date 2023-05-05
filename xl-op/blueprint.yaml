@@ -217,10 +217,10 @@ spec:
       type: Select
       prompt: "Select between supported Access Modes:"
       options:
-        - label: ReadWriteOnce
-          value: ReadWriteOnce
         - label: ReadWriteMany
           value: ReadWriteMany
+        - label: ReadWriteOnce
+          value: ReadWriteOnce
       promptIf: !expr "ServerType == 'dai-release' && ProcessType == 'install'"
       saveInXlvals: true
       ignoreIfSkipped: true
