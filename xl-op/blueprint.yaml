@@ -291,6 +291,7 @@ spec:
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
+      allowEmpty: true
       overrideDefault: true
       prompt: "Provide the server keystore password:"
       promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && Http2EnabledRelease
@@ -300,6 +301,7 @@ spec:
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
+      allowEmpty: true
       overrideDefault: true
       prompt: "Provide the server keystore key passphrase:"
       promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && Http2EnabledRelease
@@ -799,7 +801,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       description: The name of custom resource definition that you want to reuse or replace (delete).
-      default: !expr "CleanBefore || ProcessType == 'clean' || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator') ? k8sResource(Namespace, 'crd', ShortServerName) : ''"
+      default: !expr "ServerType != 'dai-release-runner' && (CleanBefore || ProcessType == 'clean' || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator')) ? k8sResource(Namespace, 'crd', ShortServerName) : ''"
     - name: IsCrdReused
       type: Confirm
       saveInXlvals: true
@@ -808,7 +810,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       description: !expr "'Should CRD be reused? If Yes it will not be deleted, if No we will delete the CRD ' + CrdName + ', and all related CRs will be deleted with it. Put Yes if you have on the same cluster multiple installation of the ' + ServerType"
-      default: !expr "ProcessType == 'upgrade' && UpgradeType == 'OperatorToOperator'"
+      default: !expr "ServerType != 'dai-release-runner' && ProcessType == 'upgrade' && UpgradeType == 'OperatorToOperator'"
     - name: CrName
       type: Select
       options:
@@ -819,7 +821,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       description: The name of your custom resource
-      default: !expr "(CrdName != '' && (CleanBefore || ProcessType == 'clean')) || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator') ? k8sResource(Namespace, CrdName, ShortServerName) : ''"
+      default: !expr "(ServerType != 'dai-release-runner' && CrdName != '' && (CleanBefore || ProcessType == 'clean')) || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator') ? k8sResource(Namespace, CrdName, ShortServerName) : ''"
     - name: PreserveCrValuesDeploy
       type: Editor
       prompt: "Edit list of custom resource keys that will migrate to the new Deploy CR:"
@@ -988,11 +990,12 @@ spec:
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
+      allowEmpty: true
       overrideDefault: true
-      prompt: "Provide storage class base host path (input '-' to skip the usage of base host path):"
+      prompt: "Provide storage class base host path (Press enter to skip the usage of base host path):"
       promptIf: !expr ServerType == 'dai-release-runner' && K8sSetup == 'PlainK8s' && (ProcessType == 'install' || ProcessType == 'upgrade')
       description: The host path for the k3d cluster. It is not required if you are installing remote runner in the cloud (Docker Desktop, AWS, Azure or GCP).
-      default: "-"
+      default: ""
   files:
     # Generic
     - path: digitalai/generated_answers.yaml.tmpl
