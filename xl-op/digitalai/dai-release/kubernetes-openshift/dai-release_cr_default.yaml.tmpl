@@ -60,6 +60,7 @@ spec:
     # XL_DB_PASSWORD:
     # XL_DB_URL:
     # XL_DB_USERNAME:
+    # XL_DB_MAX_POOL_SIZE:
 {{ .PostgresqlExternalConfigRelease | indent 4 }}
     {{- end }}
   UseExistingMQ:
@@ -79,12 +80,20 @@ spec:
     {{- end }}
   affinity: {}
   http2:
-    enabled: false
+    enabled: {{ .Http2EnabledRelease }}
   ssl:
-    enabled: false
-    keystorePassword: 
-    keystoreKeypassword: 
+    enabled: {{ .Http2EnabledRelease }}
+    keystorePassword: {{ .ReleaseKeystorePassword }}
+    keystoreKeypassword: {{ .ReleaseKeystoreKeyPassword }}
+    {{- if eq .ReleaseKeystoreSource "secret" }}
     keystore:
+      valueFrom:
+        secretKeyRef:
+          name: {{ .ReleaseKeystoreSecretName }}
+          key: ssl-keystore.p12
+    {{- else }}
+    keystore: {{ .ReleaseKeystore }}
+    {{- end }}
   release:
     configurationManagement:
       configuration:

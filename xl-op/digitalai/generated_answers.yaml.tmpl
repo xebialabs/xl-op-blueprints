@@ -78,6 +78,14 @@ RabbitmqPvcSize: '{{ .RabbitmqPvcSize }}'
   {{- if eq .ServerType "dai-release" }}
 PvcSizeRelease: '{{ .PvcSizeRelease }}'
 AccessModeRelease: '{{ .AccessModeRelease }}'
+Http2EnabledRelease: '{{ .Http2EnabledRelease }}'
+ReleaseKeystoreSource: '{{ .ReleaseKeystoreSource }}'
+ReleaseKeystoreEditor: '{{ trim .ReleaseKeystoreEditor }}'
+ReleaseKeystoreFile: '{{ .ReleaseKeystoreFile }}'
+ReleaseKeystoreSecretName: '{{ .ReleaseKeystoreSecretName }}'
+ReleaseKeystore: '{{ .ReleaseKeystore }}'
+ReleaseKeystorePassword: '{{ .ReleaseKeystorePassword }}'
+ReleaseKeystoreKeyPassword: '{{ .ReleaseKeystoreKeyPassword }}'
   {{- end }}
   {{- if eq .ServerType "dai-deploy" }}
 PvcSizeDeploy: '{{ .PvcSizeDeploy }}'
@@ -98,6 +106,7 @@ CrName: '{{ .CrName }}'
 PreservePvc: {{ .PreservePvc }}
 ImageNameRemoteRunner: '{{ .ImageNameRemoteRunner }}'
 ImageTagRemoteRunner: '{{ .ImageTagRemoteRunner }}'
+RemoteRunnerRepositoryName: '{{ .RemoteRunnerRepositoryName }}'
 RemoteRunnerReleaseName: '{{ .RemoteRunnerReleaseName }}'
 RemoteRunnerUseDefaultLocation: {{ .RemoteRunnerUseDefaultLocation }}
 RemoteRunnerHelmChartUrl: '{{ .RemoteRunnerHelmChartUrl }}'
@@ -105,3 +114,4 @@ RemoteRunnerReleaseUrl: '{{ .RemoteRunnerReleaseUrl }}'
 RemoteRunnerToken: '{{ .RemoteRunnerToken }}'
 RemoteRunnerCount: {{ .RemoteRunnerCount }}
 RemoteRunnerStorageClass: '{{ .RemoteRunnerStorageClass }}'
+RemoteRunnerBaseHostPath: '{{ .RemoteRunnerBaseHostPath }}'

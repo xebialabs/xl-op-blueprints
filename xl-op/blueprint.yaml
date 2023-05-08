@@ -54,9 +54,18 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
-      prompt: !expr "IsCustomImageRegistry ? 'Enter the repository name (eg: <repositoryName> from <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):'"
+      promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
+      prompt: "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
       default: xebialabsunsupported
+      description: Enter the repository name to use
+    - name: RemoteRunnerRepositoryName
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      promptIf: !expr "ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
+      prompt: "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
+      default: xebialabs
       description: Enter the repository name to use
     - name: ImageNameDeploy
       type: Input
@@ -83,7 +92,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.1.0-413.113
+      default: 23.3.0-508.113
       description: Enter the image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -119,7 +128,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 0.1.32
+      default: 0.1.33
       description: Enter the image tag to use
     - name: XldMasterCount
       type: Input
@@ -208,15 +217,94 @@ spec:
       type: Select
       prompt: "Select between supported Access Modes:"
       options:
-        - label: ReadWriteOnce
-          value: ReadWriteOnce
         - label: ReadWriteMany
           value: ReadWriteMany
+        - label: ReadWriteOnce
+          value: ReadWriteOnce
       promptIf: !expr "ServerType == 'dai-release' && ProcessType == 'install'"
       saveInXlvals: true
       ignoreIfSkipped: true
       default: ReadWriteMany
       description: Select between supported Access Modes to define if the volume can be mounted as read-write by a single node (ReadWriteOnce) or by many nodes (ReadWriteMany).
+    - name: Http2EnabledRelease
+      type: Confirm
+      prompt: "Do you want to enable http2 for release:"
+      default: false
+      promptIf: !expr "ServerType == 'dai-release' && ProcessType == 'install'"
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      description: Select yes to enable http2 for the release backend
+    - name: ReleaseKeystoreSource
+      type: Select
+      options:
+        - label: Path to the keystore file (the file can be in the raw format or base64 encoded)
+          value: file
+        - label: Copy/Paste the keystore to editor (the content needs to be base64 encoded)
+          value: editor
+        - label: Generic Secret containing keystore file with key as ssl-keystore.p12
+          value: secret
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Select source of the keystore for the server:"
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && Http2EnabledRelease
+      description: "Provide source of the keystore"
+      default: ""
+    - name: ReleaseKeystoreEditor
+      type: Editor
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide keystore for the server:"
+      promptIf: !expr "ServerType == 'dai-release' && ProcessType == 'install' && ReleaseKeystoreSource == 'editor'"
+      description: "Provide keystore for the server in pkcs12 format, generated with openssl"
+      default: ""
+    - name: ReleaseKeystoreFile
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide keystore file for the server:"
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == 'install' && ReleaseKeystoreSource == 'file'
+      description: Provide the keystore file for the server
+      validate: !expr "isFile(ReleaseKeystoreFile)"
+      default: ""
+    - name: ReleaseKeystoreSecretName
+      type: Select
+      options:
+        - !expr k8sResources(Namespace, 'secrets')
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide the generic secret name with the release server keystore added as key ssl-keystore.p12:"
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && ReleaseKeystoreSource == 'secret'
+      description: Provide the Generic secret name with the keystore release server
+    - name: ReleaseKeystore
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      description: Provide the keystore for the server
+      value: !expr "ReleaseKeystoreSource == 'editor' ? ifBase64(ReleaseKeystoreEditor) : ifBase64(ifFileReadBytes(ReleaseKeystoreFile))"
+      default: ""
+    - name: ReleaseKeystorePassword
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide the server keystore password:"
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && Http2EnabledRelease
+      description: Keystore passphrase for the server
+      default: ""
+    - name: ReleaseKeystoreKeyPassword
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide the server keystore key passphrase:"
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && Http2EnabledRelease
+      description: Keystore key passphrase for the server
+      default: ""
     - name: IngressType
       type: Select
       prompt: "Select between supported ingress types:"
@@ -449,7 +537,7 @@ spec:
       overrideDefault: true
       prompt: !expr "IsCustomImageRegistry ? 'Enter the operator image to use (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):'"
       promptIf: !expr ServerType == 'dai-deploy' && K8sSetup != 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:23.1.0-413.113
+      default: xebialabsunsupported/deploy-operator:23.3.0-508.113
       description: Enter the operator image to use
     - name: OperatorImageDeployOpenshift
       type: Input
@@ -458,7 +546,7 @@ spec:
       overrideDefault: true
       prompt: !expr "IsCustomImageRegistry ? 'Enter the operator image to use (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):'"
       promptIf: !expr ServerType == 'dai-deploy' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:23.1.0-413.113-openshift
+      default: xebialabsunsupported/deploy-operator:23.3.0-508.113-openshift
       description: Enter the operator image to use
     - name: OperatorImageReleaseGeneric
       type: Input
@@ -467,7 +555,7 @@ spec:
       overrideDefault: true
       prompt: !expr "IsCustomImageRegistry ? 'Enter the operator image to use (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):'"
       promptIf: !expr ServerType == 'dai-release' && K8sSetup != 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/release-operator:23.1.0-413.113
+      default: xebialabsunsupported/release-operator:23.3.0-508.113
       description: Enter the operator image to use
     - name: OperatorImageReleaseOpenshift
       type: Input
@@ -476,7 +564,7 @@ spec:
       overrideDefault: true
       prompt: !expr "IsCustomImageRegistry ? 'Enter the operator image to use (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):'"
       promptIf: !expr ServerType == 'dai-release' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/release-operator:23.1.0-413.113-openshift
+      default: xebialabsunsupported/release-operator:23.3.0-508.113-openshift
       description: Enter the operator image to use
     - name: LicenseSource
       type: Select
@@ -617,9 +705,11 @@ spec:
         XLR_DB_URL: jdbc:postgresql://<xlr-db-host>:5432/<xlr-database-name>
         XLR_DB_USER: <xlr-username>
         XLR_DB_PASS: <xlr-password>
+        XLR_DB_MAX_POOL_SIZE: 10
         XLR_REPORT_DB_URL: jdbc:postgresql://<xlr-report-db-host>:5432/<xlr-report-database-name>
         XLR_REPORT_DB_USER: <xlr-report-username>
         XLR_REPORT_DB_PASS: <xlr-report-password>
+        XLR_REPORT_DB_MAX_POOL_SIZE: 10
     - name: PostgresqlExternalConfigDeploy
       type: Editor
       saveInXlvals: true
@@ -706,7 +796,7 @@ spec:
       options:
         - !expr k8sResources(Namespace, 'crd')
       saveInXlvals: true
-      promptIf: !expr "((CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, 'crd', '', ShortServerName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrdName == '')"
+      promptIf: !expr "ServerType != 'dai-release-runner' && ((CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, 'crd', '', ShortServerName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrdName == '')"
       prompt: "Enter the name of custom resource definition you want to reuse or replace:"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -715,7 +805,7 @@ spec:
     - name: IsCrdReused
       type: Confirm
       saveInXlvals: true
-      promptIf: !expr "(CleanBefore || ProcessType == 'clean' || ProcessType == 'upgrade') && CrdName != ''"
+      promptIf: !expr "ServerType != 'dai-release-runner' && (CleanBefore || ProcessType == 'clean' || ProcessType == 'upgrade') && CrdName != ''"
       prompt: !expr "'Should CRD be reused, if No we will delete the CRD ' + CrdName + ', and all related CRs will be deleted with it:'"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -726,7 +816,7 @@ spec:
       options:
         - !expr k8sResources(Namespace, CrdName)
       saveInXlvals: true
-      promptIf: !expr "(CrdName != '' && (CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, CrdName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrName == '')"
+      promptIf: !expr "ServerType != 'dai-release-runner' && ((CrdName != '' && (CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, CrdName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrName == ''))"
       prompt: "Enter the name of custom resource:"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -819,10 +909,12 @@ spec:
         .spec.route.hosts
         .spec.xlrLicense
         .spec.release.configurationManagement
+        .spec.http2.enabled
+        .spec.ssl
     - name: PreservePvc
       type: Confirm
       saveInXlvals: true
-      promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'clean' || CleanBefore)"
+      promptIf: !expr "ProcessType == 'clean' || CleanBefore"
       prompt: "Should we preserve persisted volume claims? If not all volume data will be lost:"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -831,7 +923,7 @@ spec:
     - name: ReleaseName
       type: Input
       saveInXlvals: true
-      promptIf: !expr UpgradeType == 'helmToOperator' && ProcessType == 'upgrade'
+      promptIf: !expr ServerType != 'dai-release-runner' && UpgradeType == 'helmToOperator' && ProcessType == 'upgrade'
       prompt: "Enter the helm release name:"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -849,7 +941,7 @@ spec:
       type: Confirm
       default: true
       saveInXlvals: true
-      promptIf: !expr ServerType == 'dai-release-runner'
+      promptIf: !expr ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
       prompt: "Use default version of the Remote Runner helm chart."
       description: "Type yes to use default internal version of the Remote Runner helm chart, in other way you need to provide path to the helm chart."
     - name: RemoteRunnerHelmChartUrl
@@ -901,9 +993,10 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Provide storage class base host path:"
-      promptIf: !expr ServerType == 'dai-release-runner' && K8sSetup == 'PlainK8s'
-      description: The host path for the k3d cluster. It is not required if you are installing remote runner in the cloud (AWS, Azure or GCP).
+      prompt: "Provide storage class base host path (input '-' to skip the usage of base host path):"
+      promptIf: !expr ServerType == 'dai-release-runner' && K8sSetup == 'PlainK8s' && (ProcessType == 'install' || ProcessType == 'upgrade')
+      description: The host path for the k3d cluster. It is not required if you are installing remote runner in the cloud (Docker Desktop, AWS, Azure or GCP).
+      default: "-"
   files:
 
     # Generic

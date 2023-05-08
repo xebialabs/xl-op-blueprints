@@ -1,7 +1,7 @@
 global:
   persistence:
     storageClass: {{ .RemoteRunnerStorageClass }}
-    {{- if eq .K8sSetup "PlainK8s" }}
+    {{- if and (eq .K8sSetup "PlainK8s") (not (eq .RemoteRunnerBaseHostPath "-")) }}
     baseHostPath: "{{ .RemoteRunnerBaseHostPath }}"
     {{- end }}
 
@@ -11,7 +11,7 @@ release:
 
 replicaCount: {{ .RemoteRunnerCount }}
 
-{{- if eq .K8sSetup "PlainK8s" }}
+{{- if and (eq .K8sSetup "PlainK8s") (not (eq .RemoteRunnerBaseHostPath "-")) }}
 persistence:
   work:
     volume:
@@ -24,7 +24,7 @@ image:
   {{- if eq .IsCustomImageRegistry true }}
   registry: {{ .CustomImageRegistryName }}
   {{- end }}
-  repository: {{ .RepositoryName }}
+  repository: {{ .RemoteRunnerRepositoryName }}
   name: {{ .ImageNameRemoteRunner }}
   tag: {{ .ImageTagRemoteRunner }}
   {{- if eq .ImageRegistryType "private" }}
