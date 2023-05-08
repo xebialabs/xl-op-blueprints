@@ -1,0 +1,40 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  {{- if eq .UseCustomNamespace true }}
+  name: {{ .Namespace }}-xld-operator-manager
+  {{- else }}
+  name: xld-operator-manager
+  {{- end }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+- apiGroups:
+  - "networking.k8s.io"
+  resources:
+  - "ingressclasses"
+  verbs:
+  - "*"
+- apiGroups:
+  - "rbac.authorization.k8s.io"
+  resources:
+  - "clusterrolebindings"
+  - "clusterroles"
+  verbs:
+  - "*"
+- apiGroups:
+  - "route.openshift.io"
+  resources:
+  - "*"
+  verbs:
+  - "*"
+- apiGroups:
+  - "security.openshift.io"
+  resources:
+  - "securitycontextconstraints"
+  verbs:
+  - "*"
