@@ -1,11 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: Role
 metadata:
-  {{- if eq .UseCustomNamespace true }}
-  name: {{ .Namespace }}-xld-operator-proxy-role
-  {{- else }}
-  name: xld-operator-proxy-role
-  {{- end }}
+  name: xlr-operator-proxy
 rules:
 - apiGroups:
   - authentication.k8s.io

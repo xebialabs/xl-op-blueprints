@@ -1,0 +1,20 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  {{- if eq .UseCustomNamespace true }}
+  name: {{ .Namespace }}-xlr-operator-manager
+  {{- else }}
+  name: xlr-operator-manager
+  {{- end }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  {{- if eq .UseCustomNamespace true }}
+  name: {{ .Namespace }}-xlr-operator-manager
+  {{- else }}
+  name: xlr-operator-manager
+  {{- end }}
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: {{ .Namespace }}
