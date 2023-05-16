@@ -321,7 +321,7 @@ spec:
           value: none
       promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && K8sSetup != 'Openshift'
       saveInXlvals: true
-      default: !expr "K8sSetup == 'Openshift' ? 'none' : 'nginx'"
+      default: !expr "K8sSetup == 'Openshift' ? 'route' : 'nginx'"
       description: Select between supported ingress types. If None is selected, the application will not be exposed and therefore will not be accessible from the browser.
       validate: !expr "regex('.*external.*', IngressType) ? length(k8sResources(Namespace, 'ingressclasses')) > '0' : true"
     - name: ExternalIngressClass
@@ -1049,7 +1049,7 @@ spec:
       renameTo: !expr "'digitalai/dai-deploy/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/postgresql-init-keycloak-db.yaml.tmpl'"
     # Deploy OpenShift
     - path: digitalai/dai-deploy/kubernetes-openshift/template/manager-clusterrole.yaml.tmpl
-      writeIf: !expr ServerType == 'dai-deploy' && K8sSetup == 'Openshift' && (IngressType == "nginx" || IngressType == "haproxy") && (ProcessType == 'install' || ProcessType == 'upgrade')
+      writeIf: !expr ServerType == 'dai-deploy' && K8sSetup == 'Openshift' && (IngressType == "route") && (ProcessType == 'install' || ProcessType == 'upgrade')
       renameTo: !expr "'digitalai/dai-deploy/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/cluster-role-manager-role.yaml.tmpl'"
     - path: digitalai/dai-deploy/kubernetes-openshift/template/custom-resource-definition.yaml
       writeIf: !expr ServerType == 'dai-deploy' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
@@ -1111,7 +1111,7 @@ spec:
       renameTo: !expr "'digitalai/dai-release/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/postgresql-init-keycloak-db.yaml.tmpl'"
     # Release OpenShift
     - path: digitalai/dai-release/kubernetes-openshift/template/manager-clusterrole.yaml.tmpl
-      writeIf: !expr ServerType == 'dai-release' && K8sSetup == 'Openshift' && (IngressType == "nginx" || IngressType == "haproxy") && (ProcessType == 'install' || ProcessType == 'upgrade')
+      writeIf: !expr ServerType == 'dai-release' && K8sSetup == 'Openshift' && IngressType == "route" && (ProcessType == 'install' || ProcessType == 'upgrade')
       renameTo: !expr "'digitalai/dai-release/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/manager-clusterrole.yaml.tmpl'"
     - path: digitalai/dai-release/kubernetes-openshift/template/custom-resource-definition.yaml
       writeIf: !expr ServerType == 'dai-release' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
