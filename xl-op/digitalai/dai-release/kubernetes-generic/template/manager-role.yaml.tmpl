@@ -49,9 +49,15 @@ rules:
 - apiGroups:
   - xlr.digital.ai
   resources:
+  {{- if eq .K8sSetup "Openshift" }}
+  - digitalaideployocps
+  - digitalaideployocps/status
+  - digitalaideployocps/finalizers
+  {{- else }}
   - digitalaireleases
   - digitalaireleases/status
   - digitalaireleases/finalizers
+  {{- end }}
   verbs:
   - create
   - delete

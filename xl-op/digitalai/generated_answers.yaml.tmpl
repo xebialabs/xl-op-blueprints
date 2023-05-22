@@ -27,8 +27,7 @@ RabbitmqExternalConfigDeploy: |-
 {{- end }}
 {{- if eq .ServerType "dai-release" }}
 ImageNameRelease: {{ .ImageNameRelease }}
-OperatorImageReleaseGeneric: {{ .OperatorImageReleaseGeneric }}
-OperatorImageReleaseOpenshift: {{ .OperatorImageReleaseOpenshift }}
+OperatorImageRelease: {{ .OperatorImageRelease }}
 XlrReplicaCount: {{ .XlrReplicaCount }}
   {{- if eq .ProcessType "upgrade" }}
 PreserveCrValuesRelease: |-
@@ -53,7 +52,8 @@ KeycloakHost: '{{ .KeycloakHost }}'
 UseKeycloakWithEmbeddedDB: '{{ .UseKeycloakWithEmbeddedDB }}'
 KeycloakIngressHost: '{{ .KeycloakIngressHost }}'
 {{- if eq .ProcessType "install" }}
-IngressType: '{{ .IngressType }}'
+IngressTypeGeneric: '{{ .IngressTypeGeneric }}'
+IngressTypeOpenshift: '{{ .IngressTypeOpenshift }}'
 ExternalIngressClass: '{{ .ExternalIngressClass }}'
 EnableIngressTls: {{ .EnableIngressTls }}
 IngressTlsSecretName: '{{ .IngressTlsSecretName }}'
