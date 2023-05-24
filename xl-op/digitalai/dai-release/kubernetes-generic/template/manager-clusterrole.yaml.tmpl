@@ -7,6 +7,7 @@ metadata:
   name: xlr-operator-manager
   {{- end }}
 rules:
+{{- if or (eq .IngressType "nginx") (eq .IngressType "haproxy") }}
 - apiGroups:
   - ""
   resources:
@@ -26,7 +27,8 @@ rules:
   - "clusterroles"
   verbs:
   - "*"
-  {{- if eq .K8sSetup "Openshift" }}
+{{- end }}
+{{- if eq .K8sSetup "Openshift" }}
 - apiGroups:
     - policy
   resources:
@@ -45,4 +47,4 @@ rules:
     - securitycontextconstraints
   verbs:
     - '*'
-  {{- end }}
+{{- end }}

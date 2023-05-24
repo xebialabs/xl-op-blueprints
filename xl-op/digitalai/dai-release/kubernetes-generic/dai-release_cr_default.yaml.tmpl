@@ -80,6 +80,8 @@ spec:
     image:
       repository: {{ .RepositoryName }}/busybox
   {{- end }}
+  diagnosticMode:
+    enabled: false
   ingress:
     {{- if eq .IngressType "nginx" }}
     enabled: true

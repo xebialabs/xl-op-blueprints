@@ -582,7 +582,7 @@ spec:
       overrideDefault: true
       prompt: !expr "IsCustomImageRegistry ? 'Enter the operator image to use (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):'"
       promptIf: !expr ServerType == 'dai-release' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/release-operator:23.3.0-519.1400
+      default: xebialabsunsupported/release-operator:23.3.0-523.1200
       description: Enter the operator image to use
     - name: LicenseSource
       type: Select
@@ -1092,10 +1092,10 @@ spec:
       writeIf: !expr ServerType == 'dai-release' && (ProcessType == 'install' || ProcessType == 'upgrade')
       renameTo: !expr "'digitalai/dai-release/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/leader-election-rolebinding.yaml.tmpl'"
     - path: digitalai/dai-release/kubernetes-generic/template/manager-clusterrole.yaml.tmpl
-      writeIf: !expr ServerType == 'dai-release' && (IngressType == "nginx" || IngressType == "haproxy") && (ProcessType == 'install' || ProcessType == 'upgrade')
+      writeIf: !expr ServerType == 'dai-release' && (IngressType == "nginx" || IngressType == "haproxy" || K8sSetup == 'Openshift') && (ProcessType == 'install' || ProcessType == 'upgrade')
       renameTo: !expr "'digitalai/dai-release/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/manager-clusterrole.yaml.tmpl'"
     - path: digitalai/dai-release/kubernetes-generic/template/manager-clusterrolebinding.yaml.tmpl
-      writeIf: !expr ServerType == 'dai-release' && (IngressType == "nginx" || IngressType == "haproxy") && (ProcessType == 'install' || ProcessType == 'upgrade')
+      writeIf: !expr ServerType == 'dai-release' && (IngressType == "nginx" || IngressType == "haproxy" || K8sSetup == 'Openshift') && (ProcessType == 'install' || ProcessType == 'upgrade')
       renameTo: !expr "'digitalai/dai-release/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/manager-clusterrolebinding.yaml.tmpl'"
     - path: digitalai/dai-release/kubernetes-generic/template/manager-role.yaml.tmpl
       writeIf: !expr ServerType == 'dai-release' && (ProcessType == 'install' || ProcessType == 'upgrade')
