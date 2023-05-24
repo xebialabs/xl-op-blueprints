@@ -1,26 +1,42 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
+  {{- if eq .K8sSetup "Openshift" }}
+  {{- if eq .UseCustomNamespace true }}
+  name: dai-ocp-xlr-{{ .Namespace }}-postgresql-init-keycloak-db
+  {{- else }}
+  name: dai-ocp-xlr-postgresql-init-keycloak-db
+  {{- end }}
+  {{- else }}
   {{- if eq .UseCustomNamespace true }}
   name: dai-xlr-{{ .Namespace }}-postgresql-init-keycloak-db
   {{- else }}
   name: dai-xlr-postgresql-init-keycloak-db
+  {{- end }}
   {{- end }}
   labels:
     app: digitalai-release
 spec:
   template:
     metadata:
+      {{- if eq .K8sSetup "Openshift" }}
+      {{- if eq .UseCustomNamespace true }}
+      name: dai-ocp-xlr-{{ .Namespace }}-postgresql-init-keycloak-db
+      {{- else }}
+      name: dai-ocp-xlr-postgresql-init-keycloak-db
+      {{- end }}
+      {{- else }}
       {{- if eq .UseCustomNamespace true }}
       name: dai-xlr-{{ .Namespace }}-postgresql-init-keycloak-db
       {{- else }}
       name: dai-xlr-postgresql-init-keycloak-db
       {{- end }}
+      {{- end }}
     spec:
       {{- if eq .ImageRegistryType "private" }}
       imagePullSecrets:
         - name:  {{ .CustomPrivateImageRegistrySecret }}
-      {{- end }}    
+      {{- end }}
       initContainers:
         - name: wait-for-postgresql
           {{- if eq .IsCustomImageRegistry true }}
@@ -41,7 +57,11 @@ spec:
               value: {{ .CrName }}-postgresql
             {{- else }}
             - name: POSTGRES_SVC_NAME
+              {{- if eq .K8sSetup "Openshift" }}
+              value: dai-ocp-xlr-postgresql
+              {{- else }}
               value: dai-xlr-postgresql
+              {{- end }}
             {{- end }}
             - name: POSTGRES_PORT
               value: "5432"
@@ -51,7 +71,7 @@ spec:
           image: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/tiny-tools:22.2.0
           {{- else }}
           image: xebialabs/tiny-tools:22.2.0
-          {{- end }}          
+          {{- end }}
           command:
             - sh
             - -c
@@ -78,7 +98,11 @@ spec:
               value: {{ .CrName }}-postgresql
             {{- else }}
             - name: POSTGRES_SVC_NAME
+              {{- if eq .K8sSetup "Openshift" }}
+              value: dai-ocp-xlr-postgresql
+              {{- else }}
               value: dai-xlr-postgresql
+              {{- end }}
             {{- end }}
             - name: POSTGRES_PORT
               value: "5432"
@@ -90,14 +114,26 @@ spec:
               value: keycloak
           volumeMounts:
             - mountPath: /var/init-sql-keycloak
+              {{- if eq .K8sSetup "Openshift" }}
+              name: dai-ocp-xlr-init-sql-keycloak
+              {{- else }}
               name: dai-xlr-init-sql-keycloak
+              {{- end }}
       volumes:
         - name: dai-xlr-init-sql-keycloak
           secret:
+            {{- if eq .K8sSetup "Openshift" }}
+            {{- if eq .UseCustomNamespace true }}
+            secretName: dai-ocp-xlr-{{ .Namespace }}-postgresql-init-sql-keycloak
+            {{- else }}
+            secretName: dai-ocp-xlr-postgresql-init-sql-keycloak
+            {{- end }}
+            {{- else }}
             {{- if eq .UseCustomNamespace true }}
             secretName: dai-xlr-{{ .Namespace }}-postgresql-init-sql-keycloak
             {{- else }}
             secretName: dai-xlr-postgresql-init-sql-keycloak
+            {{- end }}
             {{- end }}
       restartPolicy: Never
   backoffLimit: 1
