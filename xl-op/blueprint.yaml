@@ -55,7 +55,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
       prompt: !expr "IsCustomImageRegistry ? 'Enter the repository name (eg: <repositoryName> from <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):'"
-      default: xebialabsunsupported
+      default: xebialabs
       description: Enter the repository name to use
     - name: ImageNameDeploy
       type: Input
@@ -430,7 +430,7 @@ spec:
       overrideDefault: true
       prompt: !expr "IsCustomImageRegistry ? 'Enter the operator image to use (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):'"
       promptIf: !expr ServerType == 'dai-deploy' && K8sSetup != 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:22.3.10
+      default: xebialabs/deploy-operator:22.3.10
       description: Enter the operator image to use
     - name: OperatorImageDeployOpenshift
       type: Input
@@ -439,7 +439,7 @@ spec:
       overrideDefault: true
       prompt: !expr "IsCustomImageRegistry ? 'Enter the operator image to use (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):'"
       promptIf: !expr ServerType == 'dai-deploy' && K8sSetup == 'Openshift' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:22.3.10-openshift
+      default: xebialabs/deploy-operator:22.3.10-openshift
       description: Enter the operator image to use
     - name: OperatorImageReleaseGeneric
       type: Input
