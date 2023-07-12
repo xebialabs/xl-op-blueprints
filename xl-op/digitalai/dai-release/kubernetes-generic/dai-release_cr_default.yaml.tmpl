@@ -232,6 +232,9 @@ spec:
     primary:
       persistence:
         size: {{ .PostgresqlPvcSize }}Gi
+    securityContext:
+      enabled: true
+      fsGroup: 1001
   rabbitmq:
     global:
       {{- /* global overrides the other occurences */}}
@@ -250,7 +253,7 @@ spec:
     install: {{ .EnableRabbitmq }}
     persistence:
       size: {{ .RabbitmqPvcSize }}Gi
-      storageClass: {{ .RabbitmqStorageClass }}
+      storageClass: "{{ .RabbitmqStorageClass }}"
     replicaCount: {{ .RabbitmqReplicaCount }}
     volumePermissions:
       enabled: true
@@ -259,6 +262,13 @@ spec:
         {{- /* registry name defined in global section */}}
         repository: {{ .RepositoryName }}/bitnami-shell
       {{- end }}
+    securityContext:
+      enabled: true
+      fsGroup: 1001
+    podSecurityContext:
+      enabled: true
+      fsGroup: 1001
+      runAsUser: 1001
   keycloak:
     {{- if eq .IsCustomImageRegistry true }}
     image:
@@ -301,8 +311,8 @@ spec:
         size: {{ .PostgresqlPvcSize }}Gi
     route:
       {{- if eq .IngressType "route" }}
-      annotations: {}
       enabled: true
+      annotations: { }
       host: "{{ .KeycloakHost }}"
       tls:
         enabled: true
