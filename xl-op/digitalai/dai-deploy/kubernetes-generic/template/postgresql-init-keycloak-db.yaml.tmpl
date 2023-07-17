@@ -1,31 +1,47 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
+  {{- if eq .K8sSetup "Openshift" }}
+  {{- if eq .UseCustomNamespace true }}
+  name: dai-ocp-xld-{{ .Namespace }}-postgresql-init-keycloak-db
+  {{- else }}
+  name: dai-ocp-xld-postgresql-init-keycloak-db
+  {{- end }}
+  {{- else }}
   {{- if eq .UseCustomNamespace true }}
   name: dai-xld-{{ .Namespace }}-postgresql-init-keycloak-db
   {{- else }}
   name: dai-xld-postgresql-init-keycloak-db
+  {{- end }}
   {{- end }}
   labels:
     app: digitalai-deploy
 spec:
   template:
     metadata:
+      {{- if eq .K8sSetup "Openshift" }}
+      {{- if eq .UseCustomNamespace true }}
+      name: dai-ocp-xld-{{ .Namespace }}-postgresql-init-keycloak-db
+      {{- else }}
+      name: dai-ocp-xld-postgresql-init-keycloak-db
+      {{- end }}
+      {{- else }}
       {{- if eq .UseCustomNamespace true }}
       name: dai-xld-{{ .Namespace }}-postgresql-init-keycloak-db
       {{- else }}
       name: dai-xld-postgresql-init-keycloak-db
       {{- end }}
+      {{- end }}
     spec:
       {{- if eq .ImageRegistryType "private" }}
       imagePullSecrets:
         - name:  {{ .CustomPrivateImageRegistrySecret }}
-      {{- end }}      
+      {{- end }}
       initContainers:
         - name: wait-for-postgresql
           {{- if eq .IsCustomImageRegistry true }}
           image: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/tiny-tools:22.2.0
-          {{- else }}        
+          {{- else }}
           image: xebialabs/tiny-tools:22.2.0
           {{- end }}
           command:
@@ -41,7 +57,11 @@ spec:
               value: {{ .CrName }}-postgresql
             {{- else }}
             - name: POSTGRES_SVC_NAME
+              {{- if eq .K8sSetup "Openshift" }}
+              value: dai-ocp-xld-postgresql
+              {{- else }}
               value: dai-xld-postgresql
+              {{- end }}
             {{- end }}
             - name: POSTGRES_PORT
               value: "5432"
@@ -49,7 +69,7 @@ spec:
         - name: postgresql-init-keycloak-db
           {{- if eq .IsCustomImageRegistry true }}
           image: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/tiny-tools:22.2.0
-          {{- else }}        
+          {{- else }}
           image: xebialabs/tiny-tools:22.2.0
           {{- end }}
           command:
@@ -78,7 +98,11 @@ spec:
               value: {{ .CrName }}-postgresql
             {{- else }}
             - name: POSTGRES_SVC_NAME
+              {{- if eq .K8sSetup "Openshift" }}
+              value: dai-ocp-xld-postgresql
+              {{- else }}
               value: dai-xld-postgresql
+              {{- end }}
             {{- end }}
             - name: POSTGRES_PORT
               value: "5432"
@@ -90,14 +114,26 @@ spec:
               value: keycloak
           volumeMounts:
             - mountPath: /var/init-sql-keycloak
+              {{- if eq .K8sSetup "Openshift" }}
+              name: dai-ocp-xld-init-sql-keycloak
+              {{- else }}
               name: dai-xld-init-sql-keycloak
+              {{- end }}
       volumes:
         - name: dai-xld-init-sql-keycloak
           secret:
+            {{- if eq .K8sSetup "Openshift" }}
+            {{- if eq .UseCustomNamespace true }}
+            secretName: dai-ocp-xld-{{ .Namespace }}-postgresql-init-sql-keycloak
+            {{- else }}
+            secretName: dai-ocp-xld-postgresql-init-sql-keycloak
+            {{- end }}
+            {{- else }}
             {{- if eq .UseCustomNamespace true }}
             secretName: dai-xld-{{ .Namespace }}-postgresql-init-sql-keycloak
             {{- else }}
             secretName: dai-xld-postgresql-init-sql-keycloak
+            {{- end }}
             {{- end }}
       restartPolicy: Never
   backoffLimit: 1

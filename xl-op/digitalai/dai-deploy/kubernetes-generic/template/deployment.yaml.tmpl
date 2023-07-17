@@ -17,12 +17,12 @@ spec:
       {{- if eq .ImageRegistryType "private" }}
       imagePullSecrets:
         - name: {{ .CustomPrivateImageRegistrySecret }}
-      {{- end }}    
+      {{- end }}
       containers:
       - name: kube-rbac-proxy
         {{- if eq .IsCustomImageRegistry true }}
         image: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/kube-rbac-proxy:v0.8.0
-        {{- else }}      
+        {{- else }}
         image: gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0
         {{- end }}
         args:
@@ -39,7 +39,7 @@ spec:
         - "--metrics-bind-address=127.0.0.1:8080"
         - "--leader-elect"
         - "--leader-election-id=xld-operator-controller-manager"
-        image: {{ .OperatorImageDeployGeneric }}
+        image: {{ .OperatorImageDeploy }}
         imagePullPolicy: Always
         env:
         - name: WATCH_NAMESPACE
@@ -56,13 +56,13 @@ spec:
           httpGet:
             path: /healthz
             port: 8081
-          initialDelaySeconds: 5
-          periodSeconds: 10
+          initialDelaySeconds: 15
+          periodSeconds: 20
         resources:
           limits:
-            cpu: 100m
-            memory: 200Mi
+            cpu: 200m
+            memory: 500Mi
           requests:
-            cpu: 100m
-            memory: 60Mi
+            cpu: 200m
+            memory: 400Mi
       terminationGracePeriodSeconds: 10

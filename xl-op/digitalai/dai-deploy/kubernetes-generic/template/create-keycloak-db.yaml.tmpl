@@ -1,10 +1,18 @@
 kind: Secret
 apiVersion: v1
 metadata:
+  {{- if eq .K8sSetup "Openshift" }}
+  {{- if eq .UseCustomNamespace true }}
+  name: dai-ocp-xld-{{ .Namespace }}-postgresql-init-sql-keycloak
+  {{- else }}
+  name: dai-ocp-xld-postgresql-init-sql-keycloak
+  {{- end }}
+  {{- else }}
   {{- if eq .UseCustomNamespace true }}
   name: dai-xld-{{ .Namespace }}-postgresql-init-sql-keycloak
   {{- else }}
   name: dai-xld-postgresql-init-sql-keycloak
+  {{- end }}
   {{- end }}
   labels:
     app: digitalai-deploy
