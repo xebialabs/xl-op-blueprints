@@ -1,6 +1,6 @@
-import com.github.gradle.node.yarn.task.YarnTask
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import com.github.gradle.node.yarn.task.YarnTask
 
 buildscript {
     repositories {
@@ -22,17 +22,15 @@ buildscript {
         classpath("com.xebialabs.gradle.plugins:gradle-xl-defaults-plugin:${properties["xlDefaultsPluginVersion"]}")
         classpath("com.xebialabs.gradle.plugins:gradle-xl-plugins-plugin:${properties["xlPluginsPluginVersion"]}")
         classpath("com.xebialabs.gradle.plugins:integration-server-gradle-plugin:${properties["integrationServerGradlePluginVersion"]}")
-
     }
 }
 
 plugins {
     kotlin("jvm") version "1.8.10"
-
-    id("com.github.node-gradle.node") version "4.0.0"
-    id("idea")
     id("nebula.release") version (properties["nebulaReleasePluginVersion"] as String)
+    id("com.github.node-gradle.node") version "4.0.0"
     id("maven-publish")
+    id("idea")
 }
 
 apply(plugin = "ai.digital.gradle-commit")
@@ -44,7 +42,7 @@ project.defaultTasks = listOf("build")
 val releasedVersion = System.getenv()["RELEASE_EXPLICIT"] ?: if (project.version.toString().contains("SNAPSHOT")) {
     project.version.toString()
 } else {
-    "22.3.0-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))}"
+    "23.3.0-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))}"
 }
 project.extra.set("releasedVersion", releasedVersion)
 
@@ -86,54 +84,6 @@ subprojects {
 }
 
 tasks {
-    register("dumpVersion") {
-        group = "blueprint-release"
-        doLast {
-            project.logger.lifecycle("Dumping version $releasedVersion")
-            file(buildDir).mkdirs()
-            file("$buildDir/version.dump").writeText("version=${releasedVersion}")
-        }
-    }
-
-    named<YarnTask>("yarn_install") {
-        group = "blueprint-doc"
-        args.set(listOf("--mutex", "network"))
-        workingDir.set(file("${rootDir}/documentation"))
-    }
-
-    register<YarnTask>("yarnRunStart") {
-        group = "blueprint-doc"
-        dependsOn(named("yarn_install"))
-        args.set(listOf("run", "start"))
-        workingDir.set(file("${rootDir}/documentation"))
-    }
-
-    register<YarnTask>("yarnRunBuild") {
-        group = "blueprint-doc"
-        dependsOn(named("yarn_install"))
-        args.set(listOf("run", "build"))
-        workingDir.set(file("${rootDir}/documentation"))
-    }
-
-    register<Delete>("docCleanUp") {
-        group = "blueprint-doc"
-        delete(file("${rootDir}/docs"))
-        delete(file("${rootDir}/documentation/build"))
-        delete(file("${rootDir}/documentation/.docusaurus"))
-        delete(file("${rootDir}/documentation/node_modules"))
-    }
-
-    register<Copy>("docBuild") {
-        group = "blueprint-doc"
-        dependsOn(named("yarnRunBuild"), named("docCleanUp"))
-        from(file("${rootDir}/documentation/build"))
-        into(file("${rootDir}/docs"))
-    }
-
-    register<GenerateDocumentation>("updateDocs") {
-        group = "blueprint-doc"
-        dependsOn(named("docBuild"))
-    }
 
     register<CleanChartsTask>(CleanChartsTask.NAME) {
         group = "blueprint"
@@ -161,14 +111,8 @@ tasks {
         }
     }
 
-
-    register<NebulaRelease>("nebulaRelease") {
-        group = "blueprint-release"
-        dependsOn(named("buildBlueprints"), named("updateDocs"))
-    }
-
     register<Exec>("copyBlueprintsArchives") {
-        group = "blueprint-release"
+        group = "blueprint-dist"
         dependsOn("blueprintsArchives")
 
         if (project.hasProperty("versionToSync") && project.property("versionToSync") != "") {
@@ -182,12 +126,12 @@ tasks {
             commandLine(commandUnzip.split(" "))
         } else {
             commandLine("echo",
-                    "You have to specify which version you want to sync, ex. ./gradlew syncBlueprintsArchives -PversionToSync=22.3.0")
+                    "You have to specify which version you want to sync, ex. ./gradlew syncBlueprintsArchives -PversionToSync=23.3.0")
         }
     }
 
     register<Exec>("syncBlueprintsArchives") {
-        group = "blueprint-release"
+        group = "blueprint-dist"
         dependsOn("blueprintsArchives", "copyBlueprintsArchives")
 
         if (project.hasProperty("versionToSync") && project.property("versionToSync") != "") {
@@ -201,12 +145,12 @@ tasks {
             commandLine(commandRsync.split(" "))
         } else {
             commandLine("echo",
-                    "You have to specify which version you want to sync, ex. ./gradlew syncBlueprintsArchives -PversionToSync=22.3.0")
+                    "You have to specify which version you want to sync, ex. ./gradlew syncBlueprintsArchives -PversionToSync=23.3.0")
         }
     }
 
     register("syncToDistServer") {
-        group = "blueprint-release"
+        group = "blueprint-dist"
         dependsOn("syncBlueprintsArchives")
     }
     
@@ -231,13 +175,67 @@ tasks {
         group = "upload"
         dependsOn("dumpVersion", "publishToMavenLocal")
     }
-}
 
-tasks.named("build") {
-    dependsOn("buildBlueprints")
+    register("dumpVersion") {
+        group = "release"
+        doLast {
+            project.logger.lifecycle("Dumping version $releasedVersion")
+            file(buildDir).mkdirs()
+            file("$buildDir/version.dump").writeText("version=${releasedVersion}")
+        }
+    }
+
+    register<NebulaRelease>("nebulaRelease") {
+        group = "release"
+        dependsOn(named("buildBlueprints"), named("updateDocs"))
+    }
+
+    named<YarnTask>("yarn_install") {
+        group = "doc"
+        args.set(listOf("--mutex", "network"))
+        workingDir.set(file("${rootDir}/documentation"))
+    }
+
+    register<YarnTask>("yarnRunStart") {
+        group = "doc"
+        dependsOn(named("yarn_install"))
+        args.set(listOf("run", "start"))
+        workingDir.set(file("${rootDir}/documentation"))
+    }
+
+    register<YarnTask>("yarnRunBuild") {
+        group = "doc"
+        dependsOn(named("yarn_install"))
+        args.set(listOf("run", "build"))
+        workingDir.set(file("${rootDir}/documentation"))
+    }
+
+    register<Delete>("docCleanUp") {
+        group = "doc"
+        delete(file("${rootDir}/docs"))
+        delete(file("${rootDir}/documentation/build"))
+        delete(file("${rootDir}/documentation/.docusaurus"))
+        delete(file("${rootDir}/documentation/node_modules"))
+    }
+
+    register<Copy>("docBuild") {
+        group = "doc"
+        dependsOn(named("yarnRunBuild"), named("docCleanUp"))
+        from(file("${rootDir}/documentation/build"))
+        into(file("${rootDir}/docs"))
+    }
+
+    register<GenerateDocumentation>("updateDocs") {
+        group = "doc"
+        dependsOn(named("docBuild"))
+    }
 }
 
 tasks.withType<AbstractPublishToMaven> {
+    dependsOn("build")
+}
+
+tasks.named("build") {
     dependsOn("buildBlueprints")
 }
 
@@ -250,7 +248,6 @@ publishing {
             }
         }
     }
-
     repositories {
         maven {
             url = uri("${project.property("nexusBaseUrl")}/repositories/digitalai-public")
@@ -262,7 +259,7 @@ publishing {
     }
 }
 
-node {
+node { 
     version.set("16.13.2")
     yarnVersion.set("1.22.17")
     download.set(true)

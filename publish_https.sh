@@ -1,1 +1,1 @@
-./gradlew clean uploadArchives candidate -x updateDocs -x test --stacktrace -PgitProtocol=https -Prelease.ignoreSuppliedVersionVerification=true
+./gradlew clean uploadArchives devSnapshot -x updateDocs -x test --stacktrace -PgitProtocol=https -Prelease.ignoreSuppliedVersionVerification=true --info

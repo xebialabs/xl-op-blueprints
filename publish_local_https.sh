@@ -1,1 +1,1 @@
-./gradlew clean uploadArchivesToMavenLocal -x updateDocs -x test --stacktrace -PgitProtocol=https
+./gradlew clean uploadArchivesToMavenLocal -x updateDocs -x test --stacktrace -PgitProtocol=https --info
