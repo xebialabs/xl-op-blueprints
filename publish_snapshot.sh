@@ -1,1 +1,0 @@
-./gradlew clean build buildBlueprints release --stacktrace -DgitProtocol=https

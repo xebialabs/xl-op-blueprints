@@ -28,8 +28,8 @@ open class GetHelmChartTask : DefaultTask() {
 
         GitUtil.cloneRepository(
             project,
-            GitUtil.toGithubUrl(repoName, GitUtil.getGithubProtocol()),
-            GitUtil.getCurrentBranch(),
+            GitUtil.toGithubUrl(repoName, GitUtil.getGithubProtocol(project)),
+            GitUtil.getCurrentBranch(project),
             destination
         )
 
