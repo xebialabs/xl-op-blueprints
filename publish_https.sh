@@ -1,1 +1,1 @@
-./gradlew clean nebulaRelease -x updateDocs -x test --stacktrace -PgitProtocol=https
+./gradlew clean uploadArchives candidate -x updateDocs -x test --stacktrace -PgitProtocol=https -Prelease.ignoreSuppliedVersionVerification=true
