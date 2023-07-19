@@ -27,9 +27,9 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.4.20"
+    kotlin("jvm") version "1.8.10"
 
-    id("com.github.node-gradle.node") version "3.1.0"
+    id("com.github.node-gradle.node") version "4.0.0"
     id("idea")
     id("nebula.release") version (properties["nebulaReleasePluginVersion"] as String)
     id("maven-publish")
@@ -37,8 +37,6 @@ plugins {
 
 apply(plugin = "ai.digital.gradle-commit")
 apply(plugin = "com.xebialabs.dependency")
-
-apply(plugin = "kotlin")
 
 group = "ai.digital.xlclient.blueprints"
 project.defaultTasks = listOf("build")
@@ -89,6 +87,7 @@ subprojects {
 
 tasks {
     register("dumpVersion") {
+        group = "blueprint-release"
         doLast {
             project.logger.lifecycle("Dumping version $releasedVersion")
             file(buildDir).mkdirs()
@@ -97,23 +96,27 @@ tasks {
     }
 
     named<YarnTask>("yarn_install") {
+        group = "blueprint-doc"
         args.set(listOf("--mutex", "network"))
         workingDir.set(file("${rootDir}/documentation"))
     }
 
     register<YarnTask>("yarnRunStart") {
+        group = "blueprint-doc"
         dependsOn(named("yarn_install"))
         args.set(listOf("run", "start"))
         workingDir.set(file("${rootDir}/documentation"))
     }
 
     register<YarnTask>("yarnRunBuild") {
+        group = "blueprint-doc"
         dependsOn(named("yarn_install"))
         args.set(listOf("run", "build"))
         workingDir.set(file("${rootDir}/documentation"))
     }
 
     register<Delete>("docCleanUp") {
+        group = "blueprint-doc"
         delete(file("${rootDir}/docs"))
         delete(file("${rootDir}/documentation/build"))
         delete(file("${rootDir}/documentation/.docusaurus"))
@@ -121,23 +124,28 @@ tasks {
     }
 
     register<Copy>("docBuild") {
+        group = "blueprint-doc"
         dependsOn(named("yarnRunBuild"), named("docCleanUp"))
         from(file("${rootDir}/documentation/build"))
         into(file("${rootDir}/docs"))
     }
 
     register<GenerateDocumentation>("updateDocs") {
+        group = "blueprint-doc"
         dependsOn(named("docBuild"))
     }
 
     register<CleanChartsTask>(CleanChartsTask.NAME) {
+        group = "blueprint"
     }
 
     register<GetHelmChartTask>("getRemoteRunnerHelmChart") {
+        group = "blueprint"
         helmChartName = "xlr-remote-runner-helm-chart"
     }
 
     register<Zip>("blueprintsArchives") {
+        group = "blueprint"
 
         dependsOn(named("getRemoteRunnerHelmChart"))
 
@@ -155,10 +163,12 @@ tasks {
 
 
     register<NebulaRelease>("nebulaRelease") {
-        dependsOn(named("buildOperators"), named("updateDocs"))
+        group = "blueprint-release"
+        dependsOn(named("buildBlueprints"), named("updateDocs"))
     }
 
     register<Exec>("copyBlueprintsArchives") {
+        group = "blueprint-release"
         dependsOn("blueprintsArchives")
 
         if (project.hasProperty("versionToSync") && project.property("versionToSync") != "") {
@@ -177,6 +187,7 @@ tasks {
     }
 
     register<Exec>("syncBlueprintsArchives") {
+        group = "blueprint-release"
         dependsOn("blueprintsArchives", "copyBlueprintsArchives")
 
         if (project.hasProperty("versionToSync") && project.property("versionToSync") != "") {
@@ -195,21 +206,39 @@ tasks {
     }
 
     register("syncToDistServer") {
+        group = "blueprint-release"
         dependsOn("syncBlueprintsArchives")
     }
-
-    named<Upload>("uploadArchives") {
-        dependsOn(named("dumpVersion"))
-        dependsOn(named("publish"))
-    }
-
-    register("buildOperators") {
+    
+    register("buildBlueprints") {
+        group = "blueprint"
         dependsOn("blueprintsArchives")
     }
 
     register("checkDependencyVersions") {
         // a placeholder to unify with release in jenkins-job
     }
+
+    register("uploadArchives") {
+        group = "upload"
+        dependsOn("dumpVersion", "publish")
+    }
+    register("uploadArchivesMavenRepository") {
+        group = "upload"
+        dependsOn("dumpVersion","publishAllPublicationsToMavenRepository")
+    }
+    register("uploadArchivesToMavenLocal") {
+        group = "upload"
+        dependsOn("dumpVersion", "publishToMavenLocal")
+    }
+}
+
+tasks.named("build") {
+    dependsOn("buildBlueprints")
+}
+
+tasks.withType<AbstractPublishToMaven> {
+    dependsOn("buildBlueprints")
 }
 
 publishing {

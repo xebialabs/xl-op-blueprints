@@ -1,1 +1,1 @@
-./gradlew clean build publishToMavenLocal snapshot dumpVersion
+./gradlew clean build buildBlueprints release --stacktrace -DgitProtocol=https
