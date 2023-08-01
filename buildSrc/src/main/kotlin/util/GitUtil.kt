@@ -5,12 +5,12 @@ import org.gradle.api.Project
 class GitUtil {
     companion object {
 
-        fun getCurrentBranch(): String {
-            return System.getProperties()["branch"] as String? ?: "master"
+        fun getCurrentBranch(project: Project): String {
+            return project.findProperty("branch") as String? ?: "master"
         }
 
-        fun getGithubProtocol(): String {
-            return System.getProperties()["gitProtocol"] as String? ?: "git"
+        fun getGithubProtocol(project: Project): String {
+            return project.findProperty("gitProtocol") as String? ?: "git"
         }
 
         fun cloneRepository(project: Project, repositoryUrl: String, branchName: String, dest: String) {
