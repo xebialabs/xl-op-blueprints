@@ -58,9 +58,7 @@ spec:
         - {{ .AccessModeDeploy }}
       size: {{ .PvcSizeCc }}Gi
     image:
-      {{- if eq .IsCustomImageRegistry true }}
       repository: {{ .RepositoryName }}/{{ .ImageNameCc }}
-      {{- end }}
       tag: "{{ .ImageTag }}"
     diagnosticMode:
       enabled: false
@@ -72,9 +70,7 @@ spec:
         - {{ .AccessModeDeploy }}
       size: {{ .PvcSizeDeploy }}Gi
     image:
-      {{- if eq .IsCustomImageRegistry true }}
       repository: {{ .RepositoryName }}/{{ .ImageNameDeploy }}
-      {{- end }}
       tag: "{{ .ImageTag }}"
     diagnosticMode:
       enabled: false
@@ -86,9 +82,7 @@ spec:
         - {{ .AccessModeDeploy }}
       size: {{ .PvcSizeDeployTaskEngine }}Gi
     image:
-      {{- if eq .IsCustomImageRegistry true }}
       repository: {{ .RepositoryName }}/{{ .ImageNameDeployTaskEngine }}
-      {{- end }}
       tag: "{{ .ImageTag }}"
     diagnosticMode:
       enabled: false

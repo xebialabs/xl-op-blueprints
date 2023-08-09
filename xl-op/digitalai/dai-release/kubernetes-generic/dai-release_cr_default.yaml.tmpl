@@ -71,9 +71,7 @@ spec:
       - {{ .AccessModeRelease }}
     size: {{ .PvcSizeRelease }}Gi
   image:
-    {{- if eq .IsCustomImageRegistry true }}
     repository: {{ .RepositoryName }}/{{ .ImageNameRelease }}
-    {{- end }}
     tag: "{{ .ImageTag }}"
   {{- if eq .IsCustomImageRegistry true }}
   busyBox:
