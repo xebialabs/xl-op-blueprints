@@ -47,9 +47,6 @@ IdentityServiceConfDeploy: |-
 {{ .IdentityServiceConfDeploy | indent 2 }}
 IdentityServiceConfRelease: |-
 {{ .IdentityServiceConfRelease | indent 2 }}
-KeycloakHost: '{{ .KeycloakHost }}'
-UseKeycloakWithEmbeddedDB: '{{ .UseKeycloakWithEmbeddedDB }}'
-KeycloakIngressHost: '{{ .KeycloakIngressHost }}'
 {{- if eq .ProcessType "install" }}
 IngressTypeGeneric: '{{ .IngressTypeGeneric }}'
 IngressTypeOpenshift: '{{ .IngressTypeOpenshift }}'
