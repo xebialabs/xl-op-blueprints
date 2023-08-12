@@ -404,8 +404,6 @@ spec:
           value: external
         - label: Identity Service Configuration
           value: identity-service
-        - label: Embedded Keycloak Configuration
-          value: embedded
         - label: No OIDC Configuration
           value: no-oidc
       saveInXlvals: true
@@ -424,8 +422,6 @@ spec:
           value: external
         - label: Identity Service Configuration
           value: identity-service
-        - label: Embedded Keycloak Configuration
-          value: embedded
         - label: No OIDC Configuration
           value: no-oidc
       saveInXlvals: true
@@ -441,24 +437,6 @@ spec:
       ignoreIfSkipped: true
       value: !expr "ProcessType == 'install' ? OidcConfigTypeInstall : OidcConfigTypeUpgrade"
       description: The type of the OIDC configuration
-    - name: UseKeycloakWithEmbeddedDB
-      type: Confirm
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      promptIf: !expr OidcConfigType == 'embedded' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Use embedded DB for keycloak:"
-      default: !expr OidcConfigTypeUpgrade == 'embedded'
-      description: "If true, keycloak will be installed in kubernetes cluster with embedded DB. If false, we need to use the custom zip options and update cr yaml file with external DB for keycloak"
-    - name: KeycloakHost
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      promptIf: !expr OidcConfigType == 'embedded' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Enter Keycloak public hostname:"
-      description: Enter Keycloak public hostname that will be used for keycloak installation.
-      validate: !expr "regex('^[-a-zA-Z0-9@:%._\\+~#=]{2,256}$', KeycloakHost)"
     - name: ExternalOidcConfGenericDeploy
       type: Editor
       prompt: "Configure external oidc setup:"
@@ -556,7 +534,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       value: !expr "OidcConfigType == 'identity-service' ? IdentityServiceConf : (OidcConfigType == 'external' ? ExternalOidcConfGeneric : 'external: false')"
-      description: The external OIDC configuration based on OIDC type. Default OIDC configuration for embedded keycloak and No OIDC Configuration will have disabled external OIDC setup
+      description: The external OIDC configuration based on OIDC type. No OIDC Configuration will have disabled external OIDC setup
     - name: OperatorImageDeploy
       type: Input
       saveInXlvals: true
@@ -564,7 +542,7 @@ spec:
       overrideDefault: true
       prompt: !expr "IsCustomImageRegistry ? 'Enter the operator image to use (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):'"
       promptIf: !expr ServerType == 'dai-deploy' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:23.3.0-809.1621
+      default: xebialabsunsupported/deploy-operator:23.3.0-811.1149
       description: Enter the operator image to use
     - name: OperatorImageRelease
       type: Input
@@ -865,12 +843,6 @@ spec:
         .spec.postgresql.install
         .spec.rabbitmq.install
         .spec.oidc
-        .spec.keycloak.install
-        .spec.keycloak.route
-        .spec.keycloak.postgresql.persistence.size
-        .spec.keycloak.postgresql.postgresqlMaxConnections
-        .spec.keycloak.ingress.console.rules
-        .spec.keycloak.ingress.rules
         .spec.rabbitmq.persistence.storageClass
         .spec.rabbitmq.persistence.size
         .spec.rabbitmq.replicaCount
@@ -909,12 +881,6 @@ spec:
         .spec.postgresql.install
         .spec.rabbitmq.install
         .spec.oidc
-        .spec.keycloak.install
-        .spec.keycloak.route
-        .spec.keycloak.postgresql.persistence.size
-        .spec.keycloak.postgresql.postgresqlMaxConnections
-        .spec.keycloak.ingress.console.rules
-        .spec.keycloak.ingress.rules
         .spec.rabbitmq.persistence.storageClass
         .spec.rabbitmq.persistence.size
         .spec.rabbitmq.replicaCount
@@ -1052,12 +1018,6 @@ spec:
     - path: digitalai/dai-deploy/kubernetes-generic/template/deployment.yaml.tmpl
       writeIf: !expr ServerType == 'dai-deploy' && (ProcessType == 'install' || ProcessType == 'upgrade')
       renameTo: !expr "'digitalai/dai-deploy/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/deployment.yaml.tmpl'"
-    - path: digitalai/dai-deploy/kubernetes-generic/template/create-keycloak-db.yaml.tmpl
-      writeIf: !expr ServerType == 'dai-deploy' && OidcConfigType == 'embedded' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      renameTo: !expr "'digitalai/dai-deploy/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/create-keycloak-db.yaml.tmpl'"
-    - path: digitalai/dai-deploy/kubernetes-generic/template/postgresql-init-keycloak-db.yaml.tmpl
-      writeIf: !expr ServerType == 'dai-deploy' && OidcConfigType == 'embedded' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      renameTo: !expr "'digitalai/dai-deploy/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/postgresql-init-keycloak-db.yaml.tmpl'"
     # Release
     - path: digitalai/dai-release/kubernetes-generic/template/leader-election-role.yaml
       writeIf: !expr ServerType == 'dai-release' && (ProcessType == 'install' || ProcessType == 'upgrade')
@@ -1095,12 +1055,6 @@ spec:
     - path: digitalai/dai-release/kubernetes-generic/template/deployment.yaml.tmpl
       writeIf: !expr ServerType == 'dai-release' && (ProcessType == 'install' || ProcessType == 'upgrade')
       renameTo: !expr "'digitalai/dai-release/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/deployment.yaml.tmpl'"
-    - path: digitalai/dai-release/kubernetes-generic/template/create-keycloak-db.yaml.tmpl
-      writeIf: !expr ServerType == 'dai-release' && OidcConfigType == 'embedded' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      renameTo: !expr "'digitalai/dai-release/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/create-keycloak-db.yaml.tmpl'"
-    - path: digitalai/dai-release/kubernetes-generic/template/postgresql-init-keycloak-db.yaml.tmpl
-      writeIf: !expr ServerType == 'dai-release' && OidcConfigType == 'embedded' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      renameTo: !expr "'digitalai/dai-release/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/postgresql-init-keycloak-db.yaml.tmpl'"
     # Remote runner
     - path: digitalai/dai-remote-runner/values-cli.yaml.tmpl
       writeIf: !expr ServerType == 'dai-release-runner'
