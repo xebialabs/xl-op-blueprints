@@ -239,7 +239,7 @@ spec:
       {{- /* registry name defined in global section */}}
       repository: {{ .RepositoryName }}/postgresql
     {{- end }}
-    install: {{ or .EnablePostgresql .UseKeycloakWithEmbeddedDB }}
+    install: {{ .EnablePostgresql }}
     primary:
       persistence:
         size: {{ .PostgresqlPvcSize }}Gi
@@ -280,55 +280,3 @@ spec:
       enabled: true
       fsGroup: 1001
       runAsUser: 1001
-  keycloak:
-    {{- if eq .IsCustomImageRegistry true }}
-    image:
-      repository: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/keycloak
-    {{- end }}
-    {{- if eq .ImageRegistryType "private" }}
-    imagePullSecrets:
-        - name: {{ .CustomPrivateImageRegistrySecret }}
-    {{- end }}
-    ingress:
-      annotations:
-        {{- if eq .UseCustomNamespace true }}
-        kubernetes.io/ingress.class: nginx-dai-xld-{{ .Namespace }}
-        {{- else }}
-        kubernetes.io/ingress.class: nginx-dai-xld
-        {{- end }}
-        nginx.ingress.kubernetes.io/ssl-redirect: "false"
-      console:
-        annotations: {}
-        enabled: false
-        ingressClassName: ""
-        rules:
-          - host: {{ .KeycloakHost }}
-      {{- if eq .IngressType "route" }}
-      enabled: false
-      {{- else }}
-      enabled: true
-      {{- end }}
-    postgresql:
-      {{- if eq .IsCustomImageRegistry true }}
-      image:
-        registry: {{ .CustomImageRegistryName }}
-        repository: {{ .RepositoryName }}/postgresql
-      {{- end }}
-      {{- if eq .ImageRegistryType "private" }}
-      imagePullSecrets:
-          - name: {{ .CustomPrivateImageRegistrySecret }}
-      {{- end }}
-      persistence:
-        size: {{ .PostgresqlPvcSize }}Gi
-    route:
-      {{- if eq .IngressType "route" }}
-      enabled: true
-      annotations: { }
-      host: '{{ .KeycloakHost }}'
-      tls:
-        enabled: true
-        insecureEdgeTerminationPolicy: Redirect
-        termination: edge
-      {{- else }}
-      enabled: false
-      {{- end }}
