@@ -50,19 +50,19 @@ spec:
           httpGet:
             path: /readyz
             port: 8081
-          initialDelaySeconds: 15
+          initialDelaySeconds: 10
           periodSeconds: 20
         readinessProbe:
           httpGet:
             path: /healthz
             port: 8081
-          initialDelaySeconds: 15
-          periodSeconds: 20
+          initialDelaySeconds: 5
+          periodSeconds: 10
         resources:
           limits:
-            cpu: 200m
+            cpu: 500m
             memory: 500Mi
           requests:
-            cpu: 200m
-            memory: 400Mi
+            cpu: 50m
+            memory: 50Mi
       terminationGracePeriodSeconds: 10
