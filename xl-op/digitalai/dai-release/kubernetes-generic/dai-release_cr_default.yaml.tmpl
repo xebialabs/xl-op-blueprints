@@ -28,7 +28,11 @@ spec:
     platform: {{ .K8sSetup }}
   auth:
     adminPassword: "{{ .AdminPassword }}"
+  {{- if eq .LicenseSource "generate" }}
+  licenseAcceptEula: true
+  {{- else }}
   license: "{{ trim .License }}"
+  {{- end }}
   keystore:
     passphrase: "{{ .KeystorePassphrase }}"
     keystore: "{{ trim .RepositoryKeystore }}"
