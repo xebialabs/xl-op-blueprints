@@ -12,8 +12,7 @@ ImageTag: {{ .ImageTag }}
 ImageNameDeploy: {{ .ImageNameDeploy }}
 ImageNameDeployTaskEngine: {{ .ImageNameDeployTaskEngine }}
 ImageNameCc: {{ .ImageNameCc }}
-OperatorImageDeployGeneric: {{ .OperatorImageDeployGeneric }}
-OperatorImageDeployOpenshift: {{ .OperatorImageDeployOpenshift }}
+OperatorImageDeploy: {{ .OperatorImageDeploy }}
 XldMasterCount: {{ .XldMasterCount }}
 XldWorkerCount: {{ .XldWorkerCount }}
   {{- if eq .ProcessType "upgrade" }}
@@ -27,8 +26,7 @@ RabbitmqExternalConfigDeploy: |-
 {{- end }}
 {{- if eq .ServerType "dai-release" }}
 ImageNameRelease: {{ .ImageNameRelease }}
-OperatorImageReleaseGeneric: {{ .OperatorImageReleaseGeneric }}
-OperatorImageReleaseOpenshift: {{ .OperatorImageReleaseOpenshift }}
+OperatorImageRelease: {{ .OperatorImageRelease }}
 XlrReplicaCount: {{ .XlrReplicaCount }}
   {{- if eq .ProcessType "upgrade" }}
 PreserveCrValuesRelease: |-
@@ -49,11 +47,9 @@ IdentityServiceConfDeploy: |-
 {{ .IdentityServiceConfDeploy | indent 2 }}
 IdentityServiceConfRelease: |-
 {{ .IdentityServiceConfRelease | indent 2 }}
-KeycloakHost: '{{ .KeycloakHost }}'
-UseKeycloakWithEmbeddedDB: '{{ .UseKeycloakWithEmbeddedDB }}'
-KeycloakIngressHost: '{{ .KeycloakIngressHost }}'
 {{- if eq .ProcessType "install" }}
-IngressType: '{{ .IngressType }}'
+IngressTypeGeneric: '{{ .IngressTypeGeneric }}'
+IngressTypeOpenshift: '{{ .IngressTypeOpenshift }}'
 ExternalIngressClass: '{{ .ExternalIngressClass }}'
 EnableIngressTls: {{ .EnableIngressTls }}
 IngressTlsSecretName: '{{ .IngressTlsSecretName }}'
@@ -115,3 +111,7 @@ RemoteRunnerToken: '{{ .RemoteRunnerToken }}'
 RemoteRunnerCount: {{ .RemoteRunnerCount }}
 RemoteRunnerStorageClass: '{{ .RemoteRunnerStorageClass }}'
 RemoteRunnerBaseHostPath: '{{ .RemoteRunnerBaseHostPath }}'
+IsRemoteRunnerTruststoreEnabled: {{ .IsRemoteRunnerTruststoreEnabled }}
+RemoteRunnerTruststore: {{ .RemoteRunnerTruststore }}
+RemoteRunnerTruststorePassword: {{ .RemoteRunnerTruststorePassword }}
+

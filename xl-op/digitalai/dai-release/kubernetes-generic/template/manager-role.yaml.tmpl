@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: xld-operator-manager
+  name: xlr-operator-manager
 rules:
 - apiGroups:
   - ""
@@ -47,11 +47,11 @@ rules:
   verbs:
   - "*"
 - apiGroups:
-  - xldocp.digital.ai
+  - xlr.digital.ai
   resources:
-  - digitalaideployocps
-  - digitalaideployocps/status
-  - digitalaideployocps/finalizers
+  - digitalaireleases
+  - digitalaireleases/status
+  - digitalaireleases/finalizers
   verbs:
   - create
   - delete

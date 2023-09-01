@@ -31,3 +31,9 @@ image:
   pullSecrets:
     - {{ .CustomPrivateImageRegistrySecret }}
   {{- end }}
+
+{{- if eq .IsRemoteRunnerTruststoreEnabled true }}
+runner:
+  truststore: {{ .RemoteRunnerTruststore }}
+  truststorePassword: {{ .RemoteRunnerTruststorePassword }}
+{{- end }}
