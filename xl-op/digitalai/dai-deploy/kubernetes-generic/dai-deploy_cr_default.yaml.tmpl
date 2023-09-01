@@ -200,14 +200,16 @@ spec:
     extraArgs:
       ingress-class: nginx-dai-xld
     {{- end }}
+    {{- if or (eq .IsCustomImageRegistry true) (eq .ImageRegistryType "private") }}
     global:
       {{- /* global overrides the other occurences */}}
-        {{- if eq .IsCustomImageRegistry true }}
-        imageRegistry: {{ .CustomImageRegistryName }}
-        {{- end }}
-        {{- if eq .ImageRegistryType "private" }}
-        imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
-        {{- end }}
+      {{- if eq .IsCustomImageRegistry true }}
+      imageRegistry: {{ .CustomImageRegistryName }}
+      {{- end }}
+      {{- if eq .ImageRegistryType "private" }}
+      imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
+      {{- end }}
+    {{- end }}
     {{- if eq .IsCustomImageRegistry true }}
     image:
       {{- /* registry name defined in global section */}}
@@ -251,6 +253,7 @@ spec:
       enabled: true
       fsGroup: 1001
   rabbitmq:
+    {{- if or (eq .IsCustomImageRegistry true) (eq .ImageRegistryType "private") }}
     global:
       {{- /* global overrides the other occurences */}}
       {{- if eq .IsCustomImageRegistry true }}
@@ -260,6 +263,7 @@ spec:
       imagePullSecrets:
         - {{ .CustomPrivateImageRegistrySecret }}
       {{- end }}
+    {{- end }}
     {{- if eq .IsCustomImageRegistry true }}
     image:
       {{- /* registry name defined in global section */}}
