@@ -56,7 +56,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
-      default: xldevdocker
+      default: xebialabsunsupported
       description: Enter the repository name to use
     - name: RemoteRunnerRepositoryName
       type: Input
@@ -92,7 +92,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-SNAPSHOT
+      default: 23.3.0-904.113
       description: Enter the image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -820,93 +820,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       description: "For all matched expressions in the cluster CR, the values will be migrated to the upgraded Deploy CR"
-      default: |-
-        .metadata.name: .
-        .spec.auth.adminPassword: 
-          0.0: .spec.AdminPassword
-          23.3: .
-        .spec.centralConfiguration.replicaCount: .
-        .spec.master.replicaCount: 
-          0.0: .spec.XldMasterCount
-          23.3: .
-        .spec.worker.replicaCount: 
-          0.0: .spec.XldWorkerCount
-          23.3: .
-        .spec.external.db.enabled: 
-          0.0: .spec.UseExistingDB.Enabled
-          23.3: .
-        .spec.external.mq.enabled: 
-          0.0: .spec.UseExistingMQ.Enabled
-          23.3: .
-        .spec.ingress.enabled: 
-          0.0: .spec.ingress.Enabled
-          23.3: .
-        .spec.keystore.passphrase: 
-          0.0: .spec.KeystorePassphrase
-          23.3: .
-        .spec.global.storageClass: 
-          0.0: .spec.Persistence.StorageClass
-          23.3: .
-        .spec.centralConfiguration.persistence.accessModes[0]:
-          0.0: .spec.Persistence.AccessMode
-          23.3: 
-        .spec.centralConfiguration.persistence.accessModes:
-          0.0: 
-          23.3: .
-        .spec.master.persistence.accessModes[0]:
-          0.0: .spec.Persistence.AccessMode
-          23.3:
-        .spec.master.persistence.accessModes:
-          0.0: 
-          23.3: .
-        .spec.worker.persistence.accessModes[0]: 
-          0.0: .spec.Persistence.AccessMode
-          23.3:
-        .spec.worker.persistence.accessModes:
-          0.0:
-          23.3: .
-        .spec.master.persistence.size: 
-          0.0: .spec.Persistence.XldMasterPvcSize
-          23.3: .
-        .spec.worker.persistence.size: 
-          0.0: .spec.Persistence.XldWorkerPvcSize
-          23.3: .
-        .spec.keystore.keystore: 
-          0.0: .spec.RepositoryKeystore
-          23.3: .
-        .spec.postgresql.primary.persistence.size: 
-          0.0: .spec.postgresql.persistence.size
-          23.3: .
-        .spec.postgresql.global.storageClass: 
-          0.0: .spec.postgresql.persistence.storageClass
-          23.3: .
-        .spec.postgresql.primary.extendedConfiguration: 
-          0.0: 
-            existance: .spec.postgresql.postgresqlMaxConnections
-            expression: .spec.postgresql.postgresqlMaxConnections as $maxConnection | "max_connections = " + $maxConnection
-          23.3: .
-        .spec.haproxy-ingress.install: .
-        .spec.nginx-ingress-controller.install: .
-        .spec.postgresql.install: .
-        .spec.rabbitmq.install: .
-        .spec.oidc: .
-        .spec.rabbitmq.persistence.storageClass: .
-        .spec.rabbitmq.persistence.size: .
-        .spec.rabbitmq.replicaCount: .
-        .spec.rabbitmq.persistence.replicaCount: .
-        .spec.route.hosts: .
-        .spec.license: 
-          0.0: .spec.xldLicense
-          23.3: .
-        .spec.licenseAcceptEula: 
-          0.0:
-          23.3: .
-        .spec.centralConfiguration.persistence.size: 
-          0.0: .spec.centralConfiguration.persistence.pvcSize
-          23.3: .
-        .spec.centralConfiguration.migrateFromEmbedded: .
-        # preserve current DB version
-        .spec.postgresql.image.tag: .
+      default: ".metadata.name: .\n.spec.auth.adminPassword: \n  0.0: .spec.AdminPassword\n  23.3: .\n.spec.centralConfiguration.replicaCount: .\n.spec.master.replicaCount: \n  0.0: .spec.XldMasterCount\n  23.3: .\n.spec.worker.replicaCount: \n  0.0: .spec.XldWorkerCount\n  23.3: .\n.spec.external.db.enabled: \n  0.0: .spec.UseExistingDB.Enabled\n  23.3: .\n.spec.external.mq.enabled: \n  0.0: .spec.UseExistingMQ.Enabled\n  23.3: .\n.spec.ingress.enabled: \n  0.0: .spec.ingress.Enabled\n  23.3: .\n.spec.keystore.passphrase: \n  0.0: .spec.KeystorePassphrase\n  23.3: .\n.spec.global.storageClass: \n  0.0: .spec.Persistence.StorageClass\n  23.3: .\n.spec.centralConfiguration.persistence.accessModes[0]:\n  0.0: .spec.Persistence.AccessMode\n  23.3: \n.spec.centralConfiguration.persistence.accessModes:\n  0.0: \n  23.3: .\n.spec.master.persistence.accessModes[0]:\n  0.0: .spec.Persistence.AccessMode\n  23.3:\n.spec.master.persistence.accessModes:\n  0.0: \n  23.3: .\n.spec.worker.persistence.accessModes[0]: \n  0.0: .spec.Persistence.AccessMode\n  23.3:\n.spec.worker.persistence.accessModes:\n  0.0:\n  23.3: .\n.spec.master.persistence.size: \n  0.0: .spec.Persistence.XldMasterPvcSize\n  23.3: .\n.spec.worker.persistence.size: \n  0.0: .spec.Persistence.XldWorkerPvcSize\n  23.3: .\n.spec.keystore.keystore: \n  0.0: .spec.RepositoryKeystore\n  23.3: .\n.spec.postgresql.primary.persistence.size: \n  0.0: .spec.postgresql.persistence.size\n  23.3: .\n.spec.postgresql.global.storageClass: \n  0.0: .spec.postgresql.persistence.storageClass\n  23.3: .\n.spec.postgresql.primary.extendedConfiguration: \n  0.0: \n    existance: .spec.postgresql.postgresqlMaxConnections\n    expression: .spec.postgresql.postgresqlMaxConnections as $maxConnection | \"max_connections = \" + $maxConnection\n  23.3: .\n.spec.haproxy-ingress.install: .\n.spec.nginx-ingress-controller.install: .\n.spec.postgresql.install: .\n.spec.rabbitmq.install: .\n.spec.oidc: .\n.spec.rabbitmq.persistence.storageClass: .\n.spec.rabbitmq.persistence.size: .\n.spec.rabbitmq.replicaCount: .\n.spec.rabbitmq.persistence.replicaCount: .\n.spec.route.hosts: .\n.spec.license: \n  0.0: .spec.xldLicense\n  23.3: .\n.spec.licenseAcceptEula: \n  0.0:\n  23.3: .\n.spec.centralConfiguration.persistence.size: \n  0.0: .spec.centralConfiguration.persistence.pvcSize\n  23.3: .\n.spec.centralConfiguration.migrateFromEmbedded: .\n# preserve current DB version\n.spec.postgresql.image.tag: ."
     - name: PreserveCrValuesRelease
       type: Editor
       prompt: "Edit list of custom resource keys that will migrate to the new Release CR:"
@@ -914,70 +828,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       description: For all matched expressions in the cluster CR, the values will be migrated to the upgraded Release CR
-      default: |-
-        .metadata.name: .
-        .spec.auth.adminPassword: 
-          0.0: .spec.AdminPassword
-          23.3: .
-        .spec.replicaCount: .
-        .spec.external.db: 
-          0.0: .spec.UseExistingDB
-          23.3: .
-        .spec.external.mq: 
-          0.0: .spec.UseExistingMQ
-          23.3: .
-        .spec.ingress.enabled: 
-          0.0: .spec.ingress.Enabled
-          23.3: .
-        .spec.keystore.passphrase: 
-          0.0: .spec.KeystorePassphrase
-          23.3: .
-        .spec.persistence.size: 
-          0.0: .spec.Persistence.Size
-          23.3: .
-        .spec.global.storageClass: 
-          0.0: .spec.Persistence.StorageClass
-          23.3: .
-        .spec.persistence.accessModes.[0]: 
-          0.0: .spec.Persistence.AccessMode
-          23.3: 
-        .spec.persistence.accessModes:
-          0.0: 
-          23.3: .
-        .spec.keystore.keystore: 
-          0.0: .spec.RepositoryKeystore
-          23.3: .
-        .spec.postgresql.primary.persistence.size: 
-          0.0: .spec.postgresql.persistence.size
-          23.3: .
-        .spec.postgresql.global.storageClass: 
-          0.0: .spec.postgresql.persistence.storageClass
-          23.3: .
-        .spec.postgresql.primary.extendedConfiguration: 
-          0.0:
-            existance: .spec.postgresql.postgresqlMaxConnections
-            expression: .spec.postgresql.postgresqlMaxConnections as $maxConnection | "max_connections = " + $maxConnection
-          23.3: .
-        .spec.haproxy-ingress.install: .
-        .spec.nginx-ingress-controller.install: .
-        .spec.postgresql.install: .
-        .spec.rabbitmq.install: .
-        .spec.oidc: .
-        .spec.rabbitmq.persistence.storageClass: .
-        .spec.rabbitmq.persistence.size: .
-        .spec.rabbitmq.replicaCount: .
-        .spec.rabbitmq.persistence.replicaCount: .
-        .spec.route.hosts: .
-        .spec.license: 
-          0.0: .spec.xlrLicense
-          23.3: .
-        .spec.licenseAcceptEula: 
-          0.0:
-          23.3: .
-        .spec.http2.enabled: .
-        .spec.ssl: .
-        # preserve current DB version (in other case first do the upgrade)
-        .spec.postgresql.image.tag: .
+      default: ".metadata.name: .\n.spec.auth.adminPassword: \n  0.0: .spec.AdminPassword\n  23.3: .\n.spec.replicaCount: .\n.spec.external.db: \n  0.0: .spec.UseExistingDB\n  23.3: .\n.spec.external.mq: \n  0.0: .spec.UseExistingMQ\n  23.3: .\n.spec.ingress.enabled: \n  0.0: .spec.ingress.Enabled\n  23.3: .\n.spec.keystore.passphrase: \n  0.0: .spec.KeystorePassphrase\n  23.3: .\n.spec.persistence.size: \n  0.0: .spec.Persistence.Size\n  23.3: .\n.spec.global.storageClass: \n  0.0: .spec.Persistence.StorageClass\n  23.3: .\n.spec.persistence.accessModes.[0]: \n  0.0: .spec.Persistence.AccessMode\n  23.3: \n.spec.persistence.accessModes:\n  0.0: \n  23.3: .\n.spec.keystore.keystore: \n  0.0: .spec.RepositoryKeystore\n  23.3: .\n.spec.postgresql.primary.persistence.size: \n  0.0: .spec.postgresql.persistence.size\n  23.3: .\n.spec.postgresql.global.storageClass: \n  0.0: .spec.postgresql.persistence.storageClass\n  23.3: .\n.spec.postgresql.primary.extendedConfiguration: \n  0.0:\n    existance: .spec.postgresql.postgresqlMaxConnections\n    expression: .spec.postgresql.postgresqlMaxConnections as $maxConnection | \"max_connections = \" + $maxConnection\n  23.3: .\n.spec.haproxy-ingress.install: .\n.spec.nginx-ingress-controller.install: .\n.spec.postgresql.install: .\n.spec.rabbitmq.install: .\n.spec.oidc: .\n.spec.rabbitmq.persistence.storageClass: .\n.spec.rabbitmq.persistence.size: .\n.spec.rabbitmq.replicaCount: .\n.spec.rabbitmq.persistence.replicaCount: .\n.spec.route.hosts: .\n.spec.license: \n  0.0: .spec.xlrLicense\n  23.3: .\n.spec.licenseAcceptEula: \n  0.0:\n  23.3: .\n.spec.http2.enabled: .\n.spec.ssl: .\n# preserve current DB version (in other case first do the upgrade)\n.spec.postgresql.image.tag: ."
     - name: PreservePvc
       type: Confirm
       saveInXlvals: true
@@ -1091,7 +942,7 @@ spec:
       prompt: "Provide truststore password:"
       promptIf: !expr IsRemoteRunnerTruststoreEnabled && ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
       description: The remote runner truststore password
-      default: ""            
+      default: ""
   files:
     # Generic
     - path: digitalai/generated_answers.yaml.tmpl
