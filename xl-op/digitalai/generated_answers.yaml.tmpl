@@ -8,12 +8,13 @@ CustomImageRegistryName: {{ .CustomImageRegistryName }}
 CustomPrivateImageRegistrySecret: {{ .CustomPrivateImageRegistrySecret }}
 RepositoryName: {{ .RepositoryName }}
 ImageTag: {{ .ImageTag }}
+OperatorImageTagGeneric: {{ .OperatorImageTagGeneric }}
+OperatorImageTagOpenshift: {{ .OperatorImageTagOpenshift }}
 {{- if eq .ServerType "dai-deploy" }}
 ImageNameDeploy: {{ .ImageNameDeploy }}
 ImageNameDeployTaskEngine: {{ .ImageNameDeployTaskEngine }}
 ImageNameCc: {{ .ImageNameCc }}
-OperatorImageDeployGeneric: {{ .OperatorImageDeployGeneric }}
-OperatorImageDeployOpenshift: {{ .OperatorImageDeployOpenshift }}
+OperatorImageDeploy: {{ .OperatorImageDeploy }}
 XldMasterCount: {{ .XldMasterCount }}
 XldWorkerCount: {{ .XldWorkerCount }}
   {{- if eq .ProcessType "upgrade" }}
@@ -27,8 +28,7 @@ RabbitmqExternalConfigDeploy: |-
 {{- end }}
 {{- if eq .ServerType "dai-release" }}
 ImageNameRelease: {{ .ImageNameRelease }}
-OperatorImageReleaseGeneric: {{ .OperatorImageReleaseGeneric }}
-OperatorImageReleaseOpenshift: {{ .OperatorImageReleaseOpenshift }}
+OperatorImageRelease: {{ .OperatorImageRelease }}
 XlrReplicaCount: {{ .XlrReplicaCount }}
   {{- if eq .ProcessType "upgrade" }}
 PreserveCrValuesRelease: |-
