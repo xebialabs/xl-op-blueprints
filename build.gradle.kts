@@ -91,7 +91,7 @@ tasks {
 
     register<GetHelmChartTask>("getRemoteRunnerHelmChart") {
         group = "blueprint"
-        helmChartName = "xlr-remote-runner-helm-chart"
+        helmChartName = "release-remote-runner-helm-chart"
     }
 
     register<Zip>("blueprintsArchives") {

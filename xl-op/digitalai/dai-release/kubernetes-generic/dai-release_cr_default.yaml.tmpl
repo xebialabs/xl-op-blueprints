@@ -150,6 +150,7 @@ spec:
       haproxy.router.openshift.io/cookie_name: JSESSIONID
       haproxy.router.openshift.io/disable_cookies: "false"
       haproxy.router.openshift.io/rewrite-target: /
+      haproxy.router.openshift.io/timeout: 120s
     hosts:
       - "{{ .IngressHost }}"
     {{- else }}
