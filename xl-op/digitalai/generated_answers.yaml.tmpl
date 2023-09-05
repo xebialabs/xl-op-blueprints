@@ -8,6 +8,8 @@ CustomImageRegistryName: {{ .CustomImageRegistryName }}
 CustomPrivateImageRegistrySecret: {{ .CustomPrivateImageRegistrySecret }}
 RepositoryName: {{ .RepositoryName }}
 ImageTag: {{ .ImageTag }}
+OperatorImageTagGeneric: {{ .OperatorImageTagGeneric }}
+OperatorImageTagOpenshift: {{ .OperatorImageTagOpenshift }}
 {{- if eq .ServerType "dai-deploy" }}
 ImageNameDeploy: {{ .ImageNameDeploy }}
 ImageNameDeployTaskEngine: {{ .ImageNameDeployTaskEngine }}
