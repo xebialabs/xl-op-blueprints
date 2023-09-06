@@ -122,25 +122,25 @@ spec:
       {{- else }}
       kubernetes.io/ingress.class: haproxy-dai-xld
       {{- end }}
-      ingress.kubernetes.io/ssl-redirect: "{{ .EnableIngressTls }}"
       ingress.kubernetes.io/rewrite-target: /
       ingress.kubernetes.io/affinity: cookie
       ingress.kubernetes.io/session-cookie-name: JSESSIONID
       ingress.kubernetes.io/session-cookie-strategy: prefix
       ingress.kubernetes.io/config-backend: |
         option httpchk GET /ha/health HTTP/1.0
+      ingress.kubernetes.io/ssl-redirect: "{{ .EnableIngressTls }}"
     {{- end }}
     {{- if eq .IngressType "external" }}
     enabled: true
     annotations:
       kubernetes.io/ingress.class: {{ .ExternalIngressClass }}
-      ingress.kubernetes.io/ssl-redirect: "{{ .EnableIngressTls }}"
       ingress.kubernetes.io/rewrite-target: /
       ingress.kubernetes.io/affinity: cookie
       ingress.kubernetes.io/session-cookie-name: SESSION_XLD
       ingress.kubernetes.io/session-cookie-strategy: prefix
       ingress.kubernetes.io/config-backend: |
         option httpchk GET /ha/health HTTP/1.0
+      ingress.kubernetes.io/ssl-redirect: "{{ .EnableIngressTls }}"
     {{- end }}
     {{- if eq .IngressType "none" }}
     enabled: false
