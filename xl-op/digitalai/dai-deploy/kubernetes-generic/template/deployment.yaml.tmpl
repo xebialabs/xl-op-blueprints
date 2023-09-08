@@ -40,10 +40,10 @@ spec:
         - "--leader-elect"
         - "--leader-election-id=xld-operator-controller-manager"
         {{- if eq .IsCustomImageRegistry true }}
-        image: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/{{ .OperatorImageDeploy }}:{{ .OperatorImageTagGeneric }}
+        image: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/{{ .OperatorImageDeploy }}:{{ .OperatorImageTag }}
         {{- else }}
-        image: {{ .RepositoryName }}/{{ .OperatorImageDeploy }}:{{ .OperatorImageTagGeneric }}
-        {{- end }}        
+        image: {{ .RepositoryName }}/{{ .OperatorImageDeploy }}:{{ .OperatorImageTag }}
+        {{- end }}
         imagePullPolicy: Always
         env:
         - name: WATCH_NAMESPACE
