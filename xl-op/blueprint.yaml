@@ -92,7 +92,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-beta.6
+      default: 23.3.0-911.454
       description: Enter the image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
