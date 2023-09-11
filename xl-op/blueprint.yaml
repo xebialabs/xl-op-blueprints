@@ -119,7 +119,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the remote runner image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
-      default: xlr-remote-runner
+      default: release-remote-runner
       description: Enter the image name to use
     - name: ImageTagRemoteRunner
       type: Input
@@ -128,7 +128,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 0.1.33
+      default: v23.3.0-409.1453-tls
       description: Enter the image tag to use
     - name: XldMasterCount
       type: Input
@@ -542,7 +542,7 @@ spec:
       overrideDefault: true
       prompt: !expr "IsCustomImageRegistry ? 'Enter the operator image to use (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):'"
       promptIf: !expr ServerType == 'dai-deploy' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:23.3.0-beta.6
+      default: xebialabsunsupported/deploy-operator:23.3.0-911.823
       description: Enter the operator image to use
     - name: OperatorImageRelease
       type: Input
@@ -551,7 +551,7 @@ spec:
       overrideDefault: true
       prompt: !expr "IsCustomImageRegistry ? 'Enter the operator image to use (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):'"
       promptIf: !expr ServerType == 'dai-release' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/release-operator:23.3.0-beta.6
+      default: xebialabsunsupported/release-operator:23.3.0-911.823
       description: Enter the operator image to use
     - name: LicenseSource
       type: Select
@@ -710,12 +710,16 @@ spec:
       promptIf: !expr "ServerType == 'dai-deploy' && ProcessType == 'install' && EnablePostgresql == false"
       description: Setup the PostgreSQL external parameters (JDBC URL, username, password)
       default: |-
-        XL_DB_URL: jdbc:postgresql://<xld-db-host>:5432/<xlr-database-name>
-        XL_DB_USERNAME: <xld-username>
-        XL_DB_PASSWORD: <xld-password>
-        XL_REPORT_DB_URL: jdbc:postgresql://<xld-report-db-host>:5432/<xld-report-database-name>
-        XL_REPORT_DB_USER: <xld-report-username>
-        XL_REPORT_DB_PASS: <xld-report-username>
+        main:
+          url: jdbc:postgresql://<xld-db-host>:5432/<xld-database-name>
+          username: <xld-username>
+          password: <xld-password>
+          maxPoolSize: 10
+        report:
+          url: jdbc:postgresql://<xld-report-db-host>:5432/<xld-report-database-name>
+          username: <xld-report-username>
+          password: <xld-report-password>
+          maxPoolSize: 10
     - name: EnableRabbitmq
       type: Confirm
       default: !expr ServerType != 'dai-release-runner'
@@ -778,10 +782,11 @@ spec:
       promptIf: !expr "ServerType == 'dai-deploy' && ProcessType == 'install' && EnableRabbitmq == false"
       description: Setup the RabbitMQ external parameters
       default: |-
-        XLD_TASK_QUEUE_DRIVER_CLASS_NAME: <driver-class-name>
-        XLD_TASK_QUEUE_PASSWORD: <password>
-        XLD_TASK_QUEUE_URL: <queue-url>
-        XLD_TASK_QUEUE_USERNAME: <username>
+        url: <queue-url>
+        queueName: <queue-name>
+        username: <username>
+        password: <password>
+        driverClassName: <driver-class-name>
     - name: CrdName
       type: Select
       options:
@@ -832,7 +837,7 @@ spec:
     - name: PreservePvc
       type: Confirm
       saveInXlvals: true
-      promptIf: !expr "ProcessType == 'clean' || CleanBefore"
+      promptIf: !expr "(ProcessType == 'clean' || CleanBefore) && ServerType != 'dai-release-runner'"
       prompt: "Should we preserve persisted volume claims? If not all volume data will be lost:"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -887,6 +892,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       description: The Release Token.
+      validate: !expr "regex('^(rpa_[a-zA-Z0-9]{40})$', RemoteRunnerToken)"
     - name: RemoteRunnerCount
       type: Input
       saveInXlvals: true
@@ -897,25 +903,6 @@ spec:
       default: 1
       description: Enter the remote runner replica count, it will spin given number of replicas
       validate: !expr "regex('^([1-9])+$', RemoteRunnerCount)"
-    - name: RemoteRunnerStorageClass
-      type: Select
-      options:
-        - !expr k8sResources(Namespace, 'storageclasses')
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      prompt: "Provide storage class for the remote runner:"
-      promptIf: !expr ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
-    - name: RemoteRunnerBaseHostPath
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      allowEmpty: true
-      overrideDefault: true
-      prompt: "Provide storage class base host path (Press enter to skip the usage of base host path):"
-      promptIf: !expr ServerType == 'dai-release-runner' && K8sSetup == 'PlainK8s' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      description: The host path for the k3d cluster. It is not required if you are installing remote runner in the cloud (Docker Desktop, AWS, Azure or GCP).
-      default: ""
     - name: IsRemoteRunnerTruststoreEnabled
       type: Confirm
       default: false
@@ -924,14 +911,14 @@ spec:
       prompt: "Enable truststore for remote runner:"
       description: "Type yes to setup truststore for remote runner"
     - name: RemoteRunnerTruststore
-      type: Input
+      type: Editor
       saveInXlvals: true
       ignoreIfSkipped: true
       allowEmpty: true
       overrideDefault: true
-      prompt: "Provide base64 encoded truststore:"
+      prompt: "Provide base64 encoded PKCS12 truststore:"
       promptIf: !expr IsRemoteRunnerTruststoreEnabled && ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      description: The remote runner truststore
+      description: The remote runner truststore with the trusted certificates. Accepted is PKCS12 format.
       default: ""
     - name: RemoteRunnerTruststorePassword
       type: Input

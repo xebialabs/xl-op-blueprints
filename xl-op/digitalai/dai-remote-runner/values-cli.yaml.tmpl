@@ -1,24 +1,14 @@
-global:
-  persistence:
-    storageClass: {{ .RemoteRunnerStorageClass }}
-    {{- if and (eq .K8sSetup "PlainK8s") (.RemoteRunnerBaseHostPath) }}
-    baseHostPath: "{{ .RemoteRunnerBaseHostPath }}"
-    {{- end }}
+replicaCount: {{ .RemoteRunnerCount }}
+
+{{- if eq .IsRemoteRunnerTruststoreEnabled true }}
+runner:
+  truststore: {{ .RemoteRunnerTruststore }}
+  truststorePassword: {{ .RemoteRunnerTruststorePassword }}
+{{- end }}
 
 release:
   url: {{ .RemoteRunnerReleaseUrl }}
   registrationToken: "{{ .RemoteRunnerToken }}"
-
-replicaCount: {{ .RemoteRunnerCount }}
-
-{{- if and (eq .K8sSetup "PlainK8s") (.RemoteRunnerBaseHostPath) }}
-persistence:
-  work:
-    volume:
-      create: true
-      accessModes:
-        - ReadWriteOnce
-{{- end }}
 
 image:
   {{- if eq .IsCustomImageRegistry true }}
@@ -31,9 +21,3 @@ image:
   pullSecrets:
     - {{ .CustomPrivateImageRegistrySecret }}
   {{- end }}
-
-{{- if eq .IsRemoteRunnerTruststoreEnabled true }}
-runner:
-  truststore: {{ .RemoteRunnerTruststore }}
-  truststorePassword: {{ .RemoteRunnerTruststorePassword }}
-{{- end }}

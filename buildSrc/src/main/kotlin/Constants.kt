@@ -4,7 +4,7 @@ import java.nio.file.Path
 
 class Constants {
     companion object {
-        const val githubRepository = "xebialabs"
+        const val githubRepository = "digital-ai"
         const val buildChartsDestFolder = "buildCharts"
         const val targetChartsDestFolder = "charts"
 
