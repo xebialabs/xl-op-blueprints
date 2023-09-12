@@ -31,11 +31,13 @@ spec:
   {{- if eq .LicenseSource "generate" }}
   licenseAcceptEula: true
   {{- else }}
-  license: "{{ trim .License }}"
+  license: |-
+{{ .License | trim | indent 4 }}
   {{- end }}
   keystore:
     passphrase: "{{ .KeystorePassphrase }}"
-    keystore: "{{ trim .RepositoryKeystore }}"
+    keystore: |- 
+{{ .RepositoryKeystore | trim | indent 6 }}
   replicaCount: {{ .XlrReplicaCount }}
   external:
     db:
@@ -68,7 +70,8 @@ spec:
           name: {{ .ReleaseKeystoreSecretName }}
           key: ssl-keystore.p12
     {{- else }}
-    keystore: {{ .ReleaseKeystore }}
+    keystore: |-
+{{ .ReleaseKeystore | indent 6 }}
     {{- end }}
   persistence:
     accessModes:
@@ -276,4 +279,3 @@ spec:
       enabled: true
       fsGroup: 1001
       runAsUser: 1001
-  

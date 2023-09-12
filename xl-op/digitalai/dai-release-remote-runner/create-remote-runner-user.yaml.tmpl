@@ -1,0 +1,25 @@
+apiVersion: xl-release/v1
+kind: Users
+spec:
+- username: "remote-runner"
+  password: "{{ .RemoteRunnerUserPassword }}"
+  name: "Remote Runner"
+  email: "{{ .RemoteRunnerUserEmail }}"
+  enabled: true
+
+---
+apiVersion: xl-release/v1
+kind: Roles
+spec:
+- name: Remote Runner
+  principals:
+  - "remote-runner"
+
+---
+apiVersion: xl-release/v1
+kind: Permissions
+spec:
+  - global:
+      - role: Remote Runner
+        permissions:
+          - runner#registration
