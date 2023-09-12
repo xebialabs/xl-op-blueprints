@@ -39,7 +39,11 @@ spec:
         - "--metrics-bind-address=127.0.0.1:8080"
         - "--leader-elect"
         - "--leader-election-id=xld-operator-controller-manager"
-        image: {{ .OperatorImageDeploy }}
+        {{- if eq .IsCustomImageRegistry true }}
+        image: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/{{ .OperatorImageDeploy }}:{{ .OperatorImageTag }}
+        {{- else }}
+        image: {{ .RepositoryName }}/{{ .OperatorImageDeploy }}:{{ .OperatorImageTag }}
+        {{- end }}
         imagePullPolicy: Always
         env:
         - name: WATCH_NAMESPACE
