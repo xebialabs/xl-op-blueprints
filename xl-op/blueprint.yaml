@@ -67,7 +67,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
-      default: xldevdocker
+      default: xebialabsunsupported
       description: Enter the repository name to use
     - name: RemoteRunnerRepositoryName
       type: Input
@@ -103,7 +103,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-SNAPSHOT
+      default: 23.3.0-912.113
       description: Enter the image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -139,7 +139,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: v23.3.0-409.1453-tls
+      default: 23.3.0-beta.6
       description: Enter the image tag to use
     - name: XldMasterCount
       type: Input
@@ -553,7 +553,7 @@ spec:
       overrideDefault: true
       prompt: !expr "IsCustomImageRegistry ? 'Enter the operator image to use (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):'"
       promptIf: !expr ServerType == 'dai-deploy' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/deploy-operator:23.3.0-909.1631
+      default: xebialabsunsupported/deploy-operator:23.3.0-912.113
       description: Enter the operator image to use
     - name: OperatorImageRelease
       type: Input
@@ -562,7 +562,7 @@ spec:
       overrideDefault: true
       prompt: !expr "IsCustomImageRegistry ? 'Enter the operator image to use (eg: <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the operator image to use (eg: <repositoryName>/<imageName>:<tagName>):'"
       promptIf: !expr ServerType == 'dai-release' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: xebialabsunsupported/release-operator:23.3.0-909.1631
+      default: xebialabsunsupported/release-operator:23.3.0-912.113
       description: Enter the operator image to use
     - name: LicenseSource
       type: Select
