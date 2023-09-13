@@ -67,7 +67,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
-      default: xebialabsearlyaccess
+      default: xebialabsunsupported
       description: Enter the repository name to use
     - name: RemoteRunnerRepositoryName
       type: Input
