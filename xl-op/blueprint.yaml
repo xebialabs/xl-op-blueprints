@@ -66,18 +66,18 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
-      prompt: "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the repository name for the application and operator images (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
       default: xebialabsunsupported
-      description: Enter the repository name to use
+      description: Enter the repository name to use for the application and operator images
     - name: RemoteRunnerRepositoryName
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')"
-      prompt: "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
-      default: xebialabs
-      description: Enter the repository name to use
+      prompt: "Enter the Remote Runner repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
+      default: xebialabsunsupported
+      description: Enter the Remote Runner repository name to use
     - name: ImageNameDeploy
       type: Input
       saveInXlvals: true
@@ -93,18 +93,18 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr ServerType == 'dai-release' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Enter the image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the application image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       default: xl-release
-      description: Enter the image name to use
+      description: Enter the application image name to use
     - name: ImageTag
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
-      prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the Remote Runner image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
       default: 23.3.0-beta.6
-      description: Enter the image tag to use
+      description: Enter the Remote Runner image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
       saveInXlvals: true
@@ -129,7 +129,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')"
-      prompt: "Enter the remote runner image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the Remote Runner image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       default: release-remote-runner
       description: Enter the image name to use
     - name: ImageTagRemoteRunner
@@ -138,9 +138,9 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')"
-      prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the application image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
       default: 23.3.0-beta.6
-      description: Enter the image tag to use
+      description: Enter the application image tag to use
     - name: XldMasterCount
       type: Input
       saveInXlvals: true
@@ -1048,7 +1048,7 @@ spec:
       type: Confirm
       saveInXlvals: true
       promptIf: !expr false
-      prompt: "Do remote runner generation:"
+      prompt: "Do Remote Runner generation:"
       ignoreIfSkipped: !expr false
       overrideDefault: !expr true
       default: false
@@ -1057,11 +1057,11 @@ spec:
       type: Input
       saveInXlvals: true
       promptIf: !expr RemoteRunnerInstall && (ServerType == 'dai-release-remote-runner' || RemoteRunnerGeneration) && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Enter the Release URL that will be used by remote runner:"
+      prompt: "Enter the Release URL that will be used by Remote Runner:"
       ignoreIfSkipped: true
       overrideDefault: true
       default: !expr "'http://dai-xlr-digitalai-release.' + Namespace"
-      description: The Release URL that will be used by Release Remote Runner, it needs to be accessable from the remote runner pod.
+      description: The Release URL that will be used by Release Remote Runner, it needs to be accessible from the Remote Runner pod.
       validate: !expr "regex('^https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$', RemoteRunnerReleaseUrl)"
     - name: RemoteRunnerUserEmail
       type: Input
@@ -1103,7 +1103,7 @@ spec:
       type: Input
       saveInXlvals: true
       promptIf: !expr RemoteRunnerInstall && (ServerType == 'dai-release-remote-runner' || RemoteRunnerGeneration) && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Enter the Release Token that will be used by remote runner:"
+      prompt: "Enter the Release Token that will be used by Remote Runner:"
       ignoreIfSkipped: true
       overrideDefault: true
       description: !expr "'To get the Release Token you need to login on the Release and generate Personal access token. Check the Release URL: ' + RemoteRunnerReleaseUrl + '/#/personal-access-token'"
@@ -1114,17 +1114,17 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Enter the remote runner replica count:"
+      prompt: "Enter the Remote Runner replica count:"
       default: 1
-      description: Enter the remote runner replica count, it will spin given number of replicas
+      description: Enter the Remote Runner replica count, it will spin given number of replicas
       validate: !expr "regex('^([1-9])+$', RemoteRunnerCount)"
     - name: IsRemoteRunnerTruststoreEnabled
       type: Confirm
       default: false
       saveInXlvals: true
       promptIf: !expr RemoteRunnerInstall && ServerType == 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Enable truststore for remote runner:"
-      description: "Type yes to setup truststore for remote runner"
+      prompt: "Enable truststore for Remote Runner:"
+      description: "Type yes to setup truststore for Remote Runner"
     - name: RemoteRunnerTruststore
       type: Editor
       saveInXlvals: true
@@ -1133,7 +1133,7 @@ spec:
       overrideDefault: true
       prompt: "Provide base64 encoded PKCS12 truststore:"
       promptIf: !expr IsRemoteRunnerTruststoreEnabled && RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')
-      description: The remote runner truststore with the trusted certificates. Accepted is PKCS12 format.
+      description: The Remote Runner truststore with the trusted certificates. Accepted is PKCS12 format.
       default: ""
     - name: RemoteRunnerTruststorePassword
       type: Input
@@ -1143,7 +1143,7 @@ spec:
       overrideDefault: true
       prompt: "Provide truststore password:"
       promptIf: !expr IsRemoteRunnerTruststoreEnabled && RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')
-      description: The remote runner truststore password
+      description: The Remote Runner truststore password
       default: ""
   files:
     # Generic
