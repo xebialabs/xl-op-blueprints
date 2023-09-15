@@ -56,7 +56,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
-      default: xebialabsearlyaccess
+      default: xebialabsunsupported
       description: Enter the repository name to use
     - name: RemoteRunnerRepositoryName
       type: Input
@@ -92,7 +92,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-beta.6
+      default: 23.3.0-915.113
       description: Enter the image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -542,7 +542,7 @@ spec:
       overrideDefault: true
       prompt: !expr "Enter the operator image to use (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-deploy' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: deploy-operator
+      default: xebialabsunsupported/deploy-operator:23.3.0-915.113
       description: Enter the operator image to use
     - name: OperatorImageRelease
       type: Input
@@ -560,7 +560,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the operator image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-beta.6
+      default: 23.3.0-915.113
       description: Enter the operator image tag to use
     - name: LicenseSource
       type: Select
