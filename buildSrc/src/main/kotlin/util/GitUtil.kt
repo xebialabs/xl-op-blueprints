@@ -19,11 +19,14 @@ class GitUtil {
                 logOutput = true, throwErrorOnFailure = true)
         }
 
-        fun toGithubUrl(repositoryName: String, protocol: String = "git"): String {
+        fun toGithubUrl(repositoryName: String, protocol: String = "git", gitPAT: String): String {
             val repo = Constants.githubRepository
             if (protocol == "git") {
                 return "git@github.com:$repo/$repositoryName.git"
-            } else {
+            } else if (protocol == "https" || gitPAT.isNotEmpty) {
+                return "https://${gitPAT}@github.com/$repo/$repositoryName.git"
+            }
+            else {
                 return "https://github.com/$repo/$repositoryName.git"
             }
         }
