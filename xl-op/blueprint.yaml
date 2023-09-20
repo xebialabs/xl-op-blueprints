@@ -533,7 +533,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the operator image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-917.1722
+      default: 23.3.0-920.1720
       description: Enter the operator image tag to use, for example 23.3.5
     - name: LicenseSource
       type: Select
