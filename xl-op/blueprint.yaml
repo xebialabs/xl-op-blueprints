@@ -515,7 +515,7 @@ spec:
       overrideDefault: true
       prompt: !expr "Enter the operator image to use (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-deploy' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: deploy-operator
+      default: xebialabsunsupported/deploy-operator:23.3.0-915.113
       description: Enter the operator image to use
     - name: OperatorImageRelease
       type: Input
@@ -524,7 +524,7 @@ spec:
       overrideDefault: true
       prompt: !expr "Enter the operator image to use (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-release' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      default: release-operator
+      default: xebialabsunsupported/release-operator
       description: Enter the operator image to use
     - name: OperatorImageTag
       type: Input
