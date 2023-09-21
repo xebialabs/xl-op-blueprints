@@ -64,7 +64,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr ServerType == 'dai-deploy' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Enter the deploy server image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the Deploy server image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       default: xl-deploy
       description: Enter the deploy server image name to use
     - name: ImageNameRelease
@@ -73,7 +73,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr ServerType == 'dai-release' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Enter the application image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the Release image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       default: xl-release
       description: Enter the application image name to use
     - name: ImageTag
@@ -84,7 +84,7 @@ spec:
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the application image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
       default: 23.3.0-beta.6
-      description: Enter the application image tag to use, for example 23.3.5
+      description: Enter the application image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
       saveInXlvals: true
@@ -93,7 +93,7 @@ spec:
       promptIf: !expr "ServerType == 'dai-deploy' && !regex('^10.*$', ImageTag) && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the deploy task engine image name for version 22 and above (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       default: deploy-task-engine
-      description: Enter the deploy task engine image name to use
+      description: Enter the Deploy task engine image name to use
     - name: ImageNameCc
       type: Input
       saveInXlvals: true
@@ -102,7 +102,7 @@ spec:
       promptIf: !expr "ServerType == 'dai-deploy' && !regex('^10.*$', ImageTag) && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the central configuration image name for version 22 and above (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       default: central-configuration
-      description: Enter the central configuration image name to use
+      description: Enter the Central Configuration image name to use
     - name: XldMasterCount
       type: Input
       saveInXlvals: true
@@ -111,7 +111,7 @@ spec:
       promptIf: !expr "ServerType == 'dai-deploy' && ProcessType == 'install'"
       prompt: "Enter the deploy master server replica count:"
       default: 3
-      description: Enter the deploy master server replica count
+      description: Enter the Deploy master server replica count
       validate: !expr "regex('^([1-9])+$', XldMasterCount)"
     - name: PvcSizeDeploy
       type: Input
@@ -534,7 +534,7 @@ spec:
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the operator image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
       default: 23.3.0-920.1720
-      description: Enter the operator image tag to use, for example 23.3.5
+      description: Enter the operator image tag to use
     - name: LicenseSource
       type: Select
       options:
@@ -1009,7 +1009,7 @@ spec:
       promptIf: !expr "RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the Remote Runner image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       default: release-remote-runner
-      description: Enter the image name to use
+      description: Enter the Remote Runner image name to use
     - name: ImageTagRemoteRunner
       type: Input
       saveInXlvals: true
@@ -1018,7 +1018,7 @@ spec:
       promptIf: !expr "RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the Release Remote Runner image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
       default: 23.3.0-beta.6
-      description: Enter the Release Remote Runner image tag to use, for example 23.3.5
+      description: Enter the Release Remote Runner image tag to use
     - name: RemoteRunnerReleaseName
       type: Input
       saveInXlvals: true
