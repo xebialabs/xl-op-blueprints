@@ -31,11 +31,13 @@ spec:
   {{- if eq .LicenseSource "generate" }}
   licenseAcceptEula: true
   {{- else }}
-  license: "{{ trim .License }}"
+  license: |-
+{{ .License | trim | indent 4 }}
   {{- end }}
   keystore:
     passphrase: "{{ .KeystorePassphrase }}"
-    keystore: "{{ trim .RepositoryKeystore }}"
+    keystore: |- 
+{{ .RepositoryKeystore | trim | indent 6 }}"
   external:
     db:
       {{- if eq .EnablePostgresql false }}

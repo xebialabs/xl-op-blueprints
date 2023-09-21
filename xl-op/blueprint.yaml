@@ -54,26 +54,17 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
-      prompt: "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
+      promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
+      prompt: "Enter the repository name for the application and operator images (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
       default: xebialabsunsupported
-      description: Enter the repository name to use
-    - name: RemoteRunnerRepositoryName
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      promptIf: !expr "ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
-      prompt: "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
-      default: xebialabs
-      description: Enter the repository name to use
+      description: Enter the repository name to use for the application and operator images
     - name: ImageNameDeploy
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr ServerType == 'dai-deploy' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Enter the deploy server image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the Deploy server image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       default: xl-deploy
       description: Enter the deploy server image name to use
     - name: ImageNameRelease
@@ -82,18 +73,18 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr ServerType == 'dai-release' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Enter the image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the Release image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       default: xl-release
-      description: Enter the image name to use
+      description: Enter the application image name to use
     - name: ImageTag
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
-      prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-915.113
-      description: Enter the image tag to use
+      promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
+      prompt: "Enter the application image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
+      default: 23.3.0-beta.6
+      description: Enter the application image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
       saveInXlvals: true
@@ -102,7 +93,7 @@ spec:
       promptIf: !expr "ServerType == 'dai-deploy' && !regex('^10.*$', ImageTag) && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the deploy task engine image name for version 22 and above (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       default: deploy-task-engine
-      description: Enter the deploy task engine image name to use
+      description: Enter the Deploy task engine image name to use
     - name: ImageNameCc
       type: Input
       saveInXlvals: true
@@ -111,25 +102,7 @@ spec:
       promptIf: !expr "ServerType == 'dai-deploy' && !regex('^10.*$', ImageTag) && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the central configuration image name for version 22 and above (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       default: central-configuration
-      description: Enter the central configuration image name to use
-    - name: ImageNameRemoteRunner
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      promptIf: !expr "ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
-      prompt: "Enter the remote runner image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
-      default: release-remote-runner
-      description: Enter the image name to use
-    - name: ImageTagRemoteRunner
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      promptIf: !expr "ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
-      prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-beta.6
-      description: Enter the image tag to use
+      description: Enter the Central Configuration image name to use
     - name: XldMasterCount
       type: Input
       saveInXlvals: true
@@ -138,7 +111,7 @@ spec:
       promptIf: !expr "ServerType == 'dai-deploy' && ProcessType == 'install'"
       prompt: "Enter the deploy master server replica count:"
       default: 3
-      description: Enter the deploy master server replica count
+      description: Enter the Deploy master server replica count
       validate: !expr "regex('^([1-9])+$', XldMasterCount)"
     - name: PvcSizeDeploy
       type: Input
@@ -152,7 +125,7 @@ spec:
       validate: !expr "regex('^([0-9])+(\\.)?([0-9])*$', PvcSizeDeploy)"
     - name: AccessModeDeploy
       type: Select
-      prompt: "Select between supported Access Modes:"
+      prompt: "Select between supported Access Modes for the Deploy pods:"
       options:
         - label: ReadWriteOnce
           value: ReadWriteOnce
@@ -162,7 +135,7 @@ spec:
       ignoreIfSkipped: true
       saveInXlvals: true
       default: ReadWriteOnce
-      description: Select between supported Access Modes to define if the volume can be mounted as read-write by a single node (ReadWriteOnce) or by many nodes (ReadWriteMany).
+      description: Select between supported Access Modes to define if the volume can be mounted as read-write by a single node (ReadWriteOnce) or by many nodes (ReadWriteMany). For all Deploy pods ReadWriteOnce access mode is enough, the pods are not sharing the volumes.
     - name: XldWorkerCount
       type: Input
       saveInXlvals: true
@@ -215,7 +188,7 @@ spec:
       validate: !expr "regex('^([0-9])+(\\.)?([0-9])*$', PvcSizeRelease)"
     - name: AccessModeRelease
       type: Select
-      prompt: "Select between supported Access Modes:"
+      prompt: "Select between supported Access Modes for the Release pods (use ReadWriteMany if you plan to use multiple pods):"
       options:
         - label: ReadWriteMany
           value: ReadWriteMany
@@ -225,7 +198,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       default: ReadWriteMany
-      description: Select between supported Access Modes to define if the volume can be mounted as read-write by a single node (ReadWriteOnce) or by many nodes (ReadWriteMany).
+      description: Select between supported Access Modes to define if the volume can be mounted as read-write by a single node (ReadWriteOnce) or by many nodes (ReadWriteMany). For the Release pods if you plan to use multiple pods on different nodes use ReadWriteMany, the pods are sharing volumes.
     - name: Http2EnabledRelease
       type: Confirm
       prompt: "Do you want to enable http2 for release:"
@@ -319,7 +292,7 @@ spec:
           value: external
         - label: None - Ingress will not be set up during installation
           value: none
-      promptIf: !expr "K8sSetup != 'Openshift' && ServerType != 'dai-release-runner' && ProcessType == 'install'"
+      promptIf: !expr "K8sSetup != 'Openshift' && ServerType != 'dai-release-remote-runner' && ProcessType == 'install'"
       saveInXlvals: true
       default: nginx
       description: Select between supported ingress types. If None is selected, the application will not be exposed and therefore will not be accessible from the browser.
@@ -338,7 +311,7 @@ spec:
           value: external
         - label: None - Ingress will not be set up during installation
           value: none
-      promptIf: !expr "K8sSetup == 'Openshift' && ServerType != 'dai-release-runner' && ProcessType == 'install'"
+      promptIf: !expr "K8sSetup == 'Openshift' && ServerType != 'dai-release-remote-runner' && ProcessType == 'install'"
       saveInXlvals: true
       default: route
       description: Select between supported ingress types. If None is selected, the application will not be exposed and therefore will not be accessible from the browser.
@@ -366,7 +339,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Do you want to enable an TLS/SSL configuration (if yes, requires existing TLS secret in the namespace):"
-      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && K8sSetup != 'Openshift' && IngressType != "none"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && K8sSetup != 'Openshift' && IngressType != "none"
       description: "Enable TLS/SSL in the Ingress configuration if you already have the TLS secret with the key and certificate created in the working namespace."
       validate: !expr "EnableIngressTls ? length(k8sResources(Namespace, 'secrets')) > '0' : true"
     - name: IngressHost
@@ -375,7 +348,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide DNS name for accessing UI of the server:"
-      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && IngressType != "none"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && IngressType != "none"
       description: "Provide DNS name for accessing UI of the server. For OpenShift, this is used with Routing, while for other providers this is set up only when Ingress is used."
       validate: !expr "regex('^[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}$', IngressHost)"
     - name: IngressTlsSecretName
@@ -394,23 +367,23 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide administrator password:"
-      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install"
       description: Administrator password
       default: !expr "randPassword()"
     - name: OidcConfigTypeInstall
       type: Select
       options:
+        - label: No OIDC Configuration
+          value: no-oidc
         - label: External OIDC Configuration
           value: external
         - label: Identity Service Configuration
           value: identity-service
-        - label: No OIDC Configuration
-          value: no-oidc
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Type of the OIDC configuration:"
-      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install"
       description: Provide the type of the OIDC configuration
       default: no-oidc
     - name: OidcConfigTypeUpgrade
@@ -418,17 +391,17 @@ spec:
       options:
         - label: Existing OIDC Configuration
           value: existing
+        - label: No OIDC Configuration
+          value: no-oidc
         - label: External OIDC Configuration
           value: external
         - label: Identity Service Configuration
           value: identity-service
-        - label: No OIDC Configuration
-          value: no-oidc
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Type of the OIDC configuration:"
-      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "upgrade"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "upgrade"
       description: Provide the type of the OIDC configuration
       default: existing
     - name: OidcConfigType
@@ -558,32 +531,32 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
+      promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the operator image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-915.113
+      default: 23.3.0-920.1720
       description: Enter the operator image tag to use
     - name: LicenseSource
       type: Select
       options:
+        - label: Generate the license (this is only for temporary license that is used for evaluation)
+          value: generate
         - label: Path to the license file (the file can be in clean text or base64 encoded)
           value: file
         - label: Copy/Paste the license to editor (the text can be in clean text or base64 encoded)
           value: editor
-        - label: Generate the license (this is only for temporary license that is used for evaluation)
-          value: generate
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Select source of the license:"
-      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install"
       description: "Provide source of the license file"
-      default: file
+      default: generate
     - name: LicenseEditor
       type: Editor
       saveInXlvals: true
       ignoreIfSkipped: true
       prompt: "Provide license for the server:"
-      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && LicenseSource == "editor"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && LicenseSource == "editor"
       description: "Provide license for the server"
       default: ""
     - name: LicenseFile
@@ -592,7 +565,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide license file for the server:"
-      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && LicenseSource == "file"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && LicenseSource == "file"
       description: "Provide license file for the server"
       validate: !expr "isFile(LicenseFile)"
       default: ""
@@ -615,7 +588,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Select source of the repository keystore:"
-      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install"
       description: "Provide source of the license file"
       default: generate
     - name: RepositoryKeystoreEditor
@@ -649,7 +622,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide keystore passphrase:"
-      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install"
       description: Keystore passphrase for the server
       default: !expr "RepositoryKeystoreSource == 'generate' ? randPassword() : ''"
     - name: StorageClass
@@ -660,16 +633,16 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide storage class for the server:"
-      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install"
       description: Provide storage class for the server
     - name: EnablePostgresql
       type: Confirm
-      default: !expr ServerType != 'dai-release-runner'
+      default: !expr ServerType != 'dai-release-remote-runner'
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Do you want to install a new PostgreSQL on the cluster:"
-      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install"
       description: "Enable PostgreSQL."
     - name: PostgresqlStorageClass
       type: Select
@@ -731,12 +704,12 @@ spec:
           maxPoolSize: 10
     - name: EnableRabbitmq
       type: Confirm
-      default: !expr ServerType != 'dai-release-runner'
+      default: !expr ServerType != 'dai-release-remote-runner'
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Do you want to install a new RabbitMQ on the cluster:"
-      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install"
       description: "Enable RabbitMQ."
     - name: RabbitmqReplicaCount
       type: Input
@@ -801,32 +774,32 @@ spec:
       options:
         - !expr k8sResources(Namespace, 'crd')
       saveInXlvals: true
-      promptIf: !expr "ServerType != 'dai-release-runner' && ((CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, 'crd', '', ShortServerName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrdName == '')"
+      promptIf: !expr "ServerType != 'dai-release-remote-runner' && ((CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, 'crd', '', ShortServerName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrdName == '')"
       prompt: "Enter the name of custom resource definition you want to reuse or replace:"
       ignoreIfSkipped: true
       overrideDefault: true
       description: The name of custom resource definition that you want to reuse or replace (delete).
-      default: !expr "ServerType != 'dai-release-runner' && (CleanBefore || ProcessType == 'clean' || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator')) ? k8sResource(Namespace, 'crd', ShortServerName) : ''"
+      default: !expr "ServerType != 'dai-release-remote-runner' && (CleanBefore || ProcessType == 'clean' || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator')) ? k8sResource(Namespace, 'crd', ShortServerName) : ''"
     - name: IsCrdReused
       type: Confirm
       saveInXlvals: true
-      promptIf: !expr "ServerType != 'dai-release-runner' && (CleanBefore || ProcessType == 'clean' || ProcessType == 'upgrade') && CrdName != ''"
+      promptIf: !expr "ServerType != 'dai-release-remote-runner' && (CleanBefore || ProcessType == 'clean' || ProcessType == 'upgrade') && CrdName != ''"
       prompt: !expr "'Should CRD be reused, if No we will delete the CRD ' + CrdName + ', and all related CRs will be deleted with it:'"
       ignoreIfSkipped: true
       overrideDefault: true
       description: !expr "'Should CRD be reused? If Yes it will not be deleted, if No we will delete the CRD ' + CrdName + ', and all related CRs will be deleted with it. Put Yes if you have on the same cluster multiple installation of the ' + ServerType"
-      default: !expr "ServerType != 'dai-release-runner' && ProcessType == 'upgrade' && UpgradeType == 'OperatorToOperator'"
+      default: !expr "ServerType != 'dai-release-remote-runner' && ProcessType == 'upgrade' && UpgradeType == 'OperatorToOperator'"
     - name: CrName
       type: Select
       options:
         - !expr k8sResources(Namespace, CrdName)
       saveInXlvals: true
-      promptIf: !expr "ServerType != 'dai-release-runner' && ((CrdName != '' && (CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, CrdName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrName == ''))"
+      promptIf: !expr "ServerType != 'dai-release-remote-runner' && ((CrdName != '' && (CleanBefore || ProcessType == 'clean') && length(k8sResources(Namespace, CrdName)) != '0') || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator' && CrName == ''))"
       prompt: "Enter the name of custom resource:"
       ignoreIfSkipped: true
       overrideDefault: true
       description: The name of your custom resource
-      default: !expr "(ServerType != 'dai-release-runner' && CrdName != '' && (CleanBefore || ProcessType == 'clean')) || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator') ? k8sResource(Namespace, CrdName, ShortServerName) : ''"
+      default: !expr "(ServerType != 'dai-release-remote-runner' && CrdName != '' && (CleanBefore || ProcessType == 'clean')) || (ProcessType == 'upgrade' && UpgradeType == 'operatorToOperator') ? k8sResource(Namespace, CrdName, ShortServerName) : ''"
     - name: PreserveCrValuesDeploy
       type: Editor
       prompt: "Edit list of custom resource keys that will migrate to the new Deploy CR:"
@@ -834,7 +807,93 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       description: "For all matched expressions in the cluster CR, the values will be migrated to the upgraded Deploy CR"
-      default: ".metadata.name: .\n.spec.auth.adminPassword: \n  0.0: .spec.AdminPassword\n  23.3: .\n.spec.centralConfiguration.replicaCount: .\n.spec.master.replicaCount: \n  0.0: .spec.XldMasterCount\n  23.3: .\n.spec.worker.replicaCount: \n  0.0: .spec.XldWorkerCount\n  23.3: .\n.spec.external.db.enabled: \n  0.0: .spec.UseExistingDB.Enabled\n  23.3: .\n.spec.external.mq.enabled: \n  0.0: .spec.UseExistingMQ.Enabled\n  23.3: .\n.spec.ingress.enabled: \n  0.0: .spec.ingress.Enabled\n  23.3: .\n.spec.keystore.passphrase: \n  0.0: .spec.KeystorePassphrase\n  23.3: .\n.spec.global.storageClass: \n  0.0: .spec.Persistence.StorageClass\n  23.3: .\n.spec.centralConfiguration.persistence.accessModes[0]:\n  0.0: .spec.Persistence.AccessMode\n  23.3: \n.spec.centralConfiguration.persistence.accessModes:\n  0.0: \n  23.3: .\n.spec.master.persistence.accessModes[0]:\n  0.0: .spec.Persistence.AccessMode\n  23.3:\n.spec.master.persistence.accessModes:\n  0.0: \n  23.3: .\n.spec.worker.persistence.accessModes[0]: \n  0.0: .spec.Persistence.AccessMode\n  23.3:\n.spec.worker.persistence.accessModes:\n  0.0:\n  23.3: .\n.spec.master.persistence.size: \n  0.0: .spec.Persistence.XldMasterPvcSize\n  23.3: .\n.spec.worker.persistence.size: \n  0.0: .spec.Persistence.XldWorkerPvcSize\n  23.3: .\n.spec.keystore.keystore: \n  0.0: .spec.RepositoryKeystore\n  23.3: .\n.spec.postgresql.primary.persistence.size: \n  0.0: .spec.postgresql.persistence.size\n  23.3: .\n.spec.postgresql.global.storageClass: \n  0.0: .spec.postgresql.persistence.storageClass\n  23.3: .\n.spec.postgresql.primary.extendedConfiguration: \n  0.0: \n    existance: .spec.postgresql.postgresqlMaxConnections\n    expression: .spec.postgresql.postgresqlMaxConnections as $maxConnection | \"max_connections = \" + $maxConnection\n  23.3: .\n.spec.haproxy-ingress.install: .\n.spec.nginx-ingress-controller.install: .\n.spec.postgresql.install: .\n.spec.rabbitmq.install: .\n.spec.oidc: .\n.spec.rabbitmq.persistence.storageClass: .\n.spec.rabbitmq.persistence.size: .\n.spec.rabbitmq.replicaCount: .\n.spec.rabbitmq.persistence.replicaCount: .\n.spec.route.hosts: .\n.spec.license: \n  0.0: .spec.xldLicense\n  23.3: .\n.spec.licenseAcceptEula: \n  0.0:\n  23.3: .\n.spec.centralConfiguration.persistence.size: \n  0.0: .spec.centralConfiguration.persistence.pvcSize\n  23.3: .\n.spec.centralConfiguration.migrateFromEmbedded: .\n# preserve current DB version\n.spec.postgresql.image.tag: ."
+      default: |-
+        .metadata.name: .
+        .spec.auth.adminPassword: 
+          0.0: .spec.AdminPassword
+          23.3: .
+        .spec.centralConfiguration.replicaCount: .
+        .spec.master.replicaCount: 
+          0.0: .spec.XldMasterCount
+          23.3: .
+        .spec.worker.replicaCount: 
+          0.0: .spec.XldWorkerCount
+          23.3: .
+        .spec.external.db.enabled: 
+          0.0: .spec.UseExistingDB.Enabled
+          23.3: .
+        .spec.external.mq.enabled: 
+          0.0: .spec.UseExistingMQ.Enabled
+          23.3: .
+        .spec.ingress.enabled: 
+          0.0: .spec.ingress.Enabled
+          23.3: .
+        .spec.keystore.passphrase: 
+          0.0: .spec.KeystorePassphrase
+          23.3: .
+        .spec.global.storageClass: 
+          0.0: .spec.Persistence.StorageClass
+          23.3: .
+        .spec.centralConfiguration.persistence.accessModes[0]:
+          0.0: .spec.Persistence.AccessMode
+          23.3: 
+        .spec.centralConfiguration.persistence.accessModes:
+          0.0: 
+          23.3: .
+        .spec.master.persistence.accessModes[0]:
+          0.0: .spec.Persistence.AccessMode
+          23.3:
+        .spec.master.persistence.accessModes:
+          0.0: 
+          23.3: .
+        .spec.worker.persistence.accessModes[0]: 
+          0.0: .spec.Persistence.AccessMode
+          23.3:
+        .spec.worker.persistence.accessModes:
+          0.0:
+          23.3: .
+        .spec.master.persistence.size: 
+          0.0: .spec.Persistence.XldMasterPvcSize
+          23.3: .
+        .spec.worker.persistence.size: 
+          0.0: .spec.Persistence.XldWorkerPvcSize
+          23.3: .
+        .spec.keystore.keystore: 
+          0.0: .spec.RepositoryKeystore
+          23.3: .
+        .spec.postgresql.primary.persistence.size: 
+          0.0: .spec.postgresql.persistence.size
+          23.3: .
+        .spec.postgresql.global.storageClass: 
+          0.0: .spec.postgresql.persistence.storageClass
+          23.3: .
+        .spec.postgresql.primary.extendedConfiguration: 
+          0.0: 
+            existance: .spec.postgresql.postgresqlMaxConnections
+            expression: .spec.postgresql.postgresqlMaxConnections as $maxConnection | "max_connections = " + $maxConnection
+          23.3: .
+        .spec.haproxy-ingress.install: .
+        .spec.nginx-ingress-controller.install: .
+        .spec.postgresql.install: .
+        .spec.rabbitmq.install: .
+        .spec.oidc: .
+        .spec.rabbitmq.persistence.storageClass: .
+        .spec.rabbitmq.persistence.size: .
+        .spec.rabbitmq.replicaCount: .
+        .spec.rabbitmq.persistence.replicaCount: .
+        .spec.route.hosts: .
+        .spec.license: 
+          0.0: .spec.xldLicense
+          23.3: .
+        .spec.licenseAcceptEula: 
+          0.0:
+          23.3: .
+        .spec.centralConfiguration.persistence.size: 
+          0.0: .spec.centralConfiguration.persistence.pvcSize
+          23.3: .
+        .spec.centralConfiguration.migrateFromEmbedded: .
+        # preserve current DB version
+        .spec.postgresql.image.tag: .
     - name: PreserveCrValuesRelease
       type: Editor
       prompt: "Edit list of custom resource keys that will migrate to the new Release CR:"
@@ -842,11 +901,74 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       description: For all matched expressions in the cluster CR, the values will be migrated to the upgraded Release CR
-      default: ".metadata.name: .\n.spec.auth.adminPassword: \n  0.0: .spec.AdminPassword\n  23.3: .\n.spec.replicaCount: .\n.spec.external.db: \n  0.0: .spec.UseExistingDB\n  23.3: .\n.spec.external.mq: \n  0.0: .spec.UseExistingMQ\n  23.3: .\n.spec.ingress.enabled: \n  0.0: .spec.ingress.Enabled\n  23.3: .\n.spec.keystore.passphrase: \n  0.0: .spec.KeystorePassphrase\n  23.3: .\n.spec.persistence.size: \n  0.0: .spec.Persistence.Size\n  23.3: .\n.spec.global.storageClass: \n  0.0: .spec.Persistence.StorageClass\n  23.3: .\n.spec.persistence.accessModes.[0]: \n  0.0: .spec.Persistence.AccessMode\n  23.3: \n.spec.persistence.accessModes:\n  0.0: \n  23.3: .\n.spec.keystore.keystore: \n  0.0: .spec.RepositoryKeystore\n  23.3: .\n.spec.postgresql.primary.persistence.size: \n  0.0: .spec.postgresql.persistence.size\n  23.3: .\n.spec.postgresql.global.storageClass: \n  0.0: .spec.postgresql.persistence.storageClass\n  23.3: .\n.spec.postgresql.primary.extendedConfiguration: \n  0.0:\n    existance: .spec.postgresql.postgresqlMaxConnections\n    expression: .spec.postgresql.postgresqlMaxConnections as $maxConnection | \"max_connections = \" + $maxConnection\n  23.3: .\n.spec.haproxy-ingress.install: .\n.spec.nginx-ingress-controller.install: .\n.spec.postgresql.install: .\n.spec.rabbitmq.install: .\n.spec.oidc: .\n.spec.rabbitmq.persistence.storageClass: .\n.spec.rabbitmq.persistence.size: .\n.spec.rabbitmq.replicaCount: .\n.spec.rabbitmq.persistence.replicaCount: .\n.spec.route.hosts: .\n.spec.license: \n  0.0: .spec.xlrLicense\n  23.3: .\n.spec.licenseAcceptEula: \n  0.0:\n  23.3: .\n.spec.http2.enabled: .\n.spec.ssl: .\n# preserve current DB version (in other case first do the upgrade)\n.spec.postgresql.image.tag: ."
+      default: |-
+        .metadata.name: .
+        .spec.auth.adminPassword: 
+          0.0: .spec.AdminPassword
+          23.3: .
+        .spec.replicaCount: .
+        .spec.external.db: 
+          0.0: .spec.UseExistingDB
+          23.3: .
+        .spec.external.mq: 
+          0.0: .spec.UseExistingMQ
+          23.3: .
+        .spec.ingress.enabled: 
+          0.0: .spec.ingress.Enabled
+          23.3: .
+        .spec.keystore.passphrase: 
+          0.0: .spec.KeystorePassphrase
+          23.3: .
+        .spec.persistence.size: 
+          0.0: .spec.Persistence.Size
+          23.3: .
+        .spec.global.storageClass: 
+          0.0: .spec.Persistence.StorageClass
+          23.3: .
+        .spec.persistence.accessModes.[0]: 
+          0.0: .spec.Persistence.AccessMode
+          23.3: 
+        .spec.persistence.accessModes:
+          0.0: 
+          23.3: .
+        .spec.keystore.keystore: 
+          0.0: .spec.RepositoryKeystore
+          23.3: .
+        .spec.postgresql.primary.persistence.size: 
+          0.0: .spec.postgresql.persistence.size
+          23.3: .
+        .spec.postgresql.global.storageClass: 
+          0.0: .spec.postgresql.persistence.storageClass
+          23.3: .
+        .spec.postgresql.primary.extendedConfiguration: 
+          0.0:
+            existance: .spec.postgresql.postgresqlMaxConnections
+            expression: .spec.postgresql.postgresqlMaxConnections as $maxConnection | "max_connections = " + $maxConnection
+          23.3: .
+        .spec.haproxy-ingress.install: .
+        .spec.nginx-ingress-controller.install: .
+        .spec.postgresql.install: .
+        .spec.rabbitmq.install: .
+        .spec.oidc: .
+        .spec.rabbitmq.persistence.storageClass: .
+        .spec.rabbitmq.persistence.size: .
+        .spec.rabbitmq.replicaCount: .
+        .spec.rabbitmq.persistence.replicaCount: .
+        .spec.route.hosts: .
+        .spec.license: 
+          0.0: .spec.xlrLicense
+          23.3: .
+        .spec.licenseAcceptEula: 
+          0.0:
+          23.3: .
+        .spec.http2.enabled: .
+        .spec.ssl: .
+        # preserve current DB version (in other case first do the upgrade)
+        .spec.postgresql.image.tag: .
     - name: PreservePvc
       type: Confirm
       saveInXlvals: true
-      promptIf: !expr "(ProcessType == 'clean' || CleanBefore) && ServerType != 'dai-release-runner'"
+      promptIf: !expr "(ProcessType == 'clean' || CleanBefore) && ServerType != 'dai-release-remote-runner'"
       prompt: "Should we preserve persisted volume claims? If not all volume data will be lost:"
       ignoreIfSkipped: true
       overrideDefault: true
@@ -855,17 +977,54 @@ spec:
     - name: ReleaseName
       type: Input
       saveInXlvals: true
-      promptIf: !expr ServerType != 'dai-release-runner' && UpgradeType == 'helmToOperator' && ProcessType == 'upgrade'
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && UpgradeType == 'helmToOperator' && ProcessType == 'upgrade'
       prompt: "Enter the helm release name:"
       ignoreIfSkipped: true
       overrideDefault: true
       description: The name of your custom resource definition.
+    - name: RemoteRunnerInstallConfirm
+      type: Confirm
+      saveInXlvals: true
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == 'install'
+      prompt: "Install Remote Runner for Digital.ai Release:"
+      description: "Type yes to install Remote Runner for Digital.ai Release. The installation will start after Release is ready on the cluster."
+    - name: RemoteRunnerInstall
+      type: Confirm
+      saveInXlvals: true
+      value: !expr "(ServerType == 'dai-release' && ProcessType == 'install') ? RemoteRunnerInstallConfirm : (ServerType == 'dai-release-remote-runner')"
+    - name: RemoteRunnerRepositoryName
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      promptIf: !expr "RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')"
+      prompt: "Enter the Remote Runner repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
+      default: xebialabsunsupported
+      description: Enter the Remote Runner repository name to use
+    - name: ImageNameRemoteRunner
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      promptIf: !expr "RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')"
+      prompt: "Enter the Remote Runner image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
+      default: release-remote-runner
+      description: Enter the Remote Runner image name to use
+    - name: ImageTagRemoteRunner
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      promptIf: !expr "RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')"
+      prompt: "Enter the Release Remote Runner image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
+      default: 23.3.0-beta.6
+      description: Enter the Release Remote Runner image tag to use
     - name: RemoteRunnerReleaseName
       type: Input
       saveInXlvals: true
-      promptIf: !expr ServerType == 'dai-release-runner'
+      promptIf: !expr RemoteRunnerInstall && ServerType == 'dai-release-remote-runner'
       prompt: "Enter the Remote Runner Helm Chart release name:"
-      ignoreIfSkipped: true
+      ignoreIfSkipped: false
       overrideDefault: true
       description: Remote Runner Helm Chart release name that will be used with helm command during installation.
       default: remote-runner
@@ -873,52 +1032,98 @@ spec:
       type: Confirm
       default: true
       saveInXlvals: true
-      promptIf: !expr ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Use default version of the Remote Runner helm chart."
+      promptIf: !expr RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')
+      prompt: "Use default version of the Remote Runner helm chart:"
       description: "Type yes to use default internal version of the Remote Runner helm chart, in other way you need to provide path to the helm chart."
     - name: RemoteRunnerHelmChartUrl
       type: Input
       saveInXlvals: true
-      promptIf: !expr ServerType == 'dai-release-runner' && !RemoteRunnerUseDefaultLocation && (ProcessType == 'install' || ProcessType == 'upgrade')
+      promptIf: !expr RemoteRunnerInstall && !RemoteRunnerUseDefaultLocation && (ProcessType == 'install' || ProcessType == 'upgrade')
       prompt: "Enter the Remote Runner Helm Chart path (URL or local path):"
       ignoreIfSkipped: true
       overrideDefault: true
       description: Remote Runner Helm Chart local filesystem path or URL to the Remote Runner Helm Chart package.
+    - name: RemoteRunnerGeneration
+      type: Confirm
+      saveInXlvals: true
+      promptIf: !expr false
+      prompt: "Do Remote Runner generation:"
+      ignoreIfSkipped: !expr false
+      overrideDefault: !expr true
+      default: false
+      description: Generation date and time.
     - name: RemoteRunnerReleaseUrl
       type: Input
       saveInXlvals: true
-      promptIf: !expr ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Enter the Release URL that will be used by remote runner:"
+      promptIf: !expr RemoteRunnerInstall && (ServerType == 'dai-release-remote-runner' || RemoteRunnerGeneration) && (ProcessType == 'install' || ProcessType == 'upgrade')
+      prompt: "Enter the Release URL that will be used by Remote Runner:"
       ignoreIfSkipped: true
       overrideDefault: true
-      description: The Release URL.
+      default: !expr "'http://dai-xlr-digitalai-release.' + Namespace"
+      description: The Release URL that will be used by Release Remote Runner, it needs to be accessible from the Remote Runner pod.
       validate: !expr "regex('^https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$', RemoteRunnerReleaseUrl)"
+    - name: RemoteRunnerUserEmail
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide remote-runner user email (for the user on the Release to send PAT expiration notifications):"
+      promptIf: !expr RemoteRunnerInstall && ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
+      description: remote-runner user is user on the Release, that will be used to generate Personal Access Token. The email will be used to send PAT expiration notifications.
+      default: "remote-runner@no.reply"
+    - name: RemoteRunnerUserPassword
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide remote-runner user password (user on the Release):"
+      promptIf: !expr RemoteRunnerInstall && ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
+      description: remote-runner user is user on the Release, that will be used to generate Personal Access Token.
+      default: !expr "randPassword()"
+    - name: RemoteRunnerTokenExpiration
+      type: Select
+      options:
+        - label: No expiration
+          value: 0
+        - label: 30 days
+          value: 30
+        - label: 60 days
+          value: 60
+        - label: 1 year
+          value: 365
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Remote Runner token expiration:"
+      promptIf: !expr RemoteRunnerInstall && ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
+      description: "Provide Remote Runner token expiration"
+      default: 0
     - name: RemoteRunnerToken
       type: Input
       saveInXlvals: true
-      promptIf: !expr ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Enter the Release Token that will be used by remote runner:"
+      promptIf: !expr RemoteRunnerInstall && (ServerType == 'dai-release-remote-runner' || RemoteRunnerGeneration) && (ProcessType == 'install' || ProcessType == 'upgrade')
+      prompt: "Enter the Release Token that will be used by Remote Runner:"
       ignoreIfSkipped: true
       overrideDefault: true
-      description: The Release Token.
+      description: !expr "'To get the Release Token you need to login on the Release and generate Personal access token. Check the Release URL: ' + RemoteRunnerReleaseUrl + '/#/personal-access-token'"
       validate: !expr "regex('^(rpa_[a-zA-Z0-9]{40})$', RemoteRunnerToken)"
     - name: RemoteRunnerCount
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      promptIf: !expr ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Enter the remote runner replica count:"
+      promptIf: !expr RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')
+      prompt: "Enter the Remote Runner replica count:"
       default: 1
-      description: Enter the remote runner replica count, it will spin given number of replicas
+      description: Enter the Remote Runner replica count, it will spin given number of replicas
       validate: !expr "regex('^([1-9])+$', RemoteRunnerCount)"
     - name: IsRemoteRunnerTruststoreEnabled
       type: Confirm
       default: false
       saveInXlvals: true
-      promptIf: !expr ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      prompt: "Enable truststore for remote runner:"
-      description: "Type yes to setup truststore for remote runner"
+      promptIf: !expr RemoteRunnerInstall && ServerType == 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
+      prompt: "Enable truststore for Remote Runner:"
+      description: "Type yes to setup truststore for Remote Runner"
     - name: RemoteRunnerTruststore
       type: Editor
       saveInXlvals: true
@@ -926,8 +1131,8 @@ spec:
       allowEmpty: true
       overrideDefault: true
       prompt: "Provide base64 encoded PKCS12 truststore:"
-      promptIf: !expr IsRemoteRunnerTruststoreEnabled && ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      description: The remote runner truststore with the trusted certificates. Accepted is PKCS12 format.
+      promptIf: !expr IsRemoteRunnerTruststoreEnabled && RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')
+      description: The Remote Runner truststore with the trusted certificates. Accepted is PKCS12 format.
       default: ""
     - name: RemoteRunnerTruststorePassword
       type: Input
@@ -936,8 +1141,8 @@ spec:
       allowEmpty: true
       overrideDefault: true
       prompt: "Provide truststore password:"
-      promptIf: !expr IsRemoteRunnerTruststoreEnabled && ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      description: The remote runner truststore password
+      promptIf: !expr IsRemoteRunnerTruststoreEnabled && RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')
+      description: The Remote Runner truststore password
       default: ""
   files:
     # Generic
@@ -1018,6 +1223,12 @@ spec:
       writeIf: !expr ServerType == 'dai-release' && (ProcessType == 'install' || ProcessType == 'upgrade')
       renameTo: !expr "'digitalai/dai-release/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/deployment.yaml.tmpl'"
     # Remote runner
-    - path: digitalai/dai-remote-runner/values-cli.yaml.tmpl
-      writeIf: !expr ServerType == 'dai-release-runner'
-      renameTo: !expr "'digitalai/dai-remote-runner/' + Namespace + '/' + GenerationDateTime + '/kubernetes/values-cli.yaml.tmpl'"
+    - path: digitalai/dai-release-remote-runner/values-cli.yaml.tmpl
+      writeIf: !expr RemoteRunnerInstall && (RemoteRunnerGeneration || ServerType == 'dai-release-remote-runner')
+      renameTo: !expr "'digitalai/' + ServerType + '/' + Namespace + '/' + GenerationDateTime + '/kubernetes/values-cli.yaml.tmpl'"
+    - path: digitalai/dai-release-remote-runner/install.yaml
+      writeIf: !expr RemoteRunnerInstall && ServerType != 'dai-release-remote-runner'
+      renameTo: !expr "'digitalai/' + ServerType + '/' + Namespace + '/' + GenerationDateTime + '/kubernetes/install.yaml'"
+    - path: digitalai/dai-release-remote-runner/create-remote-runner-user.yaml.tmpl
+      writeIf: !expr RemoteRunnerInstall && ServerType != 'dai-release-remote-runner'
+      renameTo: !expr "'digitalai/' + ServerType + '/' + Namespace + '/' + GenerationDateTime + '/kubernetes/create-remote-runner-user.yaml.tmpl'"
