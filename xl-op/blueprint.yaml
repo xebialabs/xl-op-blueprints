@@ -83,7 +83,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the application image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-929.113
+      default: 23.3.0-rc.1
       description: Enter the application image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -575,7 +575,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the operator image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-929.113
+      default: 23.3.0-rc.1
       description: Enter the operator image tag to use
     - name: RepositoryKeystoreSource
       type: Select
@@ -870,7 +870,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the Release Remote Runner image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-beta.6
+      default: 23.3.0-rc.1
       description: Enter the Release Remote Runner image tag to use
     - name: RemoteRunnerReleaseName
       type: Input
