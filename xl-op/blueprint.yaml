@@ -445,7 +445,6 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       default: |-
-        external: true
         accessTokenUri: ""
         clientId: ""
         clientSecret: ""
@@ -468,7 +467,6 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       default: |-
-        external: true
         accessTokenUri: ""
         clientId: ""
         clientSecret: ""
@@ -497,7 +495,6 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       default: |-
-        external: true
         clientId: ""
         clientSecret: ""
         issuer: ""
@@ -514,7 +511,6 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       default: |-
-        external: true
         clientId: ""
         clientSecret: ""
         issuer: ""
