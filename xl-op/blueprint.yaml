@@ -103,15 +103,57 @@ spec:
       prompt: "Enter the central configuration image name for version 22 and above (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       default: central-configuration
       description: Enter the Central Configuration image name to use
+    - name: LicenseSource
+      type: Select
+      options:
+        - label: Generate the license (this is only for temporary license that is used for evaluation)
+          value: generate
+        - label: Path to the license file (the file can be in clean text or base64 encoded)
+          value: file
+        - label: Copy/Paste the license to editor (the text can be in clean text or base64 encoded)
+          value: editor
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Select source of the license:"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install"
+      description: "Provide source of the license file"
+      default: generate
+    - name: LicenseEditor
+      type: Editor
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      prompt: "Provide license for the server:"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && LicenseSource == "editor"
+      description: "Provide license for the server"
+      default: ""
+    - name: LicenseFile
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide license file for the server:"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && LicenseSource == "file"
+      description: "Provide license file for the server"
+      validate: !expr "isFile(LicenseFile)"
+      default: ""
+    - name: License
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      description: Provide license file for the server
+      value: !expr "LicenseSource == 'editor' ? ifBase64(LicenseEditor) : (LicenseSource == 'file' ? ifBase64(ifFileReadBytes(LicenseFile)) : '')"
     - name: XldMasterCount
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "ServerType == 'dai-deploy' && ProcessType == 'install'"
-      prompt: "Enter the deploy master server replica count:"
-      default: 3
-      description: Enter the Deploy master server replica count
+      prompt: !expr "LicenseSource == 'generate' ? 'Enter the deploy master server replica count (use 1 in case of license will be generated):' : 'Enter the deploy master server replica count:'"
+      default: !expr "LicenseSource == 'generate' ? '1' : '3'"
+      description: |-
+        Enter the Deploy master server replica count. For production use 3 or above. 
+        In case you selected license generation, for now it is not possible to replicate the license between pods, so it is recommended to use 1 pod, or manually replicate the generated license between pods.
       validate: !expr "regex('^([1-9])+$', XldMasterCount)"
     - name: PvcSizeDeploy
       type: Input
@@ -535,46 +577,6 @@ spec:
       prompt: "Enter the operator image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
       default: 23.3.0-rc.1
       description: Enter the operator image tag to use
-    - name: LicenseSource
-      type: Select
-      options:
-        - label: Generate the license (this is only for temporary license that is used for evaluation)
-          value: generate
-        - label: Path to the license file (the file can be in clean text or base64 encoded)
-          value: file
-        - label: Copy/Paste the license to editor (the text can be in clean text or base64 encoded)
-          value: editor
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      prompt: "Select source of the license:"
-      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install"
-      description: "Provide source of the license file"
-      default: generate
-    - name: LicenseEditor
-      type: Editor
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      prompt: "Provide license for the server:"
-      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && LicenseSource == "editor"
-      description: "Provide license for the server"
-      default: ""
-    - name: LicenseFile
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      prompt: "Provide license file for the server:"
-      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && LicenseSource == "file"
-      description: "Provide license file for the server"
-      validate: !expr "isFile(LicenseFile)"
-      default: ""
-    - name: License
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      description: Provide license file for the server
-      value: !expr "LicenseSource == 'editor' ? ifBase64(LicenseEditor) : (LicenseSource == 'file' ? ifBase64(ifFileReadBytes(LicenseFile)) : '')"
     - name: RepositoryKeystoreSource
       type: Select
       options:
