@@ -64,10 +64,11 @@ RabbitmqReplicaCount: '{{ .RabbitmqReplicaCount }}'
 RabbitmqStorageClass: '{{ .RabbitmqStorageClass }}'
 LicenseSource: '{{ .LicenseSource }}'
 LicenseEditor:  |-
-{{ trim .LicenseEditor | indent 2 }}
+{{ .LicenseEditor | trim | indent 2 }}
 LicenseFile: '{{ .LicenseFile }}'
 RepositoryKeystoreSource: '{{ .RepositoryKeystoreSource }}'
-RepositoryKeystoreEditor: '{{ trim .RepositoryKeystoreEditor }}'
+RepositoryKeystoreEditor: |-
+{{ .RepositoryKeystoreEditor | trim | indent 2 }}
 RepositoryKeystoreFile: '{{ .RepositoryKeystoreFile }}'
 KeystorePassphrase: '{{ .KeystorePassphrase }}'
 PostgresqlPvcSize: '{{ .PostgresqlPvcSize }}'
@@ -77,7 +78,8 @@ PvcSizeRelease: '{{ .PvcSizeRelease }}'
 AccessModeRelease: '{{ .AccessModeRelease }}'
 Http2EnabledRelease: '{{ .Http2EnabledRelease }}'
 ReleaseKeystoreSource: '{{ .ReleaseKeystoreSource }}'
-ReleaseKeystoreEditor: '{{ trim .ReleaseKeystoreEditor }}'
+ReleaseKeystoreEditor: |-
+{{ .ReleaseKeystoreEditor | trim | indent 2 }}'
 ReleaseKeystoreFile: '{{ .ReleaseKeystoreFile }}'
 ReleaseKeystoreSecretName: '{{ .ReleaseKeystoreSecretName }}'
 ReleaseKeystore: '{{ .ReleaseKeystore }}'
@@ -100,17 +102,23 @@ ReleaseName: '{{ .ReleaseName }}'
 CrdName: '{{ .CrdName }}'
 IsCrdReused: {{ .IsCrdReused }}
 CrName: '{{ .CrName }}'
+{{- if and (or (eq .ProcessType "clean") .CleanBefore) (ne .ServerType "dai-release-remote-runner") }}
 PreservePvc: {{ .PreservePvc }}
+{{- end }}
 ImageNameRemoteRunner: '{{ .ImageNameRemoteRunner }}'
 ImageTagRemoteRunner: '{{ .ImageTagRemoteRunner }}'
+RemoteRunnerInstallConfirm: '{{ .RemoteRunnerInstallConfirm }}'
 RemoteRunnerRepositoryName: '{{ .RemoteRunnerRepositoryName }}'
 RemoteRunnerReleaseName: '{{ .RemoteRunnerReleaseName }}'
 RemoteRunnerUseDefaultLocation: {{ .RemoteRunnerUseDefaultLocation }}
 RemoteRunnerHelmChartUrl: '{{ .RemoteRunnerHelmChartUrl }}'
 RemoteRunnerReleaseUrl: '{{ .RemoteRunnerReleaseUrl }}'
 RemoteRunnerToken: '{{ .RemoteRunnerToken }}'
+RemoteRunnerUserEmail: '{{ .RemoteRunnerUserEmail }}'
+RemoteRunnerUserPassword: '{{ .RemoteRunnerUserPassword }}'
+RemoteRunnerTokenExpiration: '{{ .RemoteRunnerTokenExpiration }}'
 RemoteRunnerCount: {{ .RemoteRunnerCount }}
 IsRemoteRunnerTruststoreEnabled: {{ .IsRemoteRunnerTruststoreEnabled }}
-RemoteRunnerTruststore: {{ .RemoteRunnerTruststore }}
+RemoteRunnerTruststore: |- 
+{{ .RemoteRunnerTruststore | trim | indent 2 }}
 RemoteRunnerTruststorePassword: {{ .RemoteRunnerTruststorePassword }}
-
