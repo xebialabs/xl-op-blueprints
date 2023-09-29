@@ -165,8 +165,8 @@ spec:
       haproxy.router.openshift.io/cookie_name: JSESSIONID
       haproxy.router.openshift.io/disable_cookies: "false"
       haproxy.router.openshift.io/rewrite-target: /
-    hosts:
-      - "{{ .IngressHost }}"
+    hostname: "{{ .IngressHost }}"
+    path: /
     {{- else }}
     enabled: false
     {{- end }}
