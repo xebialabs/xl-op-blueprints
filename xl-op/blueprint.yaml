@@ -83,7 +83,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the application image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-rc.1
+      default: 23.3.0-1003.113
       description: Enter the application image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -151,9 +151,7 @@ spec:
       promptIf: !expr "ServerType == 'dai-deploy' && ProcessType == 'install'"
       prompt: !expr "LicenseSource == 'generate' ? 'Enter the deploy master server replica count (use 1 in case of license will be generated):' : 'Enter the deploy master server replica count:'"
       default: !expr "LicenseSource == 'generate' ? '1' : '3'"
-      description: |-
-        Enter the Deploy master server replica count. For production use 3 or above. 
-        In case you selected license generation, for now it is not possible to replicate the license between pods, so it is recommended to use 1 pod, or manually replicate the generated license between pods.
+      description: "Enter the Deploy master server replica count. For production use 3 or above. \nIn case you selected license generation, for now it is not possible to replicate the license between pods, so it is recommended to use 1 pod, or manually replicate the generated license between pods."
       validate: !expr "regex('^([1-9])+$', XldMasterCount)"
     - name: PvcSizeDeploy
       type: Input
@@ -575,7 +573,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the operator image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-rc.1
+      default: 23.3.0-1003.113
       description: Enter the operator image tag to use
     - name: RepositoryKeystoreSource
       type: Select
