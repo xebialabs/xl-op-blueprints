@@ -42,14 +42,14 @@ spec:
     db:
       {{- if eq .EnablePostgresql false }}
       enabled: true
-{{ .PostgresqlExternalConfigDeploy | indent 4 }}
+{{ .PostgresqlExternalConfigDeploy | indent 6 }}
       {{- else }}
       enabled: false
       {{- end }}
     mq:
       {{- if eq .EnableRabbitmq false }}
       enabled: true
-{{ .RabbitmqExternalConfigDeploy | indent 4 }}
+{{ .RabbitmqExternalConfigDeploy | indent 6 }}
       {{- else }}
       enabled: false
       {{- end }}
