@@ -42,14 +42,14 @@ spec:
     db:
       {{- if eq .EnablePostgresql false }}
       enabled: true
-{{ .PostgresqlExternalConfigDeploy | indent 4 }}
+{{ .PostgresqlExternalConfigDeploy | indent 6 }}
       {{- else }}
       enabled: false
       {{- end }}
     mq:
       {{- if eq .EnableRabbitmq false }}
       enabled: true
-{{ .RabbitmqExternalConfigDeploy | indent 4 }}
+{{ .RabbitmqExternalConfigDeploy | indent 6 }}
       {{- else }}
       enabled: false
       {{- end }}
@@ -113,7 +113,7 @@ spec:
       nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
       nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
       nginx.ingress.kubernetes.io/rewrite-target: /
-      nginx.ingress.kubernetes.io/session-cookie-name: JSESSIONID
+      nginx.ingress.kubernetes.io/session-cookie-name: SESSION_XLD
       nginx.ingress.kubernetes.io/ssl-redirect: "{{ .EnableIngressTls }}"
     {{- end }}
     {{- if eq .IngressType "haproxy" }}
@@ -126,7 +126,7 @@ spec:
       {{- end }}
       ingress.kubernetes.io/rewrite-target: /
       ingress.kubernetes.io/affinity: cookie
-      ingress.kubernetes.io/session-cookie-name: JSESSIONID
+      ingress.kubernetes.io/session-cookie-name: SESSION_XLD
       ingress.kubernetes.io/session-cookie-strategy: prefix
       ingress.kubernetes.io/config-backend: |
         option httpchk GET /ha/health HTTP/1.0
@@ -162,7 +162,7 @@ spec:
     {{- if eq .IngressType "route" }}
     enabled: true
     annotations:
-      haproxy.router.openshift.io/cookie_name: JSESSIONID
+      haproxy.router.openshift.io/cookie_name: SESSION_XLD
       haproxy.router.openshift.io/disable_cookies: "false"
       haproxy.router.openshift.io/rewrite-target: /
     hostname: "{{ .IngressHost }}"
@@ -171,19 +171,20 @@ spec:
     enabled: false
     {{- end }}
   haproxy-ingress:
-    {{- if eq .IsCustomImageRegistry true }}
-    image:
-      repository: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/haproxy-ingress
-    {{- end }}
-    {{- if eq .ImageRegistryType "private" }}
-    imagePullSecrets:
-        - name: {{ .CustomPrivateImageRegistrySecret }}
-    {{- end }}
-    {{- if eq .UseCustomNamespace true }}
-    ingressClass: haproxy-dai-xld-{{ .Namespace }}
-    {{- else }}
-    ingressClass: haproxy-dai-xld
-    {{- end }}
+    controller:
+      {{- if eq .IsCustomImageRegistry true }}
+      image:
+        repository: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/haproxy-ingress
+      {{- end }}
+      {{- if eq .ImageRegistryType "private" }}
+      imagePullSecrets:
+          - name: {{ .CustomPrivateImageRegistrySecret }}
+      {{- end }}
+      {{- if eq .UseCustomNamespace true }}
+      ingressClass: haproxy-dai-xld-{{ .Namespace }}
+      {{- else }}
+      ingressClass: haproxy-dai-xld
+      {{- end }}
     {{- if eq .IngressType "haproxy" }}
     install: true
     {{- else }}
