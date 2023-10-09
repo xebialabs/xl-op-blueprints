@@ -192,7 +192,6 @@ spec:
     extraArgs:
       ingress-class: nginx-dai-xlr
     {{- end }}
-    {{- if or (eq .IsCustomImageRegistry true) (eq .ImageRegistryType "private") }}
     global:
       {{- /* global overrides the other occurences */}}
       {{- if eq .IsCustomImageRegistry true }}
@@ -201,8 +200,7 @@ spec:
       {{- if eq .ImageRegistryType "private" }}
       imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
       {{- end }}
-    {{- end }}
-    {{- if eq .IsCustomImageRegistry true }}
+    {{- if eq .IsCustomImageRegistry true }}      
     image:
       {{- /* registry name defined in global section */}}
       repository: {{ .RepositoryName }}/nginx-ingress-controller
@@ -224,7 +222,7 @@ spec:
   postgresql:
     global:
       {{- /*  global overrides the other occurences */}}
-        {{- if eq .IsCustomImageRegistry true }}
+      {{- if eq .IsCustomImageRegistry true }}
       imageRegistry: {{ .CustomImageRegistryName }}
       {{- end }}
       {{- if eq .ImageRegistryType "private" }}
@@ -251,7 +249,6 @@ spec:
         repository: {{ .RepositoryName }}/bitnami-shell
         {{- end }}    
   rabbitmq:
-    {{- if (eq .IsCustomImageRegistry true) }}
     global:
       {{- /* global overrides the other occurences */}}
       {{- if eq .IsCustomImageRegistry true }}
@@ -261,7 +258,6 @@ spec:
       imagePullSecrets:
       - {{ .CustomPrivateImageRegistrySecret }}
       {{- end }}
-    {{- end }}
     {{- if eq .IsCustomImageRegistry true }}
     image:
       {{- /* registry name defined in global section */}}
