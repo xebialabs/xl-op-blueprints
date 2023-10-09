@@ -180,9 +180,10 @@ spec:
     {{- end }}
   nginx-ingress-controller:
     {{- if eq .IsCustomImageRegistry true }}
-    image:
-      {{- /* registry name defined in global section */}}
-      repository: {{ .RepositoryName }}/nginx
+    defaultBackend:
+      image:
+        {{- /* registry name defined in global section */}}
+        repository: {{ .RepositoryName }}/nginx
     {{- end }}
     {{- if eq .UseCustomNamespace true }}
     extraArgs:
@@ -243,8 +244,14 @@ spec:
     securityContext:
       enabled: true
       fsGroup: 1001
+    volumePermissions:
+      image:
+        {{- if eq .IsCustomImageRegistry true }}
+        {{- /* registry name defined in global section */}}
+        repository: {{ .RepositoryName }}/bitnami-shell
+        {{- end }}    
   rabbitmq:
-    {{- if or (eq .IsCustomImageRegistry true) (eq .ImageRegistryType "private") }}
+    {{- if (eq .IsCustomImageRegistry true) }}
     global:
       {{- /* global overrides the other occurences */}}
       {{- if eq .IsCustomImageRegistry true }}
