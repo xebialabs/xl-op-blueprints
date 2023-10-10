@@ -204,8 +204,8 @@ spec:
       {{- if eq .ImageRegistryType "private" }}
       imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
       {{- end }}
-    {{- end }}  
-    {{- if eq .IsCustomImageRegistry true }}      
+    {{- end }}
+    {{- if eq .IsCustomImageRegistry true }}
     image:
       {{- /* registry name defined in global section */}}
       repository: {{ .RepositoryName }}/nginx-ingress-controller

@@ -234,14 +234,14 @@ spec:
   postgresql:
     global:
       {{- /*  global overrides the other occurences */}}
-        {{- if eq .IsCustomImageRegistry true }}
-        imageRegistry: {{ .CustomImageRegistryName }}
-        {{- end }}
-        {{- if eq .ImageRegistryType "private" }}
-        imagePullSecrets:
-          - {{ .CustomPrivateImageRegistrySecret }}
-        {{- end }}
-        storageClass: "{{ .PostgresqlStorageClass }}"
+      {{- if eq .IsCustomImageRegistry true }}
+      imageRegistry: {{ .CustomImageRegistryName }}
+      {{- end }}
+      {{- if eq .ImageRegistryType "private" }}
+      imagePullSecrets:
+        - {{ .CustomPrivateImageRegistrySecret }}
+      {{- end }}
+      storageClass: "{{ .PostgresqlStorageClass }}"
     {{- if eq .IsCustomImageRegistry true }}
     image:
       {{- /* registry name defined in global section */}}
