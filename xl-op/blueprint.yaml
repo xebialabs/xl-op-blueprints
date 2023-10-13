@@ -83,7 +83,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the application image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-rc.1
+      default: 23.3.0-rc.2
       description: Enter the application image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -103,15 +103,55 @@ spec:
       prompt: "Enter the central configuration image name for version 22 and above (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       default: central-configuration
       description: Enter the Central Configuration image name to use
+    - name: LicenseSource
+      type: Select
+      options:
+        - label: Generate the license (this is only for temporary license that is used for evaluation)
+          value: generate
+        - label: Path to the license file (the file can be in clean text or base64 encoded)
+          value: file
+        - label: Copy/Paste the license to editor (the text can be in clean text or base64 encoded)
+          value: editor
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Select source of the license:"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install"
+      description: "Provide source of the license file"
+      default: generate
+    - name: LicenseEditor
+      type: Editor
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      prompt: "Provide license for the server:"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && LicenseSource == "editor"
+      description: "Provide license for the server"
+      default: ""
+    - name: LicenseFile
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide license file for the server:"
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && LicenseSource == "file"
+      description: "Provide license file for the server"
+      validate: !expr "isFile(LicenseFile)"
+      default: ""
+    - name: License
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      description: Provide license file for the server
+      value: !expr "LicenseSource == 'editor' ? ifBase64(LicenseEditor) : (LicenseSource == 'file' ? ifBase64(ifFileReadBytes(LicenseFile)) : '')"
     - name: XldMasterCount
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "ServerType == 'dai-deploy' && ProcessType == 'install'"
-      prompt: "Enter the deploy master server replica count:"
-      default: 3
-      description: Enter the Deploy master server replica count
+      prompt: !expr "LicenseSource == 'generate' ? 'Enter the deploy master server replica count (use 1 in case of license will be generated):' : 'Enter the deploy master server replica count:'"
+      default: !expr "LicenseSource == 'generate' ? '1' : '3'"
+      description: "Enter the Deploy master server replica count. For production use 3 or above. \nIn case you selected license generation, for now it is not possible to replicate the license between pods, so it is recommended to use 1 pod, or manually replicate the generated license between pods."
       validate: !expr "regex('^([1-9])+$', XldMasterCount)"
     - name: PvcSizeDeploy
       type: Input
@@ -418,7 +458,6 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       default: |-
-        external: true
         accessTokenUri: ""
         clientId: ""
         clientSecret: ""
@@ -441,7 +480,6 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       default: |-
-        external: true
         accessTokenUri: ""
         clientId: ""
         clientSecret: ""
@@ -470,7 +508,6 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       default: |-
-        external: true
         clientId: ""
         clientSecret: ""
         issuer: ""
@@ -487,7 +524,6 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       default: |-
-        external: true
         clientId: ""
         clientSecret: ""
         issuer: ""
@@ -513,7 +549,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: !expr "Enter the operator image to use (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the operator image to use (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-deploy' && (ProcessType == 'install' || ProcessType == 'upgrade')
       default: deploy-operator
       description: Enter the operator image to use
@@ -522,7 +558,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: !expr "Enter the operator image to use (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the operator image to use (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-release' && (ProcessType == 'install' || ProcessType == 'upgrade')
       default: release-operator
       description: Enter the operator image to use
@@ -533,48 +569,8 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the operator image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-rc.1
+      default: 23.3.0-rc.2
       description: Enter the operator image tag to use
-    - name: LicenseSource
-      type: Select
-      options:
-        - label: Generate the license (this is only for temporary license that is used for evaluation)
-          value: generate
-        - label: Path to the license file (the file can be in clean text or base64 encoded)
-          value: file
-        - label: Copy/Paste the license to editor (the text can be in clean text or base64 encoded)
-          value: editor
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      prompt: "Select source of the license:"
-      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install"
-      description: "Provide source of the license file"
-      default: generate
-    - name: LicenseEditor
-      type: Editor
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      prompt: "Provide license for the server:"
-      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && LicenseSource == "editor"
-      description: "Provide license for the server"
-      default: ""
-    - name: LicenseFile
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      prompt: "Provide license file for the server:"
-      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && LicenseSource == "file"
-      description: "Provide license file for the server"
-      validate: !expr "isFile(LicenseFile)"
-      default: ""
-    - name: License
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      description: Provide license file for the server
-      value: !expr "LicenseSource == 'editor' ? ifBase64(LicenseEditor) : (LicenseSource == 'file' ? ifBase64(ifFileReadBytes(LicenseFile)) : '')"
     - name: RepositoryKeystoreSource
       type: Select
       options:
@@ -643,7 +639,7 @@ spec:
       overrideDefault: true
       prompt: "Do you want to install a new PostgreSQL on the cluster:"
       promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install"
-      description: "Enable PostgreSQL."
+      description: "Enable PostgreSQL by using new PostgreSQL installation from the subchart, or use existing DB installation that is supported. Select y for new PostgreSQL installation, or press n for seting up connection to existing DB instance."
     - name: PostgresqlStorageClass
       type: Select
       options:
@@ -676,12 +672,14 @@ spec:
         main:
           url: jdbc:postgresql://<xlr-db-host>:5432/<xlr-database-name>
           username: <xlr-username>
-          password: <xlr-password>
+          password: |-
+            <xlr-password>
           maxPoolSize: 10
         report:
           url: jdbc:postgresql://<xlr-report-db-host>:5432/<xlr-report-database-name>
           username: <xlr-report-username>
-          password: <xlr-report-password>
+          password: |-
+            <xlr-report-password>
           maxPoolSize: 10
     - name: PostgresqlExternalConfigDeploy
       type: Editor
@@ -695,12 +693,14 @@ spec:
         main:
           url: jdbc:postgresql://<xld-db-host>:5432/<xld-database-name>
           username: <xld-username>
-          password: <xld-password>
+          password: |-
+            <xld-password>
           maxPoolSize: 10
         report:
           url: jdbc:postgresql://<xld-report-db-host>:5432/<xld-report-database-name>
           username: <xld-report-username>
-          password: <xld-report-password>
+          password: |-
+            <xld-report-password>
           maxPoolSize: 10
     - name: EnableRabbitmq
       type: Confirm
@@ -710,7 +710,7 @@ spec:
       overrideDefault: true
       prompt: "Do you want to install a new RabbitMQ on the cluster:"
       promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install"
-      description: "Enable RabbitMQ."
+      description: "Enable RabbitMQ by using new RabbitMQ installation from the subchart, or use existing MQ installation that is supported. Select y for new RabbitMQ installation, or press n for seting up connection to existing MQ instance."
     - name: RabbitmqReplicaCount
       type: Input
       saveInXlvals: true
@@ -754,7 +754,8 @@ spec:
         url: <queue-url>
         queueName: <queue-name>
         username: <username>
-        password: <password>
+        password: |-
+          <password>
     - name: RabbitmqExternalConfigDeploy
       type: Editor
       saveInXlvals: true
@@ -767,7 +768,8 @@ spec:
         url: <queue-url>
         queueName: <queue-name>
         username: <username>
-        password: <password>
+        password: |-
+          <password>
         driverClassName: <driver-class-name>
     - name: CrdName
       type: Select
@@ -807,7 +809,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       description: "For all matched expressions in the cluster CR, the values will be migrated to the upgraded Deploy CR"
-      default: ".metadata.name: .\n.spec.auth.adminPassword: \n  0.0: .spec.AdminPassword\n  23.3: .\n.spec.centralConfiguration.replicaCount: .\n.spec.master.replicaCount: \n  0.0: .spec.XldMasterCount\n  23.3: .\n.spec.worker.replicaCount: \n  0.0: .spec.XldWorkerCount\n  23.3: .\n.spec.external.db.enabled: \n  0.0: .spec.UseExistingDB.Enabled\n  23.3: .\n.spec.external.mq.enabled: \n  0.0: .spec.UseExistingMQ.Enabled\n  23.3: .\n.spec.ingress.enabled: \n  0.0: .spec.ingress.Enabled\n  23.3: .\n.spec.keystore.passphrase: \n  0.0: .spec.KeystorePassphrase\n  23.3: .\n.spec.global.storageClass: \n  0.0: .spec.Persistence.StorageClass\n  23.3: .\n.spec.centralConfiguration.persistence.accessModes[0]:\n  0.0: .spec.Persistence.AccessMode\n  23.3: \n.spec.centralConfiguration.persistence.accessModes:\n  0.0: \n  23.3: .\n.spec.master.persistence.accessModes[0]:\n  0.0: .spec.Persistence.AccessMode\n  23.3:\n.spec.master.persistence.accessModes:\n  0.0: \n  23.3: .\n.spec.worker.persistence.accessModes[0]: \n  0.0: .spec.Persistence.AccessMode\n  23.3:\n.spec.worker.persistence.accessModes:\n  0.0:\n  23.3: .\n.spec.master.persistence.size: \n  0.0: .spec.Persistence.XldMasterPvcSize\n  23.3: .\n.spec.worker.persistence.size: \n  0.0: .spec.Persistence.XldWorkerPvcSize\n  23.3: .\n.spec.keystore.keystore: \n  0.0: .spec.RepositoryKeystore\n  23.3: .\n.spec.postgresql.primary.persistence.size: \n  0.0: .spec.postgresql.persistence.size\n  23.3: .\n.spec.postgresql.global.storageClass: \n  0.0: .spec.postgresql.persistence.storageClass\n  23.3: .\n.spec.postgresql.primary.extendedConfiguration: \n  0.0: \n    existance: .spec.postgresql.postgresqlMaxConnections\n    expression: .spec.postgresql.postgresqlMaxConnections as $maxConnection | \"max_connections = \" + $maxConnection\n  23.3: .\n.spec.haproxy-ingress.install: .\n.spec.nginx-ingress-controller.install: .\n.spec.postgresql.install: .\n.spec.rabbitmq.install: .\n.spec.oidc: .\n.spec.rabbitmq.persistence.storageClass: .\n.spec.rabbitmq.persistence.size: .\n.spec.rabbitmq.replicaCount: .\n.spec.rabbitmq.persistence.replicaCount: .\n.spec.route.hosts: .\n.spec.license: \n  0.0: .spec.xldLicense\n  23.3: .\n.spec.licenseAcceptEula: \n  0.0:\n  23.3: .\n.spec.centralConfiguration.persistence.size: \n  0.0: .spec.centralConfiguration.persistence.pvcSize\n  23.3: .\n.spec.centralConfiguration.migrateFromEmbedded: .\n# preserve current DB version\n.spec.postgresql.image.tag: ."
+      default: ".metadata.name: .\n.spec.global.storageClass: \n  0.0: .spec.Persistence.StorageClass\n  23.3: .\n.spec.auth.adminPassword: \n  0.0: .spec.AdminPassword\n  23.3: .\n.spec.centralConfiguration.replicaCount: .\n.spec.centralConfiguration.persistence.accessModes[0]:\n  0.0: .spec.Persistence.AccessMode\n  23.3: \n.spec.centralConfiguration.persistence.accessModes:\n  0.0: \n  23.3: .\n.spec.centralConfiguration.persistence.size: \n  0.0: .spec.centralConfiguration.persistence.pvcSize\n  23.3: .\n.spec.centralConfiguration.persistence.existingClaim: \n  0.0: \n    existance: .spec.deploy.centralConfiguration.persistence.existingClaim\n    expression: .spec.deploy.centralConfiguration.persistence.existingClaim\n  23.3: .\n.spec.centralConfiguration.migrateFromEmbedded: .\n.spec.master.replicaCount: \n  0.0: .spec.XldMasterCount\n  23.3: .\n.spec.master.persistence.accessModes[0]:\n  0.0: .spec.Persistence.AccessMode\n  23.3:\n.spec.master.persistence.accessModes:\n  0.0: \n  23.3: .\n.spec.master.persistence.size: \n  0.0: .spec.Persistence.XldMasterPvcSize\n  23.3: .\n.spec.master.persistence.existingClaim: \n  0.0: \n    existance: .spec.deploy.master.persistence.existingClaim\n    expression: .spec.deploy.master.persistence.existingClaim\n  23.3: .\n.spec.worker.replicaCount: \n  0.0: .spec.XldWorkerCount\n  23.3: .\n.spec.worker.persistence.accessModes[0]: \n  0.0: .spec.Persistence.AccessMode\n  23.3:\n.spec.worker.persistence.accessModes:\n  0.0:\n  23.3: .\n.spec.worker.persistence.size: \n  0.0: .spec.Persistence.XldWorkerPvcSize\n  23.3: .\n.spec.worker.persistence.existingClaim: \n  0.0: \n    existance: .spec.deploy.worker.persistence.existingClaim\n    expression: .spec.deploy.worker.persistence.existingClaim\n  23.3: .\n.spec.oidc: .\n.spec.external.db: \n  0.0: \n  23.3: .\n.spec.external.db.enabled: \n  0.0: .spec.UseExistingDB.Enabled\n  23.3: \n.spec.external.db.main.url: \n  0.0: .spec.UseExistingDB.XL_DB_URL\n  23.3:\n.spec.external.db.main.username: \n  0.0: .spec.UseExistingDB.XL_DB_USERNAME\n  23.3:\n.spec.external.db.main.password: \n  0.0: .spec.UseExistingDB.XL_DB_PASSWORD\n  23.3:\n.spec.external.db.report.url: \n  0.0: .spec.UseExistingDB.XL_REPORT_DB_URL // .spec.UseExistingDB.XL_DB_URL\n  23.3:\n.spec.external.db.report.username: \n  0.0: .spec.UseExistingDB.XL_REPORT_DB_USER // .spec.UseExistingDB.XL_REPORT_DB_USERNAME // .spec.UseExistingDB.XL_DB_USERNAME\n  23.3:\n.spec.external.db.report.password: \n  0.0: .spec.UseExistingDB.XL_REPORT_DB_PASS // .spec.UseExistingDB.XL_REPORT_DB_PASSWORD // .spec.UseExistingDB.XL_DB_PASSWORD\n  23.3:\n.spec.external.mq:\n  0.0: \n  23.3: .\n.spec.external.mq.enabled: \n  0.0: .spec.UseExistingMQ.Enabled\n  23.3: \n.spec.external.mq.url: \n  0.0: .spec.UseExistingMQ.XLD_TASK_QUEUE_URL\n  23.3: \n.spec.external.mq.username: \n  0.0: .spec.UseExistingMQ.XLD_TASK_QUEUE_USERNAME\n  23.3: \n.spec.external.mq.password: \n  0.0: .spec.UseExistingMQ.XLD_TASK_QUEUE_PASSWORD\n  23.3: \n.spec.external.mq.driverClassName: \n  0.0: .spec.UseExistingMQ.XLD_TASK_QUEUE_DRIVER_CLASS_NAME\n  23.3: \n.spec.ingress.enabled: \n  0.0: .spec.ingress.Enabled\n  23.3: .\n.spec.ingress.hostname: \n  0.0: .spec.ingress.hosts.[0]\n  23.3: .\n.spec.ingress.path: .\n.spec.ingress.annotations: .\n.spec.ingress.extraTls: \n  0.0: .spec.ingress.tls\n  23.3: .\n.spec.keystore.passphrase: \n  0.0: .spec.KeystorePassphrase\n  23.3: .\n.spec.keystore.keystore: \n  0.0: .spec.RepositoryKeystore\n  23.3: .\n.spec.postgresql.install: .\n.spec.postgresql.primary.persistence.size: \n  0.0: .spec.postgresql.persistence.size\n  23.3: .\n.spec.postgresql.global.storageClass: \n  0.0: .spec.postgresql.persistence.storageClass\n  23.3: .\n.spec.postgresql.primary.extendedConfiguration: \n  0.0:\n    existance: .spec.postgresql.postgresqlMaxConnections\n    expression: .spec.postgresql.postgresqlMaxConnections as $maxConnection | \"max_connections = \" + $maxConnection\n  23.3: .\n.spec.postgresql.hasReport: \n  0.0: .spec.postgresql.hasReport // false\n  23.3: .\n# preserve current DB version\n.spec.postgresql.image.tag: .\n.spec.haproxy-ingress.install: .\n.spec.nginx-ingress-controller.install: .\n.spec.rabbitmq.install: .\n.spec.rabbitmq.persistence.storageClass: .\n.spec.rabbitmq.persistence.size: .\n.spec.rabbitmq.replicaCount: .\n.spec.rabbitmq.persistence.replicaCount: .\n# upgrade to next supported MQ version (do the manual upgrade later)\n.spec.rabbitmq.image.tag:\n  0.0:\n    existance: .spec.rabbitmq.image.tag\n    expression: .spec.rabbitmq.image.updateTag // \"3.10.25\"\n  23.3: .\n.spec.route.hostname: \n  0.0: .spec.route.hosts.[0]\n  23.3: .\n.spec.route.path: .\n.spec.route.annotations: .\n.spec.route.tls: .\n.spec.route.enabled: \n  0.0: .spec.route.Enabled\n  23.3: .\n.spec.license: \n  0.0: .spec.xldLicense\n  23.3: .\n.spec.licenseAcceptEula: \n  0.0:\n  23.3: ."
     - name: PreserveCrValuesRelease
       type: Editor
       prompt: "Edit list of custom resource keys that will migrate to the new Release CR:"
@@ -815,7 +817,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       description: For all matched expressions in the cluster CR, the values will be migrated to the upgraded Release CR
-      default: ".metadata.name: .\n.spec.auth.adminPassword: \n  0.0: .spec.AdminPassword\n  23.3: .\n.spec.replicaCount: .\n.spec.external.db: \n  0.0: .spec.UseExistingDB\n  23.3: .\n.spec.external.mq: \n  0.0: .spec.UseExistingMQ\n  23.3: .\n.spec.ingress.enabled: \n  0.0: .spec.ingress.Enabled\n  23.3: .\n.spec.keystore.passphrase: \n  0.0: .spec.KeystorePassphrase\n  23.3: .\n.spec.persistence.size: \n  0.0: .spec.Persistence.Size\n  23.3: .\n.spec.global.storageClass: \n  0.0: .spec.Persistence.StorageClass\n  23.3: .\n.spec.persistence.accessModes.[0]: \n  0.0: .spec.Persistence.AccessMode\n  23.3: \n.spec.persistence.accessModes:\n  0.0: \n  23.3: .\n.spec.keystore.keystore: \n  0.0: .spec.RepositoryKeystore\n  23.3: .\n.spec.postgresql.primary.persistence.size: \n  0.0: .spec.postgresql.persistence.size\n  23.3: .\n.spec.postgresql.global.storageClass: \n  0.0: .spec.postgresql.persistence.storageClass\n  23.3: .\n.spec.postgresql.primary.extendedConfiguration: \n  0.0:\n    existance: .spec.postgresql.postgresqlMaxConnections\n    expression: .spec.postgresql.postgresqlMaxConnections as $maxConnection | \"max_connections = \" + $maxConnection\n  23.3: .\n.spec.haproxy-ingress.install: .\n.spec.nginx-ingress-controller.install: .\n.spec.postgresql.install: .\n.spec.rabbitmq.install: .\n.spec.oidc: .\n.spec.rabbitmq.persistence.storageClass: .\n.spec.rabbitmq.persistence.size: .\n.spec.rabbitmq.replicaCount: .\n.spec.rabbitmq.persistence.replicaCount: .\n.spec.route.hosts: .\n.spec.license: \n  0.0: .spec.xlrLicense\n  23.3: .\n.spec.licenseAcceptEula: \n  0.0:\n  23.3: .\n.spec.http2.enabled: .\n.spec.ssl: .\n# preserve current DB version (in other case first do the upgrade)\n.spec.postgresql.image.tag: ."
+      default: ".metadata.name: .\n.spec.global.storageClass: \n  0.0: .spec.Persistence.StorageClass\n  23.3: .\n.spec.auth.adminPassword: \n  0.0: .spec.AdminPassword\n  23.3: .\n.spec.replicaCount: .\n.spec.persistence.accessModes.[0]: \n  0.0: .spec.Persistence.AccessMode\n  23.3: \n.spec.persistence.accessModes:\n  0.0: \n  23.3: .\n.spec.persistence.size: \n  0.0: .spec.Persistence.Size\n  23.3: .\n.spec.persistence.existingClaim: \n  0.0: \n    existance: .spec.Persistence.ExistingClaim\n    expression: .spec.Persistence.ExistingClaim \n  23.3: .\n.spec.oidc: .\n.spec.external.db: \n  0.0: \n  23.3: .\n.spec.external.db.enabled: \n  0.0: .spec.UseExistingDB.Enabled\n  23.3: \n.spec.external.db.main.url: \n  0.0: .spec.UseExistingDB.XLR_DB_URL\n  23.3:\n.spec.external.db.main.username: \n  0.0: .spec.UseExistingDB.XLR_DB_USER\n  23.3:\n.spec.external.db.main.password: \n  0.0: .spec.UseExistingDB.XLR_DB_PASS\n  23.3:\n.spec.external.db.report.url: \n  0.0: .spec.UseExistingDB.XLR_REPORT_DB_URL\n  23.3:\n.spec.external.db.report.username: \n  0.0: .spec.UseExistingDB.XLR_REPORT_DB_USER\n  23.3:\n.spec.external.db.report.password: \n  0.0: .spec.UseExistingDB.XLR_REPORT_DB_PASS\n  23.3:\n.spec.external.mq:\n  0.0: \n  23.3: .\n.spec.external.mq.enabled: \n  0.0: .spec.UseExistingMQ.Enabled\n  23.3: \n.spec.external.mq.url: \n  0.0: .spec.UseExistingMQ.XLR_TASK_QUEUE_URL\n  23.3: \n.spec.external.mq.queueName: \n  0.0: .spec.UseExistingMQ.XLR_TASK_QUEUE_NAME\n  23.3: \n.spec.external.mq.username: \n  0.0: .spec.UseExistingMQ.XLR_TASK_QUEUE_USERNAME\n  23.3: \n.spec.external.mq.password: \n  0.0: .spec.UseExistingMQ.XLR_TASK_QUEUE_PASSWORD\n  23.3: \n.spec.ingress.enabled: \n  0.0: .spec.ingress.Enabled\n  23.3: .\n.spec.ingress.hostname: \n  0.0: .spec.ingress.hosts.[0]\n  23.3: .\n.spec.ingress.path: .\n.spec.ingress.annotations: .\n.spec.ingress.extraTls: \n  0.0: .spec.ingress.tls\n  23.3: .\n.spec.keystore.passphrase: \n  0.0: .spec.KeystorePassphrase\n  23.3: .\n.spec.keystore.keystore: \n  0.0: .spec.RepositoryKeystore\n  23.3: .\n.spec.postgresql.install: .\n.spec.postgresql.primary.persistence.size: \n  0.0: .spec.postgresql.persistence.size\n  23.3: .\n.spec.postgresql.global.storageClass: \n  0.0: .spec.postgresql.persistence.storageClass\n  23.3: .\n.spec.postgresql.primary.extendedConfiguration: \n  0.0:\n    existance: .spec.postgresql.postgresqlMaxConnections\n    expression: .spec.postgresql.postgresqlMaxConnections as $maxConnection | \"max_connections = \" + $maxConnection\n  23.3: .\n# preserve current DB version\n.spec.postgresql.image.tag: .\n.spec.haproxy-ingress.install: .\n.spec.nginx-ingress-controller.install: .\n.spec.rabbitmq.install: .\n.spec.rabbitmq.persistence.storageClass: .\n.spec.rabbitmq.persistence.size: .\n.spec.rabbitmq.replicaCount: .\n.spec.rabbitmq.persistence.replicaCount: .\n# upgrade to next supported MQ version (do the manual upgrade later)\n.spec.rabbitmq.image.tag:\n  0.0:\n    existance: .spec.rabbitmq.image.tag\n    expression: .spec.rabbitmq.image.updateTag // \"3.10.25\"\n  23.3: .\n.spec.route.hostname: \n  0.0: .spec.route.hosts.[0]\n  23.3: .\n.spec.route.path: .\n.spec.route.annotations: .\n.spec.route.tls: .\n.spec.route.enabled: \n  0.0: .spec.route.Enabled\n  23.3: .\n.spec.license: \n  0.0: .spec.xlrLicense\n  23.3: .\n.spec.licenseAcceptEula: \n  0.0:\n  23.3: .\n.spec.http2.enabled: .\n.spec.ssl: ."
     - name: PreservePvc
       type: Confirm
       saveInXlvals: true
@@ -868,7 +870,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the Release Remote Runner image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-rc.1
+      default: 23.3.0-rc.2
       description: Enter the Release Remote Runner image tag to use
     - name: RemoteRunnerReleaseName
       type: Input
@@ -1049,9 +1051,9 @@ spec:
     - path: digitalai/dai-release/kubernetes-generic/template/manager-clusterrolebinding.yaml.tmpl
       writeIf: !expr ServerType == 'dai-release' && (IngressType == "nginx" || IngressType == "haproxy" || K8sSetup == 'Openshift') && (ProcessType == 'install' || ProcessType == 'upgrade')
       renameTo: !expr "'digitalai/dai-release/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/manager-clusterrolebinding.yaml.tmpl'"
-    - path: digitalai/dai-release/kubernetes-generic/template/manager-role.yaml.tmpl
+    - path: digitalai/dai-release/kubernetes-generic/template/manager-role.yaml
       writeIf: !expr ServerType == 'dai-release' && (ProcessType == 'install' || ProcessType == 'upgrade')
-      renameTo: !expr "'digitalai/dai-release/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/manager-role.yaml.tmpl'"
+      renameTo: !expr "'digitalai/dai-release/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/manager-role.yaml'"
     - path: digitalai/dai-release/kubernetes-generic/template/manager-rolebinding.yaml.tmpl
       writeIf: !expr ServerType == 'dai-release' && (ProcessType == 'install' || ProcessType == 'upgrade')
       renameTo: !expr "'digitalai/dai-release/' + Namespace + '/' + GenerationDateTime + '/kubernetes/template/manager-rolebinding.yaml.tmpl'"
