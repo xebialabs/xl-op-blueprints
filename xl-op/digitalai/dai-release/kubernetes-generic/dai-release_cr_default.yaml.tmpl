@@ -101,7 +101,7 @@ spec:
       nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
       nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
       nginx.ingress.kubernetes.io/rewrite-target: /
-      nginx.ingress.kubernetes.io/session-cookie-name: JSESSIONID
+      nginx.ingress.kubernetes.io/session-cookie-name: ROUTE
       nginx.ingress.kubernetes.io/ssl-redirect: "{{ .EnableIngressTls }}"
     {{- end }}
     {{- if eq .IngressType "haproxy" }}
