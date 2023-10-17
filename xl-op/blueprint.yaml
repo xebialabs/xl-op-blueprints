@@ -83,7 +83,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the application image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-1003.113
+      default: 23.4.0-1013.113
       description: Enter the application image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -551,7 +551,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: !expr "Enter the operator image to use (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the operator image to use (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-deploy' && (ProcessType == 'install' || ProcessType == 'upgrade')
       default: deploy-operator
       description: Enter the operator image to use
@@ -560,7 +560,7 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: !expr "Enter the operator image to use (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
+      prompt: "Enter the operator image to use (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
       promptIf: !expr ServerType == 'dai-release' && (ProcessType == 'install' || ProcessType == 'upgrade')
       default: release-operator
       description: Enter the operator image to use
@@ -571,7 +571,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the operator image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.3.0-1003.113
+      default: 23.4.0-1013.113
       description: Enter the operator image tag to use
     - name: RepositoryKeystoreSource
       type: Select
