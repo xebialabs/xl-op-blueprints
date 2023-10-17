@@ -180,9 +180,10 @@ spec:
     {{- end }}
   nginx-ingress-controller:
     {{- if eq .IsCustomImageRegistry true }}
-    image:
-      {{- /* registry name defined in global section */}}
-      repository: {{ .RepositoryName }}/nginx
+    defaultBackend:
+      image:
+        {{- /* registry name defined in global section */}}
+        repository: {{ .RepositoryName }}/nginx
     {{- end }}
     {{- if eq .UseCustomNamespace true }}
     extraArgs:
@@ -191,12 +192,10 @@ spec:
     extraArgs:
       ingress-class: nginx-dai-xlr
     {{- end }}
-    {{- if or (eq .IsCustomImageRegistry true) (eq .ImageRegistryType "private") }}
+    {{- if (eq .IsCustomImageRegistry true) }}
     global:
       {{- /* global overrides the other occurences */}}
-      {{- if eq .IsCustomImageRegistry true }}
       imageRegistry: {{ .CustomImageRegistryName }}
-      {{- end }}
       {{- if eq .ImageRegistryType "private" }}
       imagePullSecrets: [ {{ .CustomPrivateImageRegistrySecret }} ]
       {{- end }}
@@ -223,7 +222,7 @@ spec:
   postgresql:
     global:
       {{- /*  global overrides the other occurences */}}
-        {{- if eq .IsCustomImageRegistry true }}
+      {{- if eq .IsCustomImageRegistry true }}
       imageRegistry: {{ .CustomImageRegistryName }}
       {{- end }}
       {{- if eq .ImageRegistryType "private" }}
@@ -243,13 +242,17 @@ spec:
     securityContext:
       enabled: true
       fsGroup: 1001
+    {{- if eq .IsCustomImageRegistry true }}
+    volumePermissions:
+      image:
+        {{- /* registry name defined in global section */}}
+        repository: {{ .RepositoryName }}/bitnami-shell
+    {{- end }}    
   rabbitmq:
-    {{- if or (eq .IsCustomImageRegistry true) (eq .ImageRegistryType "private") }}
+    {{- if eq .IsCustomImageRegistry true }}
     global:
       {{- /* global overrides the other occurences */}}
-      {{- if eq .IsCustomImageRegistry true }}
       imageRegistry: {{ .CustomImageRegistryName }}
-      {{- end }}
       {{- if eq .ImageRegistryType "private" }}
       imagePullSecrets:
       - {{ .CustomPrivateImageRegistrySecret }}
