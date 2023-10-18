@@ -83,6 +83,7 @@ spec:
   {{- if eq .IsCustomImageRegistry true }}
   busyBox:
     image:
+      registry: {{ .CustomImageRegistryName }}
       repository: {{ .RepositoryName }}/busybox
   {{- end }}
   diagnosticMode:
