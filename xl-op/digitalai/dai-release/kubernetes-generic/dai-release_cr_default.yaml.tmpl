@@ -251,7 +251,7 @@ spec:
     volumePermissions:
       image:
         {{- /* registry name defined in global section */}}
-        repository: {{ .RepositoryName }}/bitnami-shell
+        repository: {{ .RepositoryName }}/os-shell
     {{- end }}    
   rabbitmq:
     {{- if eq .IsCustomImageRegistry true }}
