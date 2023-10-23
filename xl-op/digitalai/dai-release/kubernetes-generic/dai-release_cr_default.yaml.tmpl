@@ -23,7 +23,6 @@ spec:
     imagePullSecrets:
       - {{ .CustomPrivateImageRegistrySecret }}
     {{- end }}
-    storageClass: "{{ .StorageClass }}"
   k8sSetup:
     platform: {{ .K8sSetup }}
   auth:
@@ -74,6 +73,7 @@ spec:
 {{ .ReleaseKeystore | indent 6 }}
     {{- end }}
   persistence:
+    storageClass: "{{ .StorageClass }}"
     accessModes:
       - {{ .AccessModeRelease }}
     size: {{ .PvcSizeRelease }}Gi
@@ -245,6 +245,7 @@ spec:
     primary:
       persistence:
         size: {{ .PostgresqlPvcSize }}Gi
+        storageClass: "{{ .PostgresqlStorageClass }}"
     securityContext:
       enabled: true
       fsGroup: 1001
@@ -253,7 +254,7 @@ spec:
       image:
         {{- /* registry name defined in global section */}}
         repository: {{ .RepositoryName }}/os-shell
-    {{- end }}    
+    {{- end }}
   rabbitmq:
     {{- if eq .IsCustomImageRegistry true }}
     global:

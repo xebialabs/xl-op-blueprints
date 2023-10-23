@@ -23,7 +23,6 @@ spec:
     imagePullSecrets:
       - {{ .CustomPrivateImageRegistrySecret }}
     {{- end }}
-    storageClass: "{{ .StorageClass }}"
   k8sSetup:
     platform: {{ .K8sSetup }}
   auth:
@@ -60,6 +59,7 @@ spec:
   centralConfiguration:
     replicaCount: 1
     persistence:
+      storageClass: "{{ .StorageClass }}"
       accessModes:
         - {{ .AccessModeDeploy }}
       size: {{ .PvcSizeCc }}Gi
@@ -72,6 +72,7 @@ spec:
   master:
     replicaCount: {{ .XldMasterCount }}
     persistence:
+      storageClass: "{{ .StorageClass }}"
       accessModes:
         - {{ .AccessModeDeploy }}
       size: {{ .PvcSizeDeploy }}Gi
@@ -84,6 +85,7 @@ spec:
   worker:
     replicaCount: {{ .XldWorkerCount }}
     persistence:
+      storageClass: "{{ .StorageClass }}"
       accessModes:
         - {{ .AccessModeDeploy }}
       size: {{ .PvcSizeDeployTaskEngine }}Gi
@@ -252,6 +254,7 @@ spec:
     primary:
       persistence:
         size: {{ .PostgresqlPvcSize }}Gi
+        storageClass: "{{ .PostgresqlStorageClass }}"
     securityContext:
       enabled: true
       fsGroup: 1001
