@@ -243,6 +243,8 @@ spec:
       repository: {{ .RepositoryName }}/postgresql
     {{- end }}
     install: {{ .EnablePostgresql }}
+    service: 
+      port: 5432
     primary:
       persistence:
         size: {{ .PostgresqlPvcSize }}Gi
