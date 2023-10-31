@@ -719,7 +719,7 @@ spec:
       promptIf: !expr "ServerType == 'dai-deploy' && ProcessType == 'install' && EnablePostgresql == false"
       description: Setup the PostgreSQL external parameters (JDBC URL, username, password)
       default: |-
-        XL_DB_URL: jdbc:postgresql://<xld-db-host>:5432/<xlr-database-name>
+        XL_DB_URL: jdbc:postgresql://<xld-db-host>:5432/<xld-database-name>
         XL_DB_USERNAME: <xld-username>
         XL_DB_PASSWORD: <xld-password>
         XL_REPORT_DB_URL: jdbc:postgresql://<xld-report-db-host>:5432/<xld-report-database-name>
