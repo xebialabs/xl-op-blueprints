@@ -283,7 +283,7 @@ spec:
       {{- if eq .IsCustomImageRegistry true }}
       image:
         {{- /* registry name defined in global section */}}
-        repository: {{ .RepositoryName }}/bitnami-shell
+        repository: {{ .RepositoryName }}/os-shell
       {{- end }}
     securityContext:
       enabled: true
