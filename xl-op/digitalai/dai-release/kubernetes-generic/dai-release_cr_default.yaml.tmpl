@@ -17,9 +17,7 @@ metadata:
 spec:
   {{- if eq .IsCustomImageRegistry true }}
   global:
-    {{- if eq .IsCustomImageRegistry true }}
     imageRegistry: {{ .CustomImageRegistryName }}
-    {{- end }}
     {{- if eq .ImageRegistryType "private" }}
     imagePullSecrets:
       - {{ .CustomPrivateImageRegistrySecret }}
