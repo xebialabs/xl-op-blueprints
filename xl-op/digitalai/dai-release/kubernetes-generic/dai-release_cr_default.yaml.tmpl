@@ -15,6 +15,7 @@ metadata:
   {{- end }}
   {{- end }}
 spec:
+  {{- if eq .IsCustomImageRegistry true }}
   global:
     {{- if eq .IsCustomImageRegistry true }}
     imageRegistry: {{ .CustomImageRegistryName }}
@@ -23,6 +24,7 @@ spec:
     imagePullSecrets:
       - {{ .CustomPrivateImageRegistrySecret }}
     {{- end }}
+  {{- end }}
   k8sSetup:
     platform: {{ .K8sSetup }}
   auth:
