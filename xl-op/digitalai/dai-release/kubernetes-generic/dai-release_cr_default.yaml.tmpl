@@ -15,14 +15,14 @@ metadata:
   {{- end }}
   {{- end }}
 spec:
+  {{- if eq .IsCustomImageRegistry true }}
   global:
-    {{- if eq .IsCustomImageRegistry true }}
     imageRegistry: {{ .CustomImageRegistryName }}
-    {{- end }}
     {{- if eq .ImageRegistryType "private" }}
     imagePullSecrets:
       - {{ .CustomPrivateImageRegistrySecret }}
     {{- end }}
+  {{- end }}
   k8sSetup:
     platform: {{ .K8sSetup }}
   auth:
@@ -243,8 +243,6 @@ spec:
       repository: {{ .RepositoryName }}/postgresql
     {{- end }}
     install: {{ .EnablePostgresql }}
-    service: 
-      port: 5432
     primary:
       persistence:
         size: {{ .PostgresqlPvcSize }}Gi
