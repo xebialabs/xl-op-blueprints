@@ -3,6 +3,7 @@ kind: Service
 metadata:
   labels:
     control-plane: controller-manager
+    control-app: digitalai-deploy
   name: xld-operator-controller-manager-metrics-service
 spec:
   ports:
@@ -11,3 +12,4 @@ spec:
     targetPort: https
   selector:
     control-plane: controller-manager
+    control-app: digitalai-deploy
