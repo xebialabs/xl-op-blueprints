@@ -15,15 +15,14 @@ metadata:
   {{- end }}
   {{- end }}
 spec:
+  {{- if eq .IsCustomImageRegistry true }}
   global:
-    {{- if eq .IsCustomImageRegistry true }}
     imageRegistry: {{ .CustomImageRegistryName }}
-    {{- end }}
     {{- if eq .ImageRegistryType "private" }}
     imagePullSecrets:
       - {{ .CustomPrivateImageRegistrySecret }}
     {{- end }}
-    storageClass: "{{ .StorageClass }}"
+  {{- end }}
   k8sSetup:
     platform: {{ .K8sSetup }}
   auth:
@@ -74,6 +73,7 @@ spec:
 {{ .ReleaseKeystore | indent 6 }}
     {{- end }}
   persistence:
+    storageClass: "{{ .StorageClass }}"
     accessModes:
       - {{ .AccessModeRelease }}
     size: {{ .PvcSizeRelease }}Gi
@@ -98,6 +98,7 @@ spec:
       kubernetes.io/ingress.class: nginx-dai-xlr
       {{- end }}
       nginx.ingress.kubernetes.io/affinity: cookie
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
       nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
       nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
       nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
@@ -245,6 +246,7 @@ spec:
     primary:
       persistence:
         size: {{ .PostgresqlPvcSize }}Gi
+        storageClass: "{{ .PostgresqlStorageClass }}"
     securityContext:
       enabled: true
       fsGroup: 1001
@@ -253,7 +255,7 @@ spec:
       image:
         {{- /* registry name defined in global section */}}
         repository: {{ .RepositoryName }}/os-shell
-    {{- end }}    
+    {{- end }}
   rabbitmq:
     {{- if eq .IsCustomImageRegistry true }}
     global:
@@ -279,7 +281,7 @@ spec:
       {{- if eq .IsCustomImageRegistry true }}
       image:
         {{- /* registry name defined in global section */}}
-        repository: {{ .RepositoryName }}/bitnami-shell
+        repository: {{ .RepositoryName }}/os-shell
       {{- end }}
     securityContext:
       enabled: true

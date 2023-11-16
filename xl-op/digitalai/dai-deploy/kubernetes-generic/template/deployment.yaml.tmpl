@@ -3,16 +3,19 @@ kind: Deployment
 metadata:
   labels:
     control-plane: controller-manager
+    control-app: digitalai-deploy
   name: xld-operator-controller-manager
 spec:
   replicas: 1
   selector:
     matchLabels:
       control-plane: controller-manager
+      control-app: digitalai-deploy
   template:
     metadata:
       labels:
         control-plane: controller-manager
+        control-app: digitalai-deploy
     spec:
       {{- if eq .ImageRegistryType "private" }}
       imagePullSecrets:
