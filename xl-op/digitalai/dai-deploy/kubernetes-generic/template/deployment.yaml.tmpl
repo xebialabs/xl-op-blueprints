@@ -20,10 +20,15 @@ spec:
       {{- end }}
       containers:
       - name: kube-rbac-proxy
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - "ALL"
         {{- if eq .IsCustomImageRegistry true }}
-        image: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/kube-rbac-proxy:v0.8.0
+        image: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/kube-rbac-proxy:v0.13.1
         {{- else }}
-        image: gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0
+        image: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.1
         {{- end }}
         args:
         - "--secure-listen-address=0.0.0.0:8443"
@@ -32,7 +37,15 @@ spec:
         - "--v=10"
         ports:
         - containerPort: 8443
+          protocol: TCP
           name: https
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 5m
+            memory: 64Mi
       - name: manager
         args:
         - "--health-probe-bind-address=:8081"

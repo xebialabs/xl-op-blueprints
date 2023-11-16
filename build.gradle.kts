@@ -42,7 +42,7 @@ project.defaultTasks = listOf("build")
 val releasedVersion = System.getenv()["RELEASE_EXPLICIT"] ?: if (project.version.toString().contains("SNAPSHOT")) {
     project.version.toString()
 } else {
-    "23.3.0-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))}"
+    "24.1.0-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))}"
 }
 project.extra.set("releasedVersion", releasedVersion)
 
@@ -67,8 +67,8 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 subprojects {
@@ -126,7 +126,7 @@ tasks {
             commandLine(commandUnzip.split(" "))
         } else {
             commandLine("echo",
-                    "You have to specify which version you want to sync, ex. ./gradlew syncBlueprintsArchives -PversionToSync=23.3.0")
+                    "You have to specify which version you want to sync, ex. ./gradlew syncBlueprintsArchives -PversionToSync=24.1.0")
         }
     }
 
@@ -145,7 +145,7 @@ tasks {
             commandLine(commandRsync.split(" "))
         } else {
             commandLine("echo",
-                    "You have to specify which version you want to sync, ex. ./gradlew syncBlueprintsArchives -PversionToSync=23.3.0")
+                    "You have to specify which version you want to sync, ex. ./gradlew syncBlueprintsArchives -PversionToSync=24.1.0")
         }
     }
 
