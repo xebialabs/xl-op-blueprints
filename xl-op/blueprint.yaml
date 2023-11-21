@@ -375,14 +375,14 @@ spec:
     - name: OidcConfigTypeInstall
       type: Select
       options:
+        - label: No OIDC Configuration
+          value: no-oidc
         - label: External OIDC Configuration
           value: external
         - label: Identity Service Configuration
           value: identity-service
         - label: Embedded Keycloak Configuration
           value: embedded
-        - label: No OIDC Configuration
-          value: no-oidc
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
