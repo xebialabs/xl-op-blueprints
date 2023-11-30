@@ -33,6 +33,12 @@ spec:
   license: |-
 {{ .License | trim | indent 4 }}
   {{- end }}
+  {{- if eq .IngressType "none" }}
+  {{- if eq .HttpsProtocol true }}
+  appProtocol: "https"
+  {{- end }}
+  appHostname: "{{ .IngressHost }}"
+  {{- end }}
   keystore:
     passphrase: "{{ .KeystorePassphrase }}"
     keystore: |- 
