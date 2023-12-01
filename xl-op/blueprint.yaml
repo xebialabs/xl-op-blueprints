@@ -241,7 +241,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide DNS name for accessing UI of the server:"
-      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && (IngressType != "none" || ServerType == 'dai-release')
+      promptIf: !expr ProcessType == "install" && (IngressType != "none" || ServerType == 'dai-release')
       description: "Provide DNS name for accessing UI of the server. For OpenShift, this is used with Routing, while for other providers this is set up only when Ingress is used."
       validate: !expr "regex('^[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}$', IngressHost)"
     - name: HttpsProtocol
