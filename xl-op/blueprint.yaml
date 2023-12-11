@@ -56,7 +56,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
-      default: xebialabs
+      default: xebialabsunsupported
       description: Enter the repository name to use
     - name: RemoteRunnerRepositoryName
       type: Input
@@ -92,7 +92,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 23.1.8
+      default: 23.1.9
       description: Enter the image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
