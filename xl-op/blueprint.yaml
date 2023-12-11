@@ -55,7 +55,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
       prompt: !expr "IsCustomImageRegistry ? 'Enter the repository name (eg: <repositoryName> from <imageRegistryName>/<repositoryName>/<imageName>:<tagName>):' : 'Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):'"
-      default: xebialabs
+      default: xebialabsunsupported
       description: Enter the repository name to use
     - name: ImageNameDeploy
       type: Input
@@ -82,7 +82,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ProcessType == 'install' || ProcessType == 'upgrade'"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 22.3.15
+      default: 22.3.16
       description: Enter the image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
