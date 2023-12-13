@@ -56,7 +56,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the repository name for the application and operator images (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
-      default: xebialabsunsupported
+      default: xebialabs
       description: Enter the repository name to use for the application and operator images
     - name: ImageNameDeploy
       type: Input
