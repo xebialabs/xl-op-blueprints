@@ -83,7 +83,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the application image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 24.1.0-1208.113
+      default: 24.1.0-1207.113
       description: Enter the application image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -106,7 +106,7 @@ spec:
     - name: LicenseSource
       type: Select
       options:
-        - label: Generate the license (this is only for temporary license that is used for evaluation)
+        - label: Generate the license (accepting EULA, this is only for temporary license)
           value: generate
         - label: Path to the license file (the file can be in clean text or base64 encoded)
           value: file
@@ -149,9 +149,9 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "ServerType == 'dai-deploy' && ProcessType == 'install'"
-      prompt: !expr "LicenseSource == 'generate' ? 'Enter the deploy master server replica count (use 1 in case of license will be generated):' : 'Enter the deploy master server replica count:'"
-      default: !expr "LicenseSource == 'generate' ? '1' : '3'"
-      description: "Enter the Deploy master server replica count. For production use 3 or above. \nIn case you selected license generation, for now it is not possible to replicate the license between pods, so it is recommended to use 1 pod, or manually replicate the generated license between pods."
+      prompt: "Enter the deploy worker replica count:"
+      default: 3
+      description: "Enter the Deploy master server replica count. For production use 3 or above."
       validate: !expr "regex('^([1-9])+$', XldMasterCount)"
     - name: PvcSizeDeploy
       type: Input
@@ -196,16 +196,6 @@ spec:
       default: 10
       description: "Enter PVC size for Deploy worker"
       validate: !expr "regex('^([0-9])+(\\.)?([0-9])*$', PvcSizeDeployTaskEngine)"
-    - name: PvcSizeCc
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      overrideDefault: true
-      promptIf: !expr "ServerType == 'dai-deploy' && ProcessType == 'install'"
-      prompt: "Enter PVC size for Central Configuration (Gi):"
-      default: 0.5
-      description: "Enter PVC size for Central Configuration"
-      validate: !expr "regex('^([0-9])+(\\.)?([0-9])*$', PvcSizeCc)"
     - name: XlrReplicaCount
       type: Input
       saveInXlvals: true
@@ -569,7 +559,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the operator image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 24.1.0-1208.113
+      default: 24.1.0-1211.1200
       description: Enter the operator image tag to use
     - name: RepositoryKeystoreSource
       type: Select

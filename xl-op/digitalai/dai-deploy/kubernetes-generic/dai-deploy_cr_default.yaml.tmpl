@@ -58,11 +58,6 @@ spec:
 
   centralConfiguration:
     replicaCount: 1
-    persistence:
-      storageClass: "{{ .StorageClass }}"
-      accessModes:
-        - {{ .AccessModeDeploy }}
-      size: {{ .PvcSizeCc }}Gi
     image:
       repository: {{ .RepositoryName }}/{{ .ImageNameCc }}
       tag: "{{ .ImageTag }}"
