@@ -149,7 +149,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       promptIf: !expr "ServerType == 'dai-deploy' && ProcessType == 'install'"
-      prompt: "Enter the deploy worker replica count:"
+      prompt: "Enter the deploy master replica count:"
       default: 3
       description: "Enter the Deploy master server replica count. For production use 3 or above."
       validate: !expr "regex('^([1-9])+$', XldMasterCount)"
