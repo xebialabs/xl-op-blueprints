@@ -56,22 +56,33 @@ spec:
   oidc:
     enabled: {{ not (eq .OidcConfigType "no-oidc") }}
 {{ .ExternalOidcConf | indent 4 }}
+  {{- if eq .HttpProtocolRelease "http2" }}
   http2:
-    enabled: {{ .Http2EnabledRelease }}
+    enabled: true
+  {{- end }}
+  {{- if or (eq .HttpProtocolRelease "https") (eq .HttpProtocolRelease "http2") }}
   ssl:
-    enabled: {{ .Http2EnabledRelease }}
-    keystorePassword: {{ .ReleaseKeystorePassword }}
-    keystoreKeypassword: {{ .ReleaseKeystoreKeyPassword }}
-    {{- if eq .ReleaseKeystoreSource "secret" }}
+    enabled: true
+    keystorePassword: {{ .ApplicationKeystorePassword }}
+    keystoreKeypassword: {{ .ApplicationKeystoreKeyPassword }}
+    {{- if eq .ApplicationKeystoreSource "secret" }}
     keystore:
       valueFrom:
         secretKeyRef:
-          name: {{ .ReleaseKeystoreSecretName }}
-          key: ssl-keystore.p12
+          name: {{ .ApplicationKeystoreSecretName }}
+          key: ssl-keystore.{{ .ApplicationKeystoreType }}
     {{- else }}
+    {{- if or (eq .ApplicationKeystoreSource "editor") (eq .ApplicationKeystoreSource "file") }}
     keystore: |-
-{{ .ReleaseKeystore | indent 6 }}
+{{ .ApplicationKeystore | indent 6 }}
     {{- end }}
+    {{- end }}
+  {{- if eq .ApplicationKeystoreSource "generate" }}
+  hooks:
+    genSelfSigned:
+      enabled: true
+  {{- end }}
+  {{- end }}
   persistence:
     storageClass: "{{ .StorageClass }}"
     accessModes:
@@ -104,7 +115,17 @@ spec:
       nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
       nginx.ingress.kubernetes.io/rewrite-target: /
       nginx.ingress.kubernetes.io/session-cookie-name: ROUTE
-      nginx.ingress.kubernetes.io/ssl-redirect: "{{ .EnableIngressTls }}"
+      {{- if eq .HttpProtocolRelease "https" }}
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      {{- end }}
+      {{- if eq .HttpProtocolIngress "https" }}
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      {{- else }}
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      {{- end }}
+      {{- if eq .IngressKeystoreSource "passthrough" }}
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      {{- end }}
     {{- end }}
     {{- if eq .IngressType "haproxy" }}
     enabled: true
@@ -120,9 +141,25 @@ spec:
       ingress.kubernetes.io/session-cookie-strategy: prefix
       ingress.kubernetes.io/timeout-client: "120s"
       ingress.kubernetes.io/timeout-http-request: "120s"
+      {{- if eq .HttpProtocolRelease "https" }}
       ingress.kubernetes.io/config-backend: |
+        option httpchk GET / HTTP/1.0
+        http-check send hdr Host {{ .IngressHost }}
+      haproxy-ingress.github.io/backend-protocol: "h1-ssl"
+      haproxy-ingress.github.io/secure-backends: "true"
+      haproxy-ingress.github.io/secure-sni: host
+      {{- else }}
+      haproxy-ingress.github.io/config-backend: |
         option httpchk GET /ha/health HTTP/1.0
-      ingress.kubernetes.io/ssl-redirect: "{{ .EnableIngressTls }}"
+      {{- end }}
+      {{- if eq .HttpProtocolIngress "https" }}
+      haproxy-ingress.github.io/ssl-redirect: "true"
+      {{- else }}
+      haproxy-ingress.github.io/ssl-redirect: "false"
+      {{- end }}
+      {{- if eq .IngressKeystoreSource "passthrough" }}
+      haproxy-ingress.github.io/ssl-passthrough: "true"
+      {{- end }}
     {{- end }}
     {{- if eq .IngressType "external" }}
     enabled: true
@@ -134,23 +171,36 @@ spec:
       ingress.kubernetes.io/session-cookie-strategy: prefix
       ingress.kubernetes.io/timeout-client: "120s"
       ingress.kubernetes.io/timeout-http-request: "120s"
-      ingress.kubernetes.io/config-backend: |
-        option httpchk GET /ha/health HTTP/1.0
-      ingress.kubernetes.io/ssl-redirect: "{{ .EnableIngressTls }}"
+      {{- if eq .HttpProtocolRelease "https" }}
+      ingress.kubernetes.io/backend-protocol: "HTTPS"
+      {{- end }}
+      {{- if eq .HttpProtocolIngress "https" }}
+      ingress.kubernetes.io/ssl-redirect: "true"
+      {{- else }}
+      ingress.kubernetes.io/ssl-redirect: "false"
+      {{- end }}
+      {{- if eq .IngressKeystoreSource "passthrough" }}
+      ingress.kubernetes.io/ssl-passthrough: "true"
+      {{- end }}
     {{- end }}
     {{- if eq .IngressType "none" }}
     enabled: false
     {{- end }}
     hostname: "{{ .IngressHost }}"
     path: /
-    {{- if eq .EnableIngressTls true }}
+    {{- if eq .HttpProtocolIngress "https" }}
     # If you want to use TLS configuration uncomment the following lines and provide correct values.
     # You need to create secret, and provide the name under "secretName"
     tls: true
+    {{- if eq .IngressKeystoreSource "generate" }}
+    selfSigned: true
+    {{- end }}
+    {{- if eq .IngressKeystoreSource "secret" }}
     extraTls:
       - hosts:
           - "{{ .IngressHost }}"
         secretName: "{{ .IngressTlsSecretName }}"
+    {{- end }}
     {{- end }}
   route:
     {{- if eq .IngressType "route" }}
@@ -160,8 +210,27 @@ spec:
       haproxy.router.openshift.io/disable_cookies: "false"
       haproxy.router.openshift.io/rewrite-target: /
       haproxy.router.openshift.io/timeout: 120s
+      {{- if and (not (eq .IngressKeystoreSource "passthrough")) (eq .HttpProtocolRelease "https") }}
+      haproxy.router.openshift.io/set-forwarded-headers: replace
+      haproxy.router.openshift.io/secure-sni: host
+      {{- end }}
     hostname: "{{ .IngressHost }}"
     path: /
+    {{- if eq .HttpProtocolIngress "https" }}
+    tls:
+      enabled: true
+      {{- if eq .IngressKeystoreSource "passthrough" }}
+      termination: passthrough
+      {{- else }}
+      termination: edge
+      {{- if eq .IngressKeystoreSource "generate" }}
+      selfSigned: true
+      {{- end }}
+      {{- if eq .IngressKeystoreSource "secret" }}
+      secretName: "{{ .IngressTlsSecretName }}"
+      {{- end }}
+      {{- end }}
+    {{- end }}
     {{- else }}
     enabled: false
     {{- end }}

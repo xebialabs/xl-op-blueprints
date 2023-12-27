@@ -52,7 +52,8 @@ IdentityServiceConfRelease: |-
 IngressTypeGeneric: '{{ .IngressTypeGeneric }}'
 IngressTypeOpenshift: '{{ .IngressTypeOpenshift }}'
 ExternalIngressClass: '{{ .ExternalIngressClass }}'
-EnableIngressTls: {{ .EnableIngressTls }}
+HttpProtocolIngress: '{{ .HttpProtocolIngress }}'
+IngressKeystoreSource: '{{ .IngressKeystoreSource }}'
 IngressTlsSecretName: '{{ .IngressTlsSecretName }}'
 AdminPassword: '{{ .AdminPassword }}'
 StorageClass: '{{ .StorageClass }}'
@@ -76,20 +77,21 @@ RabbitmqPvcSize: '{{ .RabbitmqPvcSize }}'
   {{- if eq .ServerType "dai-release" }}
 PvcSizeRelease: '{{ .PvcSizeRelease }}'
 AccessModeRelease: '{{ .AccessModeRelease }}'
-Http2EnabledRelease: '{{ .Http2EnabledRelease }}'
-ReleaseKeystoreSource: '{{ .ReleaseKeystoreSource }}'
-ReleaseKeystoreEditor: |-
-{{ .ReleaseKeystoreEditor | trim | indent 2 }}
-ReleaseKeystoreFile: '{{ .ReleaseKeystoreFile }}'
-ReleaseKeystoreSecretName: '{{ .ReleaseKeystoreSecretName }}'
-ReleaseKeystore: '{{ .ReleaseKeystore }}'
-ReleaseKeystorePassword: '{{ .ReleaseKeystorePassword }}'
-ReleaseKeystoreKeyPassword: '{{ .ReleaseKeystoreKeyPassword }}'
   {{- end }}
+HttpProtocolRelease: '{{ .HttpProtocolRelease }}'
+HttpProtocolDeploy: '{{ .HttpProtocolDeploy }}'
+ApplicationKeystoreSource: '{{ .ApplicationKeystoreSource }}'
+ApplicationKeystoreEditor: |-
+{{ .ApplicationKeystoreEditor | trim | indent 2 }}
+ApplicationKeystoreFile: '{{ .ApplicationKeystoreFile }}'
+ApplicationKeystoreSecretName: '{{ .ApplicationKeystoreSecretName }}'
+ApplicationKeystore: '{{ .ApplicationKeystore }}'
+ApplicationKeystoreType: '{{ .ApplicationKeystoreType }}'
+ApplicationKeystorePassword: '{{ .ApplicationKeystorePassword }}'
+ApplicationKeystoreKeyPassword: '{{ .ApplicationKeystoreKeyPassword }}'
   {{- if eq .ServerType "dai-deploy" }}
 PvcSizeDeploy: '{{ .PvcSizeDeploy }}'
 PvcSizeDeployTaskEngine: '{{ .PvcSizeDeployTaskEngine }}'
-PvcSizeCc: '{{ .PvcSizeCc }}'
 AccessModeDeploy: '{{ .AccessModeDeploy }}'
   {{- end }}
 {{- end }}
