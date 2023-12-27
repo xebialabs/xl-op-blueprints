@@ -56,7 +56,6 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the repository name for the application and operator images (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
-      default: xebialabsunsupported
       description: Enter the repository name to use for the application and operator images
     - name: ImageNameDeploy
       type: Input
@@ -83,7 +82,6 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the application image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 24.1.0-1207.113-centos
       description: Enter the application server image tag to use
     - name: ImageNameDeployTaskEngine
       type: Input
@@ -325,7 +323,7 @@ spec:
       ignoreIfSkipped: true
       description: Provide the keystore type for the application server
       promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && (HttpProtocolRelease != "http" || HttpProtocolDeploy != "http")
-      default: "pkcs12"      
+      default: "pkcs12"
     - name: ApplicationKeystorePassword
       type: Input
       saveInXlvals: true
@@ -624,7 +622,6 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the operator image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 24.1.0-1221.1000
       description: Enter the operator image tag to use
     - name: RepositoryKeystoreSource
       type: Select
@@ -1213,7 +1210,6 @@ spec:
       overrideDefault: true
       promptIf: !expr "RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the Remote Runner repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
-      default: xebialabs
       description: Enter the Remote Runner repository name to use
     - name: ImageNameRemoteRunner
       type: Input
@@ -1231,7 +1227,6 @@ spec:
       overrideDefault: true
       promptIf: !expr "RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the Release Remote Runner image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 24.1.0-beta.1
       description: Enter the Release Remote Runner image tag to use
     - name: RemoteRunnerReleaseName
       type: Input
