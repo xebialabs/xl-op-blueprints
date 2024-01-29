@@ -17,7 +17,7 @@ spec:
   {{- if eq .IsCustomImageRegistry true }}
   ImageRepository: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/{{ .ImageNameRelease }}
   {{- else }}
-  ImageRepository: {{ .RepositoryName }}/{{ .ImageNameRelease }}
+  ImageRepository: docker.io/{{ .RepositoryName }}/{{ .ImageNameRelease }}
   {{- end }}
   ImageTag: "{{ .ImageTag }}"
   ## xebialabs/tiny-tools image version
@@ -25,7 +25,7 @@ spec:
   {{- if eq .IsCustomImageRegistry true }}
   TinyToolsImageRepository: "{{ .CustomImageRegistryName }}/{{ .RepositoryName }}/tiny-tools"
   {{- else }}
-  TinyToolsImageRepository: "xebialabs/tiny-tools"
+  TinyToolsImageRepository: "docker.io/xebialabs/tiny-tools"
   {{- end }}
   TinyToolsImageTag: "22.2.0"
   {{- if eq .ImageRegistryType "private" }}

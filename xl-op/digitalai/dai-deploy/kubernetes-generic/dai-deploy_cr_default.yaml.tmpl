@@ -18,8 +18,8 @@ spec:
   ServerImageRepository: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/{{ .ImageNameDeploy }}
   WorkerImageRepository: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/{{ .ImageNameDeployTaskEngine }}
   {{- else }}
-  ServerImageRepository: {{ .RepositoryName }}/{{ .ImageNameDeploy }}
-  WorkerImageRepository: {{ .RepositoryName }}/{{ .ImageNameDeployTaskEngine }}
+  ServerImageRepository: docker.io/{{ .RepositoryName }}/{{ .ImageNameDeploy }}
+  WorkerImageRepository: docker.io/{{ .RepositoryName }}/{{ .ImageNameDeployTaskEngine }}
   {{- end }}
   ImageTag: "{{ .ImageTag }}"
   ## xebialabs/tiny-tools image version
@@ -27,7 +27,7 @@ spec:
   {{- if eq .IsCustomImageRegistry true }}
   TinyToolsImageRepository: "{{ .CustomImageRegistryName }}/{{ .RepositoryName }}/tiny-tools"
   {{- else }}
-  TinyToolsImageRepository: "xebialabs/tiny-tools"
+  TinyToolsImageRepository: "docker.io/xebialabs/tiny-tools"
   {{- end }}
   TinyToolsImageTag: "22.2.0"
   # Secrets must be manually created in the namespace
@@ -1884,7 +1884,7 @@ spec:
       {{- if eq .IsCustomImageRegistry true }}
       repository: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/{{ .ImageNameCc }}
       {{- else }}
-      repository: {{ .RepositoryName }}/{{ .ImageNameCc }}
+      repository: docker.io/{{ .RepositoryName }}/{{ .ImageNameCc }}
       {{- end }}
     persistence:
       annotations: {}
