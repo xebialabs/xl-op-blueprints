@@ -58,7 +58,7 @@ spec:
         {{- if eq .IsCustomImageRegistry true }}
         image: {{ .CustomImageRegistryName }}/{{ .RepositoryName }}/{{ .OperatorImageRelease }}:{{ .OperatorImageTag }}
         {{- else }}
-        image: {{ .RepositoryName }}/{{ .OperatorImageRelease }}:{{ .OperatorImageTag }}
+        image: docker.io/{{ .RepositoryName }}/{{ .OperatorImageRelease }}:{{ .OperatorImageTag }}
         {{- end }}
         imagePullPolicy: IfNotPresent
         env:
