@@ -451,7 +451,7 @@ spec:
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
-      value: !expr "K8sSetup == 'Openshift' ? IngressKeystoreSourceOpenshift : IngressKeystoreSourceGEneric"
+      value: !expr "K8sSetup == 'Openshift' ? IngressKeystoreSourceOpenshift : IngressKeystoreSourceGeneric"
       description: Select between supported ingress keystore sources.
     - name: IngressHost
       type: Input
