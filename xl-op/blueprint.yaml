@@ -260,20 +260,20 @@ spec:
     - name: ApplicationKeystoreSource
       type: Select
       options:
-        - label: The keystore will be automatically generated
+        - label: The HTTPS keystore will be automatically generated with self-signed key
           value: generate
-        - label: Path to the keystore file (the file can be in the raw format or base64 encoded)
+        - label: Path to the HTTPS keystore file (the file can be in the raw format or base64 encoded)
           value: file
-        - label: Copy/Paste the keystore to editor (the content needs to be base64 encoded)
+        - label: Copy/Paste the HTTPS keystore to editor (the content needs to be base64 encoded)
           value: editor
-        - label: Generic Secret containing keystore file with key in PKCS12 (as ssl-keystore.p12) or JKS (as ssl-keystore.jks) format
+        - label: Generic Secret containing HTTPS keystore file in the PKCS12 (as ssl-keystore.p12) or JKS (as ssl-keystore.jks) format
           value: secret
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Select source of the keystore for the server:"
+      prompt: "Select source of the HTTPS keystore for the server:"
       promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && (HttpProtocolRelease != "http" || HttpProtocolDeploy != "http")
-      description: "Provide source of the keystore"
+      description: "Provide source of the HTTPS keystore in the PKCS12 or JKS format"
       default: "generate"
       validate: !expr "ApplicationKeystoreSource == 'secret' ? length(k8sResources(Namespace, 'secrets')) > '0' : true"
     - name: ApplicationKeystoreEditor
@@ -281,18 +281,18 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Provide keystore for the server:"
+      prompt: "Provide HTTPS keystore for the server:"
       promptIf: !expr "ServerType != 'dai-release-remote-runner' && ProcessType == 'install' && ApplicationKeystoreSource == 'editor'"
-      description: "Provide keystore for the server in pkcs12 format, generated with openssl"
+      description: "Provide HTTPS keystore for the server in pkcs12 format, generated with openssl"
       default: ""
     - name: ApplicationKeystoreFile
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Provide keystore file for the server:"
+      prompt: "Provide HTTPS keystore file for the server:"
       promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == 'install' && ApplicationKeystoreSource == 'file'
-      description: Provide the keystore file for the server
+      description: Provide the HTTPS keystore file for the server
       validate: !expr "isFile(ApplicationKeystoreFile)"
       default: ""
     - name: ApplicationKeystoreSecretName
@@ -302,14 +302,14 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Provide the generic secret name with the application server keystore added in PKCS12 (as ssl-keystore.p12) or JKS (as ssl-keystore.jks) format:"
+      prompt: "Provide the generic secret name with the application server HTTPS keystore added in PKCS12 (as ssl-keystore.p12) or JKS (as ssl-keystore.jks) format:"
       promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && ApplicationKeystoreSource == 'secret'
-      description: Provide the Generic secret name with the keystore application server
+      description: Provide the Generic secret name with the HTTPS keystore for the application server. It must be in PKCS12 or JKS format.
     - name: ApplicationKeystore
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
-      description: Provide the keystore for the application server
+      description: Provide the HTTPS keystore for the application server
       value: !expr "ApplicationKeystoreSource == 'editor' ? ifBase64(ApplicationKeystoreEditor) : ifBase64(ifFileReadBytes(ApplicationKeystoreFile))"
       default: ""
     - name: ApplicationKeystoreType
@@ -321,8 +321,8 @@ spec:
           value: jks
       saveInXlvals: true
       ignoreIfSkipped: true
-      prompt: "Provide the gapplication server keystore format:"
-      description: Provide the keystore type for the application server
+      prompt: "Provide the application server HTTPS keystore format:"
+      description: Provide the HTTPS keystore type for the application server
       promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && (HttpProtocolRelease != "http" || HttpProtocolDeploy != "http")
       default: "pkcs12"
     - name: ApplicationKeystorePassword
@@ -331,20 +331,20 @@ spec:
       ignoreIfSkipped: true
       allowEmpty: true
       overrideDefault: true
-      prompt: "Provide the server keystore password:"
+      prompt: "Provide the server HTTPS keystore password:"
       promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && (HttpProtocolRelease != "http" || HttpProtocolDeploy != "http")
-      description: Keystore passphrase for the server
-      default: ""
+      description: HTTPS keystore passphrase for the server
+      default: !expr "ApplicationKeystoreSource == 'generate' ? randPassword() : ''"
     - name: ApplicationKeystoreKeyPassword
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
       allowEmpty: true
       overrideDefault: true
-      prompt: "Provide the server keystore key passphrase:"
+      prompt: "Provide the server HTTPS keystore key passphrase:"
       promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && (HttpProtocolRelease != "http" || HttpProtocolDeploy != "http")
-      description: Keystore key passphrase for the server
-      default: ""
+      description: HTTPS keystore key passphrase for the server
+      default: !expr "ApplicationKeystoreSource == 'generate' ? randPassword() : ''"
     - name: IngressTypeGeneric
       type: Select
       prompt: "Select between supported ingress types:"
@@ -410,22 +410,22 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      description: Select the protocol, for https you will need to provide the secret with key, or you will use autogenerated self-signed key
+      description: Select the ingress protocol, for https you will need to provide the secret with key, or you will use autogenerated self-signed key
     - name: IngressKeystoreSourceGeneric
       type: Select
       options:
-        - label: The keystore will be automatically generated
+        - label: The ingress keystore will be automatically generated with self-signed key
           value: generate
-        - label: Generic Secret containing keystore file with key in PKCS12 (as ssl-keystore.p12) or JKS (as ssl-keystore.jks) format
+        - label: Generic Secret containing ingress keystore file with key in PKCS12 (as ssl-keystore.p12) or JKS (as ssl-keystore.jks) format
           value: secret
-        - label: SSL passthrough (it will pass the trafic to the backend without decription)
+        - label: SSL passthrough (it will pass the trafic to the backend without decryption)
           value: passthrough
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Select source of the keystore for the ingress:"
+      prompt: "Select source of the ingress keystore:"
       promptIf: !expr K8sSetup != 'Openshift' && ServerType != 'dai-release-remote-runner' && ProcessType == "install" && IngressType != 'none' && HttpProtocolIngress != "http"
-      description: "Provide source of the keystore"
+      description: "Provide source of the ingress keystore"
       default: "generate"
       validate: !expr "IngressKeystoreSourceGeneric == 'secret' ? length(k8sResources(Namespace, 'secrets')) > '0' : true"
     - name: IngressKeystoreSourceOpenshift
@@ -433,11 +433,11 @@ spec:
       options:
         - label: Use route default certificate
           value: default
-        - label: The keystore will be automatically generated
+        - label: The keystore will be automatically generated with self-signed key
           value: generate
         - label: Generic Secret containing keystore file with key in PKCS12 (as ssl-keystore.p12) or JKS (as ssl-keystore.jks) format
           value: secret
-        - label: SSL passthrough (it will pass the trafic to the backend without decription)
+        - label: SSL passthrough (it will pass the trafic to the backend without decryption)
           value: passthrough
       saveInXlvals: true
       ignoreIfSkipped: true
@@ -467,9 +467,9 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "The access will be secured with HTTPS protocol:"
+      prompt: "The access to the Release host will be secured externally with HTTPS protocol:"
       promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && IngressType == "none"
-      description: "Select true if the HTTPS protocol will be used, the serverl URL will start with https"
+      description: "Select true if the HTTPS protocol will be used that is setup somewhere externally, the serverl URL will start with https"
     - name: IngressTlsSecretName
       type: Select
       options:
@@ -663,7 +663,7 @@ spec:
       overrideDefault: true
       prompt: "Select source of the repository keystore:"
       promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install"
-      description: "Provide source of the license file"
+      description: "Provide source of the repository keystore file"
       default: generate
     - name: RepositoryKeystoreEditor
       type: Editor
@@ -695,9 +695,9 @@ spec:
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
-      prompt: "Provide keystore passphrase:"
+      prompt: "Provide repository keystore passphrase:"
       promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install"
-      description: Keystore passphrase for the server
+      description: Repository keystore passphrase for the server
       default: !expr "RepositoryKeystoreSource == 'generate' ? randPassword() : ''"
     - name: StorageClass
       type: Select
