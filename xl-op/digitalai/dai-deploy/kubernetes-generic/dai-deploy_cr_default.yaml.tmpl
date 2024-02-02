@@ -60,6 +60,7 @@ spec:
     enabled: true
     keystorePassword: {{ .ApplicationKeystorePassword }}
     keystoreKeypassword: {{ .ApplicationKeystoreKeyPassword }}
+    keystoreType: {{ .ApplicationKeystoreType }}
     {{- if eq .ApplicationKeystoreSource "secret" }}
     keystore:
       valueFrom:
@@ -84,6 +85,7 @@ spec:
     image:
       repository: {{ .RepositoryName }}/{{ .ImageNameCc }}
       tag: "{{ .ImageTag }}"
+      pullPolicy: IfNotPresent
     diagnosticMode:
       enabled: false
 
@@ -94,9 +96,12 @@ spec:
       accessModes:
         - {{ .AccessModeDeploy }}
       size: {{ .PvcSizeDeploy }}Gi
+    volumePermissions:
+      enabled: false
     image:
       repository: {{ .RepositoryName }}/{{ .ImageNameDeploy }}
       tag: "{{ .ImageTag }}"
+      pullPolicy: IfNotPresent
     diagnosticMode:
       enabled: false
 
@@ -107,9 +112,12 @@ spec:
       accessModes:
         - {{ .AccessModeDeploy }}
       size: {{ .PvcSizeDeployTaskEngine }}Gi
+    volumePermissions:
+      enabled: false
     image:
       repository: {{ .RepositoryName }}/{{ .ImageNameDeployTaskEngine }}
       tag: "{{ .ImageTag }}"
+      pullPolicy: IfNotPresent
     diagnosticMode:
       enabled: false
 

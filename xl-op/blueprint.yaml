@@ -342,9 +342,9 @@ spec:
       allowEmpty: true
       overrideDefault: true
       prompt: "Provide the server HTTPS keystore key passphrase:"
-      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && (HttpProtocolRelease != "http" || HttpProtocolDeploy != "http")
+      promptIf: !expr ServerType != 'dai-release-remote-runner' && ProcessType == "install" && (HttpProtocolRelease != "http" || HttpProtocolDeploy != "http") && ApplicationKeystoreType == 'jks'
       description: HTTPS keystore key passphrase for the server
-      default: !expr "ApplicationKeystoreSource == 'generate' ? randPassword() : ''"
+      default: !expr "ApplicationKeystoreType == 'jks' ? (ApplicationKeystoreSource == 'generate' ? randPassword() : '') : ApplicationKeystorePassword"
     - name: IngressTypeGeneric
       type: Select
       prompt: "Select between supported ingress types:"
@@ -468,7 +468,7 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "The access to the Release host will be secured externally with HTTPS protocol:"
-      promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && IngressType == "none"
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && IngressType == "none" && HttpProtocolRelease == "http"
       description: "Select true if the HTTPS protocol will be used that is setup somewhere externally, the serverl URL will start with https"
     - name: IngressTlsSecretName
       type: Select

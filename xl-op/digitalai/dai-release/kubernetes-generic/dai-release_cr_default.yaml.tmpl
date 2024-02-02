@@ -34,8 +34,12 @@ spec:
 {{ .License | trim | indent 4 }}
   {{- end }}
   {{- if eq .IngressType "none" }}
-  {{- if eq .HttpsProtocol true }}
+  {{- if or (eq .HttpsProtocol true) (eq .HttpProtocolRelease "https") }}
   appProtocol: "https"
+  {{- else }}
+  {{- if eq .HttpProtocolRelease "http2" }}
+  appProtocol: "http2"
+  {{- end }}
   {{- end }}
   appHostname: "{{ .IngressHost }}"
   {{- end }}
@@ -71,6 +75,7 @@ spec:
     enabled: true
     keystorePassword: {{ .ApplicationKeystorePassword }}
     keystoreKeypassword: {{ .ApplicationKeystoreKeyPassword }}
+    keystoreType: {{ .ApplicationKeystoreType }}
     {{- if eq .ApplicationKeystoreSource "secret" }}
     keystore:
       valueFrom:
@@ -94,9 +99,12 @@ spec:
     accessModes:
       - {{ .AccessModeRelease }}
     size: {{ .PvcSizeRelease }}Gi
+  volumePermissions:
+    enabled: false
   image:
     repository: {{ .RepositoryName }}/{{ .ImageNameRelease }}
     tag: "{{ .ImageTag }}"
+    pullPolicy: IfNotPresent
   {{- if eq .IsCustomImageRegistry true }}
   busyBox:
     image:
