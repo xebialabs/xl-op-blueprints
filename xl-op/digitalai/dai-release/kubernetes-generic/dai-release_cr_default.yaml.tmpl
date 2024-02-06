@@ -83,11 +83,27 @@ spec:
 {{ .ApplicationKeystore | indent 6 }}
     {{- end }}
     {{- end }}
-  {{- if eq .ApplicationKeystoreSource "generate" }}
+  {{- end }}
+  {{- if or (eq .ApplicationKeystoreSource "generate") (eq .LicenseSource "generate") }}
   hooks:
+    {{- if eq .ApplicationKeystoreSource "generate" }}
     genSelfSigned:
       enabled: true
-  {{- end }}
+      {{- if eq .IsCustomImageRegistry true }}
+      image:
+        registry: {{ .CustomImageRegistryName }}
+        repository: {{ .RepositoryName }}/kubectl
+      {{- end }}
+    {{- end }}
+    {{- if eq .LicenseSource "generate" }}
+    getLicense:
+      enabled: true
+      {{- if eq .IsCustomImageRegistry true }}
+      image:
+        registry: {{ .CustomImageRegistryName }}
+        repository: {{ .RepositoryName }}/kubectl
+      {{- end }}
+    {{- end }}
   {{- end }}
   persistence:
     storageClass: "{{ .StorageClass }}"
