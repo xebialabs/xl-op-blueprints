@@ -73,11 +73,24 @@ spec:
 {{ .ApplicationKeystore | indent 6 }}
     {{- end }}
     {{- end }}
-  {{- if eq .ApplicationKeystoreSource "generate" }}
+  {{- end }}
+  {{- if or (eq .LicenseSource "generate") (and (eq .ApplicationKeystoreSource "generate") (or (eq .HttpProtocolRelease "https") (eq .HttpProtocolRelease "http2"))) }}
   hooks:
+    {{- if and (eq .ApplicationKeystoreSource "generate") (or (eq .HttpProtocolRelease "https") (eq .HttpProtocolRelease "http2")) }}    
     genSelfSigned:
       enabled: true
-  {{- end }}
+      {{- if eq .IsCustomImageRegistry true }}
+      image:
+        registry: {{ .CustomImageRegistryName }}
+        repository: {{ .RepositoryName }}/kubectl
+      {{- end }}
+    {{- end }}
+    {{- if and (eq .LicenseSource "generate") (eq .IsCustomImageRegistry true) }}
+    getLicense:
+      image:
+        registry: {{ .CustomImageRegistryName }}
+        repository: {{ .RepositoryName }}/kubectl
+    {{- end }}
   {{- end }}
 
   centralConfiguration:
