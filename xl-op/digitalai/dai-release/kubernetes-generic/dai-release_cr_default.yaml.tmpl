@@ -66,10 +66,6 @@ spec:
   oidc:
     enabled: {{ not (eq .OidcConfigType "no-oidc") }}
 {{ .ExternalOidcConf | indent 4 }}
-  {{- if eq .HttpProtocolRelease "http2" }}
-  http2:
-    enabled: true
-  {{- end }}
   {{- if or (eq .HttpProtocolRelease "https") (eq .HttpProtocolRelease "http2") }}
   ssl:
     enabled: true
