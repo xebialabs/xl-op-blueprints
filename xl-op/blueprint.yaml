@@ -1383,6 +1383,13 @@ spec:
       promptIf: !expr IsRemoteRunnerTruststoreEnabled && RemoteRunnerInstall && (ProcessType == 'install' || ProcessType == 'upgrade')
       description: The Remote Runner truststore password
       default: ""
+    - name: RemoteRunnerClean
+      type: Confirm
+      saveInXlvals: true
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == 'clean' && length(k8sResources(Namespace, 'sts', RemoteRunnerReleaseName)) > '0'
+      prompt: "Clean Remote Runner from Digital.ai Release?:"
+      description: "Type yes to delete Remote Runner from Digital.ai Release. The cleanup will be performed alongside Release cleanup."
+      default: false
   files:
     # Generic
     - path: digitalai/generated_answers.yaml.tmpl
