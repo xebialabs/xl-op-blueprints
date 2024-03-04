@@ -85,24 +85,29 @@ spec:
     {{- end }}
     {{- end }}
   {{- end }}
-  {{- if or (eq .LicenseSource "generate") (and (eq .ApplicationKeystoreSource "generate") (or (eq .HttpProtocolRelease "https") (eq .HttpProtocolRelease "http2"))) }}
   hooks:
-    {{- if and (eq .ApplicationKeystoreSource "generate") (or (eq .HttpProtocolRelease "https") (eq .HttpProtocolRelease "http2")) }}
     genSelfSigned:
+      {{- if and (eq .ApplicationKeystoreSource "generate") (or (eq .HttpProtocolRelease "https") (eq .HttpProtocolRelease "http2")) }}  
       enabled: true
+      {{- else }}
+      enabled: false
+      {{- end }}
       {{- if eq .IsCustomImageRegistry true }}
       image:
         registry: {{ .CustomImageRegistryName }}
         repository: {{ .RepositoryName }}/kubectl
       {{- end }}
-    {{- end }}
-    {{- if and (eq .LicenseSource "generate") (eq .IsCustomImageRegistry true) }}
     getLicense:
+      {{- if eq .LicenseSource "generate" }}
+      enabled: true
+      {{- else }}
+      enabled: false
+      {{- end }}
+      {{- if eq .IsCustomImageRegistry true }}
       image:
         registry: {{ .CustomImageRegistryName }}
         repository: {{ .RepositoryName }}/kubectl
-    {{- end }}
-  {{- end }}
+      {{- end }}
   persistence:
     storageClass: "{{ .StorageClass }}"
     accessModes:
