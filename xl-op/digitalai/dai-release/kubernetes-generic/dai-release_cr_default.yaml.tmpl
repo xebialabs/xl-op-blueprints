@@ -44,7 +44,7 @@ spec:
   appHostname: "{{ .IngressHost }}"
   {{- end }}
   keystore:
-    passphrase: "{{ .KeystorePassphrase }}"
+    passphrase: {{ .KeystorePassphrase | quote }}
     keystore: |- 
 {{ .RepositoryKeystore | trim | indent 6 }}
   replicaCount: {{ .XlrReplicaCount }}
@@ -69,8 +69,8 @@ spec:
   {{- if or (eq .HttpProtocolRelease "https") (eq .HttpProtocolRelease "http2") }}
   ssl:
     enabled: true
-    keystorePassword: {{ .ApplicationKeystorePassword }}
-    keystoreKeypassword: {{ .ApplicationKeystoreKeyPassword }}
+    keystorePassword: {{ .ApplicationKeystorePassword | quote }}
+    keystoreKeypassword: {{ .ApplicationKeystoreKeyPassword | quote }}
     keystoreType: {{ .ApplicationKeystoreType }}
     {{- if eq .ApplicationKeystoreSource "secret" }}
     keystore:

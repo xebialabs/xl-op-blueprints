@@ -34,7 +34,7 @@ spec:
 {{ .License | trim | indent 4 }}
   {{- end }}
   keystore:
-    passphrase: "{{ .KeystorePassphrase }}"
+    passphrase: {{ .KeystorePassphrase | quote }}
     keystore: |- 
 {{ .RepositoryKeystore | trim | indent 6 }}"
   external:
@@ -58,8 +58,8 @@ spec:
   {{- if eq .HttpProtocolDeploy "https" }}
   ssl:
     enabled: true
-    keystorePassword: {{ .ApplicationKeystorePassword }}
-    keystoreKeypassword: {{ .ApplicationKeystoreKeyPassword }}
+    keystorePassword: {{ .ApplicationKeystorePassword | quote }}
+    keystoreKeypassword: {{ .ApplicationKeystoreKeyPassword | quote }}
     keystoreType: {{ .ApplicationKeystoreType }}
     {{- if eq .ApplicationKeystoreSource "secret" }}
     keystore:
