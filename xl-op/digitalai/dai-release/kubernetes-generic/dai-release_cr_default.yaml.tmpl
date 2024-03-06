@@ -85,7 +85,7 @@ spec:
     {{- end }}
     {{- end }}
   {{- end }}
-  hooks:
+  hooks:  
     genSelfSigned:
       {{- if and (eq .ApplicationKeystoreSource "generate") (or (eq .HttpProtocolRelease "https") (eq .HttpProtocolRelease "http2")) }}  
       enabled: true
@@ -100,6 +100,19 @@ spec:
     getLicense:
       {{- if eq .LicenseSource "generate" }}
       enabled: true
+      {{- else }}
+      enabled: false
+      {{- end }}
+      {{- if eq .IsCustomImageRegistry true }}
+      image:
+        registry: {{ .CustomImageRegistryName }}
+        repository: {{ .RepositoryName }}/kubectl
+      {{- end }}
+    installReleaseRunner:
+      {{- if eq .RemoteRunnerInstallType "cluster-install" }}
+      enabled: true
+      releaseName: {{ .RemoteRunnerReleaseName }}
+      answersSecret: {{ .RemoteRunnerReleaseName }}-answers
       {{- else }}
       enabled: false
       {{- end }}
