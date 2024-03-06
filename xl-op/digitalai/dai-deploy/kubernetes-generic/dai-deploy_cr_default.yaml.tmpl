@@ -34,7 +34,7 @@ spec:
 {{ .License | trim | indent 4 }}
   {{- end }}
   keystore:
-    passphrase: "{{ .KeystorePassphrase }}"
+    passphrase: {{ .KeystorePassphrase | quote }}
     keystore: |- 
 {{ .RepositoryKeystore | trim | indent 6 }}"
   external:
@@ -58,8 +58,8 @@ spec:
   {{- if eq .HttpProtocolDeploy "https" }}
   ssl:
     enabled: true
-    keystorePassword: {{ .ApplicationKeystorePassword }}
-    keystoreKeypassword: {{ .ApplicationKeystoreKeyPassword }}
+    keystorePassword: {{ .ApplicationKeystorePassword | quote }}
+    keystoreKeypassword: {{ .ApplicationKeystoreKeyPassword | quote }}
     keystoreType: {{ .ApplicationKeystoreType }}
     {{- if eq .ApplicationKeystoreSource "secret" }}
     keystore:
@@ -74,24 +74,29 @@ spec:
     {{- end }}
     {{- end }}
   {{- end }}
-  {{- if or (eq .LicenseSource "generate") (and (eq .ApplicationKeystoreSource "generate") (or (eq .HttpProtocolRelease "https") (eq .HttpProtocolRelease "http2"))) }}
   hooks:
-    {{- if and (eq .ApplicationKeystoreSource "generate") (or (eq .HttpProtocolRelease "https") (eq .HttpProtocolRelease "http2")) }}    
     genSelfSigned:
+      {{- if and (eq .ApplicationKeystoreSource "generate") (eq .HttpProtocolDeploy "https") }}  
       enabled: true
+      {{- else }}
+      enabled: false
+      {{- end }}
       {{- if eq .IsCustomImageRegistry true }}
       image:
         registry: {{ .CustomImageRegistryName }}
         repository: {{ .RepositoryName }}/kubectl
       {{- end }}
-    {{- end }}
-    {{- if and (eq .LicenseSource "generate") (eq .IsCustomImageRegistry true) }}
     getLicense:
+      {{- if eq .LicenseSource "generate" }}
+      enabled: true
+      {{- else }}
+      enabled: false
+      {{- end }}
+      {{- if eq .IsCustomImageRegistry true }}
       image:
         registry: {{ .CustomImageRegistryName }}
         repository: {{ .RepositoryName }}/kubectl
-    {{- end }}
-  {{- end }}
+      {{- end }}
 
   centralConfiguration:
     replicaCount: 1
@@ -183,7 +188,7 @@ spec:
       ingress.kubernetes.io/session-cookie-strategy: prefix
       ingress.kubernetes.io/timeout-client: "120s"
       ingress.kubernetes.io/timeout-http-request: "120s"
-      {{- if eq .HttpProtocolRelease "https" }}
+      {{- if eq .HttpProtocolDeploy "https" }}
       ingress.kubernetes.io/config-backend: |
         option httpchk GET / HTTP/1.0
         http-check send hdr Host {{ .IngressHost }}
@@ -213,7 +218,7 @@ spec:
       ingress.kubernetes.io/session-cookie-strategy: prefix
       ingress.kubernetes.io/timeout-client: "120s"
       ingress.kubernetes.io/timeout-http-request: "120s"
-      {{- if eq .HttpProtocolRelease "https" }}
+      {{- if eq .HttpProtocolDeploy "https" }}
       ingress.kubernetes.io/backend-protocol: "HTTPS"
       {{- end }}
       {{- if eq .HttpProtocolIngress "https" }}
@@ -251,7 +256,7 @@ spec:
       haproxy.router.openshift.io/cookie_name: SESSION_XLD
       haproxy.router.openshift.io/disable_cookies: "false"
       haproxy.router.openshift.io/rewrite-target: /
-      {{- if and (not (eq .IngressKeystoreSource "passthrough")) (eq .HttpProtocolRelease "https") }}
+      {{- if and (not (eq .IngressKeystoreSource "passthrough")) (eq .HttpProtocolDeploy "https") }}
       haproxy.router.openshift.io/set-forwarded-headers: replace
       haproxy.router.openshift.io/secure-sni: host
       {{- end }}
