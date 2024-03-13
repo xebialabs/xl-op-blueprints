@@ -42,7 +42,7 @@ project.defaultTasks = listOf("build")
 val releasedVersion = System.getenv()["RELEASE_EXPLICIT"] ?: if (project.version.toString().contains("SNAPSHOT")) {
     project.version.toString()
 } else {
-    "23.3.3-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))}"
+    "23.3.0-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))}"
 }
 project.extra.set("releasedVersion", releasedVersion)
 
