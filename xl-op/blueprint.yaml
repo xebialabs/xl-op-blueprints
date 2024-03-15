@@ -849,6 +849,7 @@ spec:
         password: |-
           <password>
         driverClassName: <driver-class-name>
+        isRabbitmqQuorumQueue: false
     - name: CrdName
       type: Select
       options:
