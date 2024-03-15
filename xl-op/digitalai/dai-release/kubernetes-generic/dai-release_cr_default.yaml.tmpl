@@ -116,11 +116,12 @@ spec:
       {{- else }}
       enabled: false
       {{- end }}
-      {{- if eq .IsCustomImageRegistry true }}
       image:
+        tag: "{{ .ImageTag }}"
+        {{- if eq .IsCustomImageRegistry true }}
         registry: {{ .CustomImageRegistryName }}
         repository: {{ .RepositoryName }}/kubectl
-      {{- end }}
+        {{- end }}
   persistence:
     storageClass: "{{ .StorageClass }}"
     accessModes:
