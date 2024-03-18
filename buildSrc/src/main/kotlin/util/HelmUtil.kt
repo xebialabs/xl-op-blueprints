@@ -22,12 +22,12 @@ class HelmUtil {
             val result = ProcessUtil.executeCommand(project,
                 "helm package \"$chartDir\" --destination \"$targetDir\"",
                 logOutput = true, throwErrorOnFailure = true)
-            val version = result.substringAfterLast("$targetDir/remote-runner-", "")
+            val version = result.substringAfterLast("$targetDir/runner-", "")
                 .substringBefore(".tgz", "")
             if (version == "") {
                 throw IllegalStateException("Cannot get version from package output")
             }
-            return "remote-runner-$version.tgz"
+            return "runner-$version.tgz"
         }
     }
 }

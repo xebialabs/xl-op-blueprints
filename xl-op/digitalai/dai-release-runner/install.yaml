@@ -2,4 +2,4 @@ apiVersion: xl/v1
 kind: Import
 metadata:
   imports:
-    - create-remote-runner-user.yaml
+    - create-release-runner-user.yaml

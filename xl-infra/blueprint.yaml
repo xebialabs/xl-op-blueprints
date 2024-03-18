@@ -72,7 +72,7 @@ spec:
         - label: Digital.ai Deploy
           value: dai-deploy
         - label: Digital.ai Release Runner
-          value: dai-release-remote-runner
+          value: dai-release-runner
       saveInXlvals: true
       description: !expr "'Select product server you want to perform ' + ProcessType + ' for.'"
 
@@ -103,7 +103,7 @@ spec:
           value: operatorToOperator
         - label: Helm to Operator
           value: helmToOperator
-      promptIf: !expr "ServerType != 'dai-release-remote-runner' && ProcessType == 'upgrade'"
+      promptIf: !expr "ServerType != 'dai-release-runner' && ProcessType == 'upgrade'"
       saveInXlvals: true
       description: Type of upgrade you want?
 
