@@ -106,7 +106,7 @@ ReleaseName: '{{ .ReleaseName }}'
 CrdName: '{{ .CrdName }}'
 IsCrdReused: {{ .IsCrdReused }}
 CrName: '{{ .CrName }}'
-{{- if and (or (eq .ProcessType "clean") .CleanBefore) (ne .ServerType "dai-release-remote-runner") }}
+{{- if and (or (eq .ProcessType "clean") .CleanBefore) (ne .ServerType "dai-release-runner") }}
 PreservePvc: {{ .PreservePvc }}
 {{- end }}
 ImageNameRemoteRunner: '{{ .ImageNameRemoteRunner }}'
