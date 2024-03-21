@@ -117,7 +117,7 @@ spec:
       enabled: false
       {{- end }}
       image:
-        tag: "{{ .ImageTagRemoteRunner }}"
+        tag: "{{ .ImageTag }}"
         {{- if eq .IsCustomImageRegistry true }}
         registry: {{ .CustomImageRegistryName }}
         repository: {{ .RepositoryName }}/xl-client
