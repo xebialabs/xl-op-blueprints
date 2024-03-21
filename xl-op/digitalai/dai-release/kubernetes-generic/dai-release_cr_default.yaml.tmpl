@@ -120,7 +120,7 @@ spec:
         tag: "{{ .ImageTag }}"
         {{- if eq .IsCustomImageRegistry true }}
         registry: {{ .CustomImageRegistryName }}
-        repository: {{ .RepositoryName }}/kubectl
+        repository: {{ .RepositoryName }}/xl-client
         {{- end }}
   persistence:
     storageClass: "{{ .StorageClass }}"
