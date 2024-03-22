@@ -1227,7 +1227,7 @@ spec:
       options:
         - label: Don't install Digital.ai Release Runner
           value: no-install
-        - label: Install Remote Runner from local setup
+        - label: Install Release Runner from local setup
           value: local-install
         - label: Install Release Runner on the cluster
           value: cluster-install
