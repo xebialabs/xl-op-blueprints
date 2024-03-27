@@ -21,8 +21,6 @@ buildscript {
         classpath("com.xebialabs.gradle.plugins:gradle-commit:${properties["gradleCommitPluginVersion"]}")
         classpath("com.xebialabs.gradle.plugins:gradle-xl-defaults-plugin:${properties["xlDefaultsPluginVersion"]}")
         classpath("com.xebialabs.gradle.plugins:gradle-xl-plugins-plugin:${properties["xlPluginsPluginVersion"]}")
-        classpath("com.xebialabs.gradle.plugins:integration-server-gradle-plugin:${properties["integrationServerGradlePluginVersion"]}")
-
     }
 }
 
@@ -46,7 +44,7 @@ project.defaultTasks = listOf("build")
 val releasedVersion = System.getenv()["RELEASE_EXPLICIT"] ?: if (project.version.toString().contains("SNAPSHOT")) {
     project.version.toString()
 } else {
-    "22.3.0-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))}"
+    "23.1.0-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))}"
 }
 project.extra.set("releasedVersion", releasedVersion)
 
@@ -172,7 +170,7 @@ tasks {
             commandLine(commandUnzip.split(" "))
         } else {
             commandLine("echo",
-                    "You have to specify which version you want to sync, ex. ./gradlew syncBlueprintsArchives -PversionToSync=22.3.0")
+                    "You have to specify which version you want to sync, ex. ./gradlew syncBlueprintsArchives -PversionToSync=23.1.0")
         }
     }
 
@@ -190,7 +188,7 @@ tasks {
             commandLine(commandRsync.split(" "))
         } else {
             commandLine("echo",
-                    "You have to specify which version you want to sync, ex. ./gradlew syncBlueprintsArchives -PversionToSync=22.3.0")
+                    "You have to specify which version you want to sync, ex. ./gradlew syncBlueprintsArchives -PversionToSync=23.1.0")
         }
     }
 
