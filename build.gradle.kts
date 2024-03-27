@@ -21,7 +21,6 @@ buildscript {
         classpath("com.xebialabs.gradle.plugins:gradle-commit:${properties["gradleCommitPluginVersion"]}")
         classpath("com.xebialabs.gradle.plugins:gradle-xl-defaults-plugin:${properties["xlDefaultsPluginVersion"]}")
         classpath("com.xebialabs.gradle.plugins:gradle-xl-plugins-plugin:${properties["xlPluginsPluginVersion"]}")
-        classpath("com.xebialabs.gradle.plugins:integration-server-gradle-plugin:${properties["integrationServerGradlePluginVersion"]}")
     }
 }
 
@@ -153,7 +152,7 @@ tasks {
         group = "blueprint-dist"
         dependsOn("syncBlueprintsArchives")
     }
-    
+
     register("buildBlueprints") {
         group = "blueprint"
         dependsOn("blueprintsArchives")
@@ -259,7 +258,7 @@ publishing {
     }
 }
 
-node { 
+node {
     version.set("16.13.2")
     yarnVersion.set("1.22.17")
     download.set(true)
