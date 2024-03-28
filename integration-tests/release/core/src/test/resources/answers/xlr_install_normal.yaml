@@ -1,0 +1,99 @@
+UseCustomNamespace: false
+Namespace: digitalai
+ServerType: dai-release
+RepositoryName: xebialabsunsupported
+ImageTag: 22.3.1
+ImageNameRelease: xl-release
+OperatorImageReleaseGeneric: xebialabsunsupported/release-operator:22.3.1
+OperatorImageReleaseOpenshift: xebialabsunsupported/release-operator:22.3.1-openshift
+XlrReplicaCount: 2
+PostgresqlExternalConfigRelease: |-
+  XLR_DB_URL: jdbc:postgresql://<xlr-db-host>:5432/<xlr-database-name>
+  XLR_DB_USER: <xlr-username>
+  XLR_DB_PASS: <xlr-password>
+  XLR_REPORT_DB_URL: jdbc:postgresql://<xlr-report-db-host>:5432/<xl-report-database-name>
+  XLR_REPORT_DB_USER: <xl-report-username>
+  XLR_REPORT_DB_PASS: <xl-report-password>
+RabbitmqExternalConfigRelease: |-
+  XLR_TASK_QUEUE_USERNAME: <username>
+  XLR_TASK_QUEUE_PASSWORD: <password>
+  XLR_TASK_QUEUE_NAME: <queue-name>
+  XLR_TASK_QUEUE_URL: <queue-url>
+OidcConfigTypeInstall: 'no-oidc'
+OidcConfigTypeUpgrade: 'existing'
+ExternalOidcConfGenericDeploy: |-
+  external: true
+  accessTokenUri: ""
+  clientId: ""
+  clientSecret: ""
+  emailClaim: ""
+  issuer: ""
+  keyRetrievalUri: ""
+  logoutUri: ""
+  postLogoutRedirectUri: ""
+  redirectUri: ""
+  rolesClaimName: ""
+  userAuthorizationUri: ""
+  userNameClaimName: ""
+  fullNameClaim: ""
+  scopes: '["openid"]'
+ExternalOidcConfGenericRelease: |-
+  external: true
+  accessTokenUri: ""
+  clientId: ""
+  clientSecret: ""
+  emailClaim: ""
+  fullNameClaim: ""
+  issuer: ""
+  keyRetrievalUri: ""
+  logoutUri: ""
+  postLogoutRedirectUri: ""
+  redirectUri: ""
+  rolesClaim: ""
+  userAuthorizationUri: ""
+  userNameClaim: ""
+  scopes: '["openid"]'
+IdentityServiceConfDeploy: |-
+  external: true
+  clientId: ""
+  clientSecret: ""
+  issuer: ""
+  redirectUri: ""
+  postLogoutRedirectUri: ""
+  rolesClaimName: ""
+  userNameClaimName: "preferred_username"
+  scopes: ["openid"]
+IdentityServiceConfRelease: |-
+  external: true
+  clientId: ""
+  clientSecret: ""
+  issuer: ""
+  redirectUri: ""
+  postLogoutRedirectUri: ""
+  rolesClaim: ""
+  userNameClaim: "preferred_username"
+  scopes: ["openid"]
+KeycloakHost: ''
+UseKeycloakWithEmbeddedDB: 'false'
+KeycloakIngressHost: '<no value>'
+IngressType: 'nginx'
+ExternalIngressClass: ''
+EnableIngressTls: false
+IngressTlsSecretName: ''
+AdminPassword: 'MW3iPyFXSUXe0z71'
+IngressHost: 'test.com'
+EnablePostgresql: true
+EnableRabbitmq: true
+RabbitmqReplicaCount: '1'
+LicenseSource: 'file'
+LicenseEditor: ''
+RepositoryKeystoreSource: 'generate'
+RepositoryKeystoreEditor: ''
+RepositoryKeystoreFile: ''
+KeystorePassphrase: '9ya5saCJSQxxgAfd'
+PostgresqlPvcSize: '1'
+RabbitmqPvcSize: '1'
+PvcSizeRelease: '1'
+AccessModeRelease: 'ReadWriteMany'
+IsCrdReused: false
+PreservePvc: false
