@@ -833,6 +833,7 @@ spec:
         username: <username>
         password: |-
           <password>
+        queueType: <classic-or-quorum>
     - name: RabbitmqExternalConfigDeploy
       type: Editor
       saveInXlvals: true
