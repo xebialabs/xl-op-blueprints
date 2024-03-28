@@ -1,0 +1,24 @@
+replicaCount: {{ .RemoteRunnerCount }}
+
+  {{- if eq .IsRemoteRunnerTruststoreEnabled true }}
+runner:
+  truststore: |-
+  {{ .RemoteRunnerTruststore | indent 4 }}
+truststorePassword: {{ .RemoteRunnerTruststorePassword }}
+  {{- end }}
+
+release:
+  url: {{ .RemoteRunnerReleaseUrl }}
+  registrationToken: "{{ .RemoteRunnerToken }}"
+
+image:
+  {{- if eq .IsCustomImageRegistry true }}
+  registry: {{ .CustomImageRegistryName }}
+  {{- end }}
+  repository: {{ .RemoteRunnerRepositoryName }}
+  name: {{ .ImageNameRemoteRunner }}
+  tag: {{ .ImageTagRemoteRunner }}
+  {{- if eq .ImageRegistryType "private" }}
+  pullSecrets:
+    - {{ .CustomPrivateImageRegistrySecret }}
+  {{- end }}

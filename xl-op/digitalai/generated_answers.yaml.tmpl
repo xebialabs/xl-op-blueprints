@@ -2,14 +2,18 @@ K8sSetup: {{ .K8sSetup }}
 UseCustomNamespace: {{ .UseCustomNamespace }}
 Namespace: {{ .Namespace }}
 ServerType: {{ .ServerType }}
+ImageRegistryType: {{ .ImageRegistryType }}
+IsCustomImageRegistry: {{ .IsCustomImageRegistry }}
+CustomImageRegistryName: {{ .CustomImageRegistryName }}
+CustomPrivateImageRegistrySecret: {{ .CustomPrivateImageRegistrySecret }}
 RepositoryName: {{ .RepositoryName }}
 ImageTag: {{ .ImageTag }}
+OperatorImageTag: {{ .OperatorImageTag }}
 {{- if eq .ServerType "dai-deploy" }}
 ImageNameDeploy: {{ .ImageNameDeploy }}
 ImageNameDeployTaskEngine: {{ .ImageNameDeployTaskEngine }}
 ImageNameCc: {{ .ImageNameCc }}
-OperatorImageDeployGeneric: {{ .OperatorImageDeployGeneric }}
-OperatorImageDeployOpenshift: {{ .OperatorImageDeployOpenshift }}
+OperatorImageDeploy: {{ .OperatorImageDeploy }}
 XldMasterCount: {{ .XldMasterCount }}
 XldWorkerCount: {{ .XldWorkerCount }}
   {{- if eq .ProcessType "upgrade" }}
@@ -23,8 +27,7 @@ RabbitmqExternalConfigDeploy: |-
 {{- end }}
 {{- if eq .ServerType "dai-release" }}
 ImageNameRelease: {{ .ImageNameRelease }}
-OperatorImageReleaseGeneric: {{ .OperatorImageReleaseGeneric }}
-OperatorImageReleaseOpenshift: {{ .OperatorImageReleaseOpenshift }}
+OperatorImageRelease: {{ .OperatorImageRelease }}
 XlrReplicaCount: {{ .XlrReplicaCount }}
   {{- if eq .ProcessType "upgrade" }}
 PreserveCrValuesRelease: |-
@@ -45,17 +48,18 @@ IdentityServiceConfDeploy: |-
 {{ .IdentityServiceConfDeploy | indent 2 }}
 IdentityServiceConfRelease: |-
 {{ .IdentityServiceConfRelease | indent 2 }}
-KeycloakHost: '{{ .KeycloakHost }}'
-UseKeycloakWithEmbeddedDB: '{{ .UseKeycloakWithEmbeddedDB }}'
-KeycloakIngressHost: '{{ .KeycloakIngressHost }}'
 {{- if eq .ProcessType "install" }}
-IngressType: '{{ .IngressType }}'
+IngressTypeGeneric: '{{ .IngressTypeGeneric }}'
+IngressTypeOpenshift: '{{ .IngressTypeOpenshift }}'
 ExternalIngressClass: '{{ .ExternalIngressClass }}'
-EnableIngressTls: {{ .EnableIngressTls }}
+HttpProtocolIngress: '{{ .HttpProtocolIngress }}'
+IngressKeystoreSourceGeneric: '{{ .IngressKeystoreSourceGeneric }}'
+IngressKeystoreSourceOpenshift: '{{ .IngressKeystoreSourceOpenshift }}'
 IngressTlsSecretName: '{{ .IngressTlsSecretName }}'
 AdminPassword: '{{ .AdminPassword }}'
 StorageClass: '{{ .StorageClass }}'
 IngressHost: '{{ .IngressHost }}'
+HttpsProtocol: '{{ .HttpsProtocol }}'
 EnablePostgresql: {{ .EnablePostgresql }}
 PostgresqlStorageClass: '{{ .PostgresqlStorageClass }}'
 EnableRabbitmq: {{ .EnableRabbitmq }}
@@ -63,10 +67,11 @@ RabbitmqReplicaCount: '{{ .RabbitmqReplicaCount }}'
 RabbitmqStorageClass: '{{ .RabbitmqStorageClass }}'
 LicenseSource: '{{ .LicenseSource }}'
 LicenseEditor:  |-
-{{ trim .LicenseEditor | indent 2 }}
+{{ .LicenseEditor | trim | indent 2 }}
 LicenseFile: '{{ .LicenseFile }}'
 RepositoryKeystoreSource: '{{ .RepositoryKeystoreSource }}'
-RepositoryKeystoreEditor: '{{ trim .RepositoryKeystoreEditor }}'
+RepositoryKeystoreEditor: |-
+{{ .RepositoryKeystoreEditor | trim | indent 2 }}
 RepositoryKeystoreFile: '{{ .RepositoryKeystoreFile }}'
 KeystorePassphrase: '{{ .KeystorePassphrase }}'
 PostgresqlPvcSize: '{{ .PostgresqlPvcSize }}'
@@ -75,10 +80,20 @@ RabbitmqPvcSize: '{{ .RabbitmqPvcSize }}'
 PvcSizeRelease: '{{ .PvcSizeRelease }}'
 AccessModeRelease: '{{ .AccessModeRelease }}'
   {{- end }}
+HttpProtocolRelease: '{{ .HttpProtocolRelease }}'
+HttpProtocolDeploy: '{{ .HttpProtocolDeploy }}'
+ApplicationKeystoreSource: '{{ .ApplicationKeystoreSource }}'
+ApplicationKeystoreEditor: |-
+{{ .ApplicationKeystoreEditor | trim | indent 2 }}
+ApplicationKeystoreFile: '{{ .ApplicationKeystoreFile }}'
+ApplicationKeystoreSecretName: '{{ .ApplicationKeystoreSecretName }}'
+ApplicationKeystore: '{{ .ApplicationKeystore }}'
+ApplicationKeystoreType: '{{ .ApplicationKeystoreType }}'
+ApplicationKeystorePassword: '{{ .ApplicationKeystorePassword }}'
+ApplicationKeystoreKeyPassword: '{{ .ApplicationKeystoreKeyPassword }}'
   {{- if eq .ServerType "dai-deploy" }}
 PvcSizeDeploy: '{{ .PvcSizeDeploy }}'
 PvcSizeDeployTaskEngine: '{{ .PvcSizeDeployTaskEngine }}'
-PvcSizeCc: '{{ .PvcSizeCc }}'
 AccessModeDeploy: '{{ .AccessModeDeploy }}'
   {{- end }}
 {{- end }}
@@ -91,4 +106,23 @@ ReleaseName: '{{ .ReleaseName }}'
 CrdName: '{{ .CrdName }}'
 IsCrdReused: {{ .IsCrdReused }}
 CrName: '{{ .CrName }}'
+{{- if and (or (eq .ProcessType "clean") .CleanBefore) (ne .ServerType "dai-release-runner") }}
 PreservePvc: {{ .PreservePvc }}
+{{- end }}
+ImageNameRemoteRunner: '{{ .ImageNameRemoteRunner }}'
+ImageTagRemoteRunner: '{{ .ImageTagRemoteRunner }}'
+RemoteRunnerInstallType: '{{ .RemoteRunnerInstallType }}'
+RemoteRunnerRepositoryName: '{{ .RemoteRunnerRepositoryName }}'
+RemoteRunnerReleaseName: '{{ .RemoteRunnerReleaseName }}'
+RemoteRunnerUseDefaultLocation: {{ .RemoteRunnerUseDefaultLocation }}
+RemoteRunnerHelmChartUrl: '{{ .RemoteRunnerHelmChartUrl }}'
+RemoteRunnerReleaseUrl: '{{ .RemoteRunnerReleaseUrl }}'
+RemoteRunnerToken: '{{ .RemoteRunnerToken }}'
+RemoteRunnerUserEmail: '{{ .RemoteRunnerUserEmail }}'
+RemoteRunnerUserPassword: '{{ .RemoteRunnerUserPassword }}'
+RemoteRunnerTokenExpiration: '{{ .RemoteRunnerTokenExpiration }}'
+RemoteRunnerCount: {{ .RemoteRunnerCount }}
+IsRemoteRunnerTruststoreEnabled: {{ .IsRemoteRunnerTruststoreEnabled }}
+RemoteRunnerTruststore: |- 
+{{ .RemoteRunnerTruststore | trim | indent 2 }}
+RemoteRunnerTruststorePassword: {{ .RemoteRunnerTruststorePassword }}
