@@ -849,7 +849,7 @@ spec:
         password: |-
           <password>
         driverClassName: <driver-class-name>
-        isRabbitmqQuorumQueue: false
+        queueType: "classic"
     - name: CrdName
       type: Select
       options:
