@@ -65,7 +65,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the repository name (eg: <repositoryName> from <repositoryName>/<imageName>:<tagName>):"
-      default: xebialabs
+      default: xebialabsunsupported
       description: Enter the repository name to use
     - name: ImageNameDeploy
       type: Input
@@ -119,7 +119,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the remote runner image name (eg: <imageName> from <repositoryName>/<imageName>:<tagName>):"
-      default: xlr-remote-runner
+      default: release-remote-runner
       description: Enter the image name to use
     - name: ImageTagRemoteRunner
       type: Input
@@ -128,7 +128,7 @@ spec:
       overrideDefault: true
       promptIf: !expr "ServerType == 'dai-release-runner' && (ProcessType == 'install' || ProcessType == 'upgrade')"
       prompt: "Enter the image tag (eg: <tagName> from <repositoryName>/<imageName>:<tagName>):"
-      default: 0.1.33
+      default: 23.1.13
       description: Enter the image tag to use
     - name: XldMasterCount
       type: Input
