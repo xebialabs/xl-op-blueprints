@@ -849,7 +849,7 @@ spec:
         password: |-
           <password>
         driverClassName: <driver-class-name>
-        queueType: "classic"
+        queueType: <classic-or-quorum>
     - name: CrdName
       type: Select
       options:
