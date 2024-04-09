@@ -1,0 +1,13 @@
+apiVersion: xld.digital.ai/v1alpha1
+kind: DigitalaiDeploy
+metadata: 
+  name: dai-xld
+spec:
+  centralConfiguration:
+    extraConfiguration:
+      central-conf_type-defaults:
+        content: |
+          aws.Cloud.allowConcurrentDeployments=false
+          aws.api.Method.integrationType=AWS
+        mode: 432
+        path: central-conf/type-defaults.properties

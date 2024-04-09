@@ -1,0 +1,12 @@
+apiVersion: xlr.digital.ai/v1alpha1
+kind: DigitalaiRelease
+metadata: 
+  name: dai-xlr
+spec:
+  extraConfiguration:
+    default-conf_deployit-defaults:
+      content: |
+         ansible.RunPlaybook.ansibleCmd=ansible-playbook
+         ansible.RunPlaybook.iconLocation=ansible/ansible_logo.svg
+      mode: 432
+      path: default-conf/deployit-defaults.properties

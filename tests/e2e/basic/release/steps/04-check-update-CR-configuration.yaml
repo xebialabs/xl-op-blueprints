@@ -1,0 +1,7 @@
+apiVersion: kuttl.dev/v1beta1
+kind: TestStep
+unitTest: false
+commands:
+- command: kubectl exec -it dai-xlr-digitalai-release-0 -- /bin/sh -c "cat conf/deployit-defaults.properties | grep ansible.RunPlaybook.ansibleCmd=ansible-playbook"
+  namespaced: true
+  timeout: 10

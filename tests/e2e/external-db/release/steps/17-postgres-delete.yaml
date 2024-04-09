@@ -1,0 +1,13 @@
+apiVersion: kuttl.dev/v1beta1
+kind: TestStep
+unitTest: false
+commands:
+- command: helm delete psql-test-xlr --cascade foreground
+  namespaced: true
+  timeout: 10
+- command: kubectl delete pod data-psql-test-xlr-postgresql-0
+  namespaced: true
+  ignoreFailure: true
+  timeout: 30
+error:
+-  $ASSERTS_REL_PATH/release-running-external-postgres.yaml

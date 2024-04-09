@@ -1,0 +1,23 @@
+apiVersion: xld.digital.ai/v1alpha1
+kind: DigitalaiDeploy
+metadata: 
+  name: dai-xld
+spec:
+  centralConfiguration:
+    extraConfiguration:
+      central-conf_type-defaults:
+        content: |
+          aws.Cloud.allowConcurrentDeployments=true
+          aws.api.Method.integrationType=AWS
+        mode: 432
+        path: central-conf/type-defaults.properties
+status:
+  conditions: 
+    - status: "True"
+      type: Initialized
+    - status: "True"
+      type: Deployed
+      reason: UpgradeSuccessful
+    - status: "True"
+      type: Deployed
+      reason: UpgradeSuccessful
