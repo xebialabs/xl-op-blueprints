@@ -1,0 +1,15 @@
+apiVersion: kuttl.dev/v1beta1
+kind: TestStep
+unitTest: false
+commands:
+- command: helm install psql-test-xlr oci://registry-1.docker.io/bitnamicharts/postgresql --version 12.12.9 --set primary.persistence.storageClass= --set global.postgresql.auth.postgresPassword=admin123 --set global.postgresql.auth.username=test --set global.postgresql.auth.password=test123 --set global.postgresql.auth.database=main --set primary.extendedConfiguration=max_connections=300
+  namespaced: true
+  timeout: 60
+- command: sleep 10
+  ignoreFailure: true
+  timeout: 15
+- command: kubectl wait --for=condition=ready pod psql-test-xlr-postgresql-0 --timeout=120s
+  namespaced: true
+  timeout: 130
+assert:
+-  $ASSERTS_REL_PATH/release-running-external-postgres.yaml

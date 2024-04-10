@@ -1,0 +1,15 @@
+apiVersion: kuttl.dev/v1beta1
+kind: TestStep
+unitTest: false
+commands:
+- command: helm install rabbitmq-test-xlr oci://registry-1.docker.io/bitnamicharts/rabbitmq --set 'auth.username=user' --set 'auth.password=password' --set 'extraPlugins=rabbitmq_jms_topic_exchange'
+  namespaced: true
+  timeout: 60
+- command: sleep 10
+  ignoreFailure: true
+  timeout: 15
+- command: kubectl wait --for=condition=ready pod rabbitmq-test-xlr-0 --timeout=120s
+  namespaced: true
+  timeout: 130
+assert:
+-  $ASSERTS_REL_PATH/release-running-external-rabbitmq.yaml

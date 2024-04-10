@@ -1,0 +1,14 @@
+apiVersion: kuttl.dev/v1beta1
+kind: TestStep
+unitTest: false
+commands:
+- command: helm delete rabbitmq-test-xld --cascade foreground
+  namespaced: true
+  ignoreFailure: true
+  timeout: 10
+- command: kubectl delete pod data-rabbitmq-test-xld-0
+  namespaced: true
+  ignoreFailure: true
+  timeout: 30
+error:
+-  $ASSERTS_REL_PATH/deploy-running-external-rabbitmq.yaml

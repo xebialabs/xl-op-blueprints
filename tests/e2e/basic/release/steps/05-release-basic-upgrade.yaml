@@ -1,0 +1,17 @@
+apiVersion: kuttl.dev/v1beta1
+kind: TestStep
+unitTest: false
+commands:
+- command: $XL_CLI kube upgrade --skip-prompts --skip-context-check -a $ANSWERS_REL_PATH/release-basic-upgrade.yaml
+  timeout: 60
+- command: $XL_CLI kube check --wait-for-ready 5 --skip-prompts --skip-context-check -a $ANSWERS_REL_PATH/release-basic-upgrade.yaml
+  timeout: 300
+assert:
+- $ASSERTS_REL_PATH/release-running-operator-pods.yaml
+- $ASSERTS_REL_PATH/release-running-postgres-pods.yaml
+- $ASSERTS_REL_PATH/release-running-rabbitmq-pods.yaml
+- $ASSERTS_REL_PATH/release-running-product-pods.yaml
+- $ASSERTS_REL_PATH/release-type-defaults.yaml
+error:
+- $ASSERTS_REL_PATH/release-running-haproxy-pods.yaml
+- $ASSERTS_REL_PATH/release-running-nginx-pods.yaml

@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: psql-test-xld-postgresql-0
+status:
+  phase: Running
