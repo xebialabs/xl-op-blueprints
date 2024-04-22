@@ -834,6 +834,7 @@ spec:
         password: |-
           <password>
         queueType: <classic-or-quorum>
+        connector: <rabbitmq-jms-or-activemq-jms>
     - name: RabbitmqExternalConfigDeploy
       type: Editor
       saveInXlvals: true
