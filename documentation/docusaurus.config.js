@@ -2,20 +2,20 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 module.exports = {
-  title: 'XL OP Blueprints',
+  title: 'Kube Blueprints',
   tagline: '',
-  url: 'https://xebialabs.github.io',
-  baseUrl: '/xl-op-blueprints/',
+  url: 'https://digital-ai.github.io',
+  baseUrl: '/kube-blueprints/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/digital_ai_deploy.svg',
   organizationName: 'Digital.ai',
-  projectName: 'xl-op-blueprints',
+  projectName: 'kube-blueprints',
   themeConfig: {
     navbar: {
-      title: 'XL OP Blueprints',
+      title: 'Kube Blueprints',
       logo: {
-        alt: 'XL OP Blueprints Digital.ai',
+        alt: 'Kube Blueprints Digital.ai',
         src: 'img/digital_ai_deploy.svg',
       },
       items: [
@@ -27,7 +27,7 @@ module.exports = {
         },
 
         {
-          href: 'https://github.com/xebialabs/xl-op-blueprints',
+          href: 'https://github.com/digital-ai/kube-blueprints',
           label: 'GitHub',
           position: 'right',
         }
@@ -45,7 +45,7 @@ module.exports = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/xebialabs/xl-op-blueprints',
+              href: 'https://github.com/digital-ai/xkube-blueprints',
             },
           ],
         },
