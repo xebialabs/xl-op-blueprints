@@ -235,7 +235,7 @@ spec:
     {{- end }}
     hostname: "{{ .IngressHost }}"
     path: /
-    {{- if eq .HttpProtocolIngress "https" }}
+    {{- if and (not (eq .IngressKeystoreSource "passthrough")) (eq .HttpProtocolIngress "https") }}
     # If you want to use TLS configuration uncomment the following lines and provide correct values.
     # You need to create secret, and provide the name under "secretName"
     tls: true
