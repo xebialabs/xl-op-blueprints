@@ -74,11 +74,15 @@ RepositoryKeystoreEditor: |-
 {{ .RepositoryKeystoreEditor | trim | indent 2 }}
 RepositoryKeystoreFile: '{{ .RepositoryKeystoreFile }}'
 KeystorePassphrase: '{{ .KeystorePassphrase }}'
+ResourcesSource: '{{ .ResourcesSource }}'
 PostgresqlPvcSize: '{{ .PostgresqlPvcSize }}'
 RabbitmqPvcSize: '{{ .RabbitmqPvcSize }}'
   {{- if eq .ServerType "dai-release" }}
 PvcSizeRelease: '{{ .PvcSizeRelease }}'
 AccessModeRelease: '{{ .AccessModeRelease }}'
+ResourcesPresetRelease: '{{ .ResourcesPresetRelease }}'
+ResourcesEditorRelease: |-
+{{ .ResourcesEditorRelease | trim | indent 2 }}
   {{- end }}
 HttpProtocolRelease: '{{ .HttpProtocolRelease }}'
 HttpProtocolDeploy: '{{ .HttpProtocolDeploy }}'
@@ -95,6 +99,15 @@ ApplicationKeystoreKeyPassword: '{{ .ApplicationKeystoreKeyPassword }}'
 PvcSizeDeploy: '{{ .PvcSizeDeploy }}'
 PvcSizeDeployTaskEngine: '{{ .PvcSizeDeployTaskEngine }}'
 AccessModeDeploy: '{{ .AccessModeDeploy }}'
+ResourcesPresetDeploy: '{{ .ResourcesPresetDeploy }}'
+ResourcesEditorDeploy: |- 
+{{ .ResourcesEditorDeploy | trim | indent 2 }}
+ResourcesPresetDeployCc: '{{ .ResourcesPresetDeployCc }}'
+ResourcesEditorDeployCc: |-
+{{ .ResourcesEditorDeployCc | trim | indent 2 }}
+ResourcesPresetDeployTaskEngine: '{{ .ResourcesPresetDeployTaskEngine }}'
+ResourcesEditorDeployTaskEngine: |-
+{{ .ResourcesEditorDeployTaskEngine | trim | indent 2}}
   {{- end }}
 {{- end }}
 {{- if eq .ProcessType "upgrade" }}

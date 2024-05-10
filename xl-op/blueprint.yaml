@@ -708,6 +708,180 @@ spec:
       prompt: "Provide storage class for the server:"
       promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
       description: Provide storage class for the server
+    - name: ResourcesSource
+      type: Select
+      options:
+        - label: Predefined resource values
+          value: preset
+        - label: Custom resource values
+          value: editor
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Select source of the resource values:"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
+      description: "Provide source of the resources requests and limits values for various containers"
+      default: editor
+    - name: ResourcesPresetDeploy
+      type: Select
+      options:
+        - label: request is cpu 1.0 and memory 2Gi. limit is 150% of request
+          value: nano
+        - label: request is cpu 2.0 and memory 4Gi. limit is 150% of request
+          value: micro
+        - label: request is cpu 4.0 and memory 8Gi. limit is 150% of request
+          value: small
+        - label: request is cpu 8.0 and memory 16Gi. limit is 150% of request
+          value: medium
+        - label: request is cpu 16.0 and memory 32Gi. limit is 150% of request
+          value: large
+        - label: request is cpu 32 and memory 64Gi. limit is 150% of request
+          value: xlarge
+        - label: request is cpu 64 and memory 128Gi. limit is 150% of request
+          value: 2xlarge                                                                      
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Select one of the predefined resource values for deploy master:"
+      promptIf: !expr ServerType == 'dai-deploy' && ProcessType == "install" && ResourcesSource == "preset"
+      description: "Select one of the predefined resource values for deploy master"
+      default: nano         
+    - name: ResourcesEditorDeploy
+      type: Editor
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide resource allocation for deploy master:"
+      promptIf: !expr ServerType == 'dai-deploy' && ProcessType == "install" && ResourcesSource == "editor"
+      description: "Provide resource allocation for deploy master"
+      default: |-
+        resources:
+          limits:
+            cpu: ""
+            memory: ""
+          requests:
+            cpu: ""
+            memory: ""
+    - name: ResourcesPresetDeployCc
+      type: Select
+      options:
+        - label: request is cpu 1.0 and memory 2Gi. limit is 150% of request
+          value: nano
+        - label: request is cpu 2.0 and memory 4Gi. limit is 150% of request
+          value: micro
+        - label: request is cpu 4.0 and memory 8Gi. limit is 150% of request
+          value: small
+        - label: request is cpu 8.0 and memory 16Gi. limit is 150% of request
+          value: medium
+        - label: request is cpu 16.0 and memory 32Gi. limit is 150% of request
+          value: large
+        - label: request is cpu 32 and memory 64Gi. limit is 150% of request
+          value: xlarge
+        - label: request is cpu 64 and memory 128Gi. limit is 150% of request
+          value: 2xlarge                                                                      
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Select one of the predefined resource values for central configuration:"
+      promptIf: !expr ServerType == 'dai-deploy' && ProcessType == "install" && ResourcesSource == "preset"
+      description: "Select one of the predefined resource values for central configuration"
+      default: nano         
+    - name: ResourcesEditorDeployCc
+      type: Editor
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide resource allocation for central configuration:"
+      promptIf: !expr ServerType == 'dai-deploy' && ProcessType == "install" && ResourcesSource == "editor"
+      description: "Provide resource allocation for central configuration"
+      default: |-
+        resources:
+          limits:
+            cpu: ""
+            memory: ""
+          requests:
+            cpu: ""
+            memory: ""
+    - name: ResourcesPresetDeployTaskEngine
+      type: Select
+      options:
+        - label: request is cpu 1.0 and memory 2Gi. limit is 150% of request
+          value: nano
+        - label: request is cpu 2.0 and memory 4Gi. limit is 150% of request
+          value: micro
+        - label: request is cpu 4.0 and memory 8Gi. limit is 150% of request
+          value: small
+        - label: request is cpu 8.0 and memory 16Gi. limit is 150% of request
+          value: medium
+        - label: request is cpu 16.0 and memory 32Gi. limit is 150% of request
+          value: large
+        - label: request is cpu 32 and memory 64Gi. limit is 150% of request
+          value: xlarge
+        - label: request is cpu 64 and memory 128Gi. limit is 150% of request
+          value: 2xlarge                                                                      
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Select one of the predefined resource values for deploy worker:"
+      promptIf: !expr ServerType == 'dai-deploy' && ProcessType == "install" && ResourcesSource == "preset"
+      description: "Select one of the predefined resource values for deploy worker"
+      default: nano         
+    - name: ResourcesEditorDeployTaskEngine
+      type: Editor
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide resource allocation for the deploy worker:"
+      promptIf: !expr ServerType == 'dai-deploy' && ProcessType == "install" && ResourcesSource == "editor"
+      description: "Provide resource allocation for deploy worker"
+      default: |-
+        resources:
+          limits:
+            cpu: ""
+            memory: ""
+          requests:
+            cpu: ""
+            memory: ""
+    - name: ResourcesPresetRelease
+      type: Select
+      options:
+        - label: request is cpu 1.0 and memory 2Gi. limit is 150% of request
+          value: nano
+        - label: request is cpu 2.0 and memory 4Gi. limit is 150% of request
+          value: micro
+        - label: request is cpu 4.0 and memory 8Gi. limit is 150% of request
+          value: small
+        - label: request is cpu 8.0 and memory 16Gi. limit is 150% of request
+          value: medium
+        - label: request is cpu 16.0 and memory 32Gi. limit is 150% of request
+          value: large
+        - label: request is cpu 32 and memory 64Gi. limit is 150% of request
+          value: xlarge
+        - label: request is cpu 64 and memory 128Gi. limit is 150% of request
+          value: 2xlarge
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Select one of the predefined resource values for release:"
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && ResourcesSource == "preset"
+      description: "Select one of the predefined resource values for release server"
+      default: nano
+    - name: ResourcesEditorRelease
+      type: Editor
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide resource allocation for release:"
+      promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && ResourcesSource == "editor"
+      description: "Provide resource allocation for release server"
+      default: |-
+        resources:
+          limits:
+            cpu: ""
+            memory: ""
+          requests:
+            cpu: ""
+            memory: ""
     - name: EnablePostgresql
       type: Confirm
       default: !expr ServerType != 'dai-release-runner'
