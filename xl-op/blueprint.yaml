@@ -725,20 +725,20 @@ spec:
     - name: ResourcesPresetDeploy
       type: Select
       options:
-        - label: request is cpu 1.0 and memory 2Gi. limit is 150% of request
+        - label: Request is cpu 1.0 and memory 2Gi. Limit is 150% of request
           value: nano
-        - label: request is cpu 2.0 and memory 4Gi. limit is 150% of request
+        - label: Request is cpu 2.0 and memory 4Gi. Limit is 150% of request
           value: micro
-        - label: request is cpu 4.0 and memory 8Gi. limit is 150% of request
+        - label: Request is cpu 4.0 and memory 8Gi. Limit is 150% of request
           value: small
-        - label: request is cpu 8.0 and memory 16Gi. limit is 150% of request
+        - label: Request is cpu 8.0 and memory 16Gi. Limit is 150% of request
           value: medium
-        - label: request is cpu 16.0 and memory 32Gi. limit is 150% of request
+        - label: Request is cpu 16.0 and memory 32Gi. Limit is 150% of request
           value: large
-        - label: request is cpu 32 and memory 64Gi. limit is 150% of request
+        - label: Request is cpu 32.0 and memory 64Gi. Limit is 150% of request
           value: xlarge
-        - label: request is cpu 64 and memory 128Gi. limit is 150% of request
-          value: 2xlarge                                                                      
+        - label: Request is cpu 64.0 and memory 128Gi. Limit is 150% of request
+          value: 2xlarge                                                                     
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
@@ -765,19 +765,19 @@ spec:
     - name: ResourcesPresetDeployCc
       type: Select
       options:
-        - label: request is cpu 1.0 and memory 2Gi. limit is 150% of request
+        - label: Request is cpu 1.0 and memory 2Gi. Limit is 150% of request
           value: nano
-        - label: request is cpu 2.0 and memory 4Gi. limit is 150% of request
+        - label: Request is cpu 2.0 and memory 4Gi. Limit is 150% of request
           value: micro
-        - label: request is cpu 4.0 and memory 8Gi. limit is 150% of request
+        - label: Request is cpu 4.0 and memory 8Gi. Limit is 150% of request
           value: small
-        - label: request is cpu 8.0 and memory 16Gi. limit is 150% of request
+        - label: Request is cpu 8.0 and memory 16Gi. Limit is 150% of request
           value: medium
-        - label: request is cpu 16.0 and memory 32Gi. limit is 150% of request
+        - label: Request is cpu 16.0 and memory 32Gi. Limit is 150% of request
           value: large
-        - label: request is cpu 32 and memory 64Gi. limit is 150% of request
+        - label: Request is cpu 32.0 and memory 64Gi. Limit is 150% of request
           value: xlarge
-        - label: request is cpu 64 and memory 128Gi. limit is 150% of request
+        - label: Request is cpu 64.0 and memory 128Gi. Limit is 150% of request
           value: 2xlarge                                                                      
       saveInXlvals: true
       ignoreIfSkipped: true
@@ -805,19 +805,19 @@ spec:
     - name: ResourcesPresetDeployTaskEngine
       type: Select
       options:
-        - label: request is cpu 1.0 and memory 2Gi. limit is 150% of request
+        - label: Request is cpu 1.0 and memory 2Gi. Limit is 150% of request
           value: nano
-        - label: request is cpu 2.0 and memory 4Gi. limit is 150% of request
+        - label: Request is cpu 2.0 and memory 4Gi. Limit is 150% of request
           value: micro
-        - label: request is cpu 4.0 and memory 8Gi. limit is 150% of request
+        - label: Request is cpu 4.0 and memory 8Gi. Limit is 150% of request
           value: small
-        - label: request is cpu 8.0 and memory 16Gi. limit is 150% of request
+        - label: Request is cpu 8.0 and memory 16Gi. Limit is 150% of request
           value: medium
-        - label: request is cpu 16.0 and memory 32Gi. limit is 150% of request
+        - label: Request is cpu 16.0 and memory 32Gi. Limit is 150% of request
           value: large
-        - label: request is cpu 32 and memory 64Gi. limit is 150% of request
+        - label: Request is cpu 32.0 and memory 64Gi. Limit is 150% of request
           value: xlarge
-        - label: request is cpu 64 and memory 128Gi. limit is 150% of request
+        - label: Request is cpu 64.0 and memory 128Gi. Limit is 150% of request
           value: 2xlarge                                                                      
       saveInXlvals: true
       ignoreIfSkipped: true
@@ -845,19 +845,19 @@ spec:
     - name: ResourcesPresetRelease
       type: Select
       options:
-        - label: request is cpu 1.0 and memory 2Gi. limit is 150% of request
+        - label: Request is cpu 1.0 and memory 2Gi. Limit is 150% of request
           value: nano
-        - label: request is cpu 2.0 and memory 4Gi. limit is 150% of request
+        - label: Request is cpu 2.0 and memory 4Gi. Limit is 150% of request
           value: micro
-        - label: request is cpu 4.0 and memory 8Gi. limit is 150% of request
+        - label: Request is cpu 4.0 and memory 8Gi. Limit is 150% of request
           value: small
-        - label: request is cpu 8.0 and memory 16Gi. limit is 150% of request
+        - label: Request is cpu 8.0 and memory 16Gi. Limit is 150% of request
           value: medium
-        - label: request is cpu 16.0 and memory 32Gi. limit is 150% of request
+        - label: Request is cpu 16.0 and memory 32Gi. Limit is 150% of request
           value: large
-        - label: request is cpu 32 and memory 64Gi. limit is 150% of request
+        - label: Request is cpu 32 and memory 64Gi. Limit is 150% of request
           value: xlarge
-        - label: request is cpu 64 and memory 128Gi. limit is 150% of request
+        - label: Request is cpu 64 and memory 128Gi. Limit is 150% of request
           value: 2xlarge
       saveInXlvals: true
       ignoreIfSkipped: true
