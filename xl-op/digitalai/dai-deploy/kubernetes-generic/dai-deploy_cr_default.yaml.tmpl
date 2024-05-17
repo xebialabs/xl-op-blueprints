@@ -59,7 +59,7 @@ spec:
   ssl:
     enabled: true
     keystorePassword: {{ .ApplicationKeystorePassword | quote }}
-    keystoreKeypassword: {{ .ApplicationKeystoreKeyPassword | quote }}
+    keystoreKeypassword: {{ .ApplicationKeystorePassword | quote }}
     keystoreType: {{ .ApplicationKeystoreType }}
     {{- if eq .ApplicationKeystoreSource "secret" }}
     keystore:
