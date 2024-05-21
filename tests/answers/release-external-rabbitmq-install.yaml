@@ -120,7 +120,6 @@ ApplicationKeystoreSecretName: ''
 ApplicationKeystore: ''
 ApplicationKeystoreType: 'pkcs12'
 ApplicationKeystorePassword: 'XjkB2A6OIlzyyk9K'
-ApplicationKeystoreKeyPassword: 'XjkB2A6OIlzyyk9K'
 CrdName: ''
 IsCrdReused: false
 CrName: ''

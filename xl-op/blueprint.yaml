@@ -335,16 +335,6 @@ spec:
       promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && (HttpProtocolRelease != "http" || HttpProtocolDeploy != "http")
       description: HTTPS keystore passphrase for the server
       default: !expr "ApplicationKeystoreSource == 'generate' ? randPassword() : ''"
-    - name: ApplicationKeystoreKeyPassword
-      type: Input
-      saveInXlvals: true
-      ignoreIfSkipped: true
-      allowEmpty: true
-      overrideDefault: true
-      prompt: "Provide the server HTTPS keystore key passphrase:"
-      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && (HttpProtocolRelease != "http" || HttpProtocolDeploy != "http") && ApplicationKeystoreType == 'jks'
-      description: HTTPS keystore key passphrase for the server
-      default: !expr "ApplicationKeystoreType == 'jks' ? (ApplicationKeystoreSource == 'generate' ? randPassword() : '') : ApplicationKeystorePassword"
     - name: IngressTypeGeneric
       type: Select
       prompt: "Select between supported ingress types:"
