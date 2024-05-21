@@ -90,7 +90,6 @@ ApplicationKeystoreSecretName: '{{ .ApplicationKeystoreSecretName }}'
 ApplicationKeystore: '{{ .ApplicationKeystore }}'
 ApplicationKeystoreType: '{{ .ApplicationKeystoreType }}'
 ApplicationKeystorePassword: '{{ .ApplicationKeystorePassword }}'
-ApplicationKeystoreKeyPassword: '{{ .ApplicationKeystoreKeyPassword }}'
   {{- if eq .ServerType "dai-deploy" }}
 PvcSizeDeploy: '{{ .PvcSizeDeploy }}'
 PvcSizeDeployTaskEngine: '{{ .PvcSizeDeployTaskEngine }}'

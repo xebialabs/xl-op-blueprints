@@ -120,7 +120,6 @@ ApplicationKeystoreSecretName: ''
 ApplicationKeystore: ''
 ApplicationKeystoreType: 'pkcs12'
 ApplicationKeystorePassword: '8BBCBhig3gNvrFcR'
-ApplicationKeystoreKeyPassword: '8BBCBhig3gNvrFcR'
 CrdName: ''
 IsCrdReused: false
 CrName: ''
