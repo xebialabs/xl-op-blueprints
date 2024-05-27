@@ -127,6 +127,14 @@ spec:
     accessModes:
       - {{ .AccessModeRelease }}
     size: {{ .PvcSizeRelease }}Gi
+  {{- if eq .ResourcesSource "preset" }}
+  resourcesPreset: {{ .ResourcesPresetRelease }}
+  {{- end }}
+  {{- if eq .ResourcesSource "editor" }}
+{{ .ResourcesEditorRelease | indent 2 }}
+  {{- else }}
+  resources: {}
+  {{- end }}
   volumePermissions:
     enabled: false
   image:
