@@ -51,6 +51,11 @@ IdentityServiceConfRelease: |-
 {{- if eq .ProcessType "install" }}
 IngressTypeGeneric: '{{ .IngressTypeGeneric }}'
 IngressTypeOpenshift: '{{ .IngressTypeOpenshift }}'
+NginxResourcesPreset: '{{ .NginxResourcesPreset }}'
+NginxResourcesEditor: |-
+{{ .NginxResourcesEditor | trim | indent 2 }}
+HAProxyResourcesEditor: |-
+{{ .HAProxyResourcesEditor | trim | indent 2 }}
 ExternalIngressClass: '{{ .ExternalIngressClass }}'
 HttpProtocolIngress: '{{ .HttpProtocolIngress }}'
 IngressKeystoreSourceGeneric: '{{ .IngressKeystoreSourceGeneric }}'
@@ -62,9 +67,15 @@ IngressHost: '{{ .IngressHost }}'
 HttpsProtocol: '{{ .HttpsProtocol }}'
 EnablePostgresql: {{ .EnablePostgresql }}
 PostgresqlStorageClass: '{{ .PostgresqlStorageClass }}'
+PostgresqlResourcesPreset: '{{ .PostgresqlResourcesPreset }}'
+PostgresqlResourcesEditor: |-
+{{ .PostgresqlResourcesEditor | trim | indent 2 }}
 EnableRabbitmq: {{ .EnableRabbitmq }}
 RabbitmqReplicaCount: '{{ .RabbitmqReplicaCount }}'
 RabbitmqStorageClass: '{{ .RabbitmqStorageClass }}'
+RabbitmqResourcesPreset: '{{ .RabbitmqResourcesPreset }}'
+RabbitmqResourcesEditor: |-
+{{ .RabbitmqResourcesEditor | trim | indent 2 }}
 LicenseSource: '{{ .LicenseSource }}'
 LicenseEditor:  |-
 {{ .LicenseEditor | trim | indent 2 }}

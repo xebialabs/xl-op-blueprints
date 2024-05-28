@@ -377,6 +377,62 @@ spec:
       ignoreIfSkipped: true
       value: !expr "K8sSetup == 'Openshift' ? IngressTypeOpenshift : IngressTypeGeneric"
       description: Select between supported ingress types. If None is selected, the application will not be exposed and therefore will not be accessible from the browser.
+    - name: NginxResourcesPreset
+      type: Select
+      options:
+        - label: Request is 100m cpu and 128Mi memory. Limit is 150m cpu and 192Mi memory
+          value: nano
+        - label: Request is 250m cpu and 256Mi memory. Limit is 375m cpu and 384Mi memory
+          value: micro
+        - label: Request is 500m cpu and 512Mi memory. Limit is 750m cpu and 768Mi memory
+          value: small
+        - label: Request is 500m cpu and 1024Mi memory. Limit is 750m cpu and 1536Mi memory
+          value: medium
+        - label: Request is 1.0 cpu and 2048Mi memory. Limit is 1.5 cpu and 3072Mi memory
+          value: large
+        - label: Request is 1.5 cpu and 4096Mi memory. Limit is 3.0 cpu and 6144Mi memory
+          value: xlarge
+        - label: Request is 1.5 cpu and 4096Mi memory. Limit is 6.0 cpu and 12288Mi memory
+          value: 2xlarge                                                                  
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Select one of the predefined resource values for Nginx ingress:"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && IngressType == "nginx" && ResourcesSource == "preset"
+      description: "Select one of the predefined resource values for Nginx ingress"
+      default: nano
+    - name: NginxResourcesEditor
+      type: Editor
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide resource allocation for Nginx ingress:"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && IngressType == "nginx" && ResourcesSource == "editor"
+      description: "Provide resource allocation for Nginx ingress"
+      default: |-
+        resources:
+          requests:
+            cpu: ""
+            memory: ""
+          limits:
+            cpu: ""
+            memory: ""
+    - name: HAProxyResourcesEditor
+      type: Editor
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide resource allocation for HAProxy ingress:"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && IngressType == "haproxy"
+      description: "Provide resource allocation for HAProxy ingress"
+      default: |-
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "64Mi"
+          limits:
+            cpu: "100m"
+            memory: "64Mi"
     - name: ExternalIngressClass
       type: Select
       options:
@@ -727,6 +783,46 @@ spec:
       default: 8
       description: Provide PVC size for PostgreSQL
       validate: !expr "regex('^([0-9])+(\\.)?([0-9])*$', PostgresqlPvcSize)"
+    - name: PostgresqlResourcesPreset
+      type: Select
+      options:
+        - label: Request is 100m cpu and 128Mi memory. Limit is 150m cpu and 192Mi memory
+          value: nano
+        - label: Request is 250m cpu and 256Mi memory. Limit is 375m cpu and 384Mi memory
+          value: micro
+        - label: Request is 500m cpu and 512Mi memory. Limit is 750m cpu and 768Mi memory
+          value: small
+        - label: Request is 500m cpu and 1024Mi memory. Limit is 750m cpu and 1536Mi memory
+          value: medium
+        - label: Request is 1.0 cpu and 2048Mi memory. Limit is 1.5 cpu and 3072Mi memory
+          value: large
+        - label: Request is 1.5 cpu and 4096Mi memory. Limit is 3.0 cpu and 6144Mi memory
+          value: xlarge
+        - label: Request is 1.5 cpu and 4096Mi memory. Limit is 6.0 cpu and 12288Mi memory
+          value: 2xlarge                                                                    
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Select one of the predefined resource values for Postgresql:"
+      promptIf: !expr ProcessType == "install" && EnablePostgresql && ResourcesSource == "preset"
+      description: "Select one of the predefined resource values for Postgresql"
+      default: nano
+    - name: PostgresqlResourcesEditor
+      type: Editor
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide resource allocation for Postgresql:"
+      promptIf: !expr ProcessType == "install" && EnablePostgresql && ResourcesSource == "editor"
+      description: "Provide resource allocation for Postgresql"
+      default: |-
+        resources:
+          requests:
+            cpu: ""
+            memory: ""
+          limits:
+            cpu: ""
+            memory: ""
     - name: PostgresqlExternalConfigRelease
       type: Editor
       saveInXlvals: true
@@ -809,6 +905,46 @@ spec:
       promptIf: !expr "ProcessType == 'install' && EnableRabbitmq"
       description: Provide PVC size for RabbitMQ
       validate: !expr "regex('^([0-9])+(\\.)?([0-9])*$', RabbitmqPvcSize)"
+    - name: RabbitmqResourcesPreset
+      type: Select
+      options:
+        - label: Request is 100m cpu and 128Mi memory. Limit is 150m cpu and 192Mi memory
+          value: nano
+        - label: Request is 250m cpu and 256Mi memory. Limit is 375m cpu and 384Mi memory
+          value: micro
+        - label: Request is 500m cpu and 512Mi memory. Limit is 750m cpu and 768Mi memory
+          value: small
+        - label: Request is 500m cpu and 1024Mi memory. Limit is 750m cpu and 1536Mi memory
+          value: medium
+        - label: Request is 1.0 cpu and 2048Mi memory. Limit is 1.5 cpu and 3072Mi memory
+          value: large
+        - label: Request is 1.5 cpu and 4096Mi memory. Limit is 3.0 cpu and 6144Mi memory
+          value: xlarge
+        - label: Request is 1.5 cpu and 4096Mi memory. Limit is 6.0 cpu and 12288Mi memory
+          value: 2xlarge                                                                    
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Select one of the predefined resource values for Rabbitmq:"
+      promptIf: !expr ProcessType == "install" && EnableRabbitmq && ResourcesSource == "preset"
+      description: "Select one of the predefined resource values for Rabbitmq"
+      default: nano
+    - name: RabbitmqResourcesEditor
+      type: Editor
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Provide resource allocation for Rabbitmq:"
+      promptIf: !expr ProcessType == "install" && EnableRabbitmq && ResourcesSource == "editor"
+      description: "Provide resource allocation for Rabbitmq"
+      default: |-
+        resources:
+          requests:
+            cpu: ""
+            memory: ""
+          limits:
+            cpu: ""
+            memory: ""
     - name: RabbitmqExternalConfigRelease
       type: Editor
       saveInXlvals: true
