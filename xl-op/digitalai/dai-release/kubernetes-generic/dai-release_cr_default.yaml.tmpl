@@ -127,6 +127,14 @@ spec:
     accessModes:
       - {{ .AccessModeRelease }}
     size: {{ .PvcSizeRelease }}Gi
+  podSecurityContext:
+    enabled: true
+  containerSecurityContext:
+    enabled: true
+  {{- if eq .K8sSetup "Openshift" }}
+  securityContextConstraints:
+    enabled: true    
+  {{- end }}
   volumePermissions:
     enabled: false
   image:
@@ -358,9 +366,14 @@ spec:
       persistence:
         size: {{ .PostgresqlPvcSize }}Gi
         storageClass: "{{ .PostgresqlStorageClass }}"
-    securityContext:
-      enabled: true
-      fsGroup: 1001
+      podSecurityContext:
+        enabled: true
+      containerSecurityContext:
+        enabled: true
+      {{- if eq .K8sSetup "Openshift" }}
+      securityContextConstraints:
+        enabled: true
+      {{- end }}
     {{- if eq .IsCustomImageRegistry true }}
     volumePermissions:
       image:
@@ -387,6 +400,10 @@ spec:
       size: {{ .RabbitmqPvcSize }}Gi
       storageClass: "{{ .RabbitmqStorageClass }}"
     replicaCount: {{ .RabbitmqReplicaCount }}
+    {{- if eq .K8sSetup "Openshift" }}
+    securityContextConstraints:
+      enabled: true
+    {{- end }}
     volumePermissions:
       enabled: true
       {{- if eq .IsCustomImageRegistry true }}
@@ -394,10 +411,7 @@ spec:
         {{- /* registry name defined in global section */}}
         repository: {{ .RepositoryName }}/os-shell
       {{- end }}
-    securityContext:
-      enabled: true
-      fsGroup: 1001
     podSecurityContext:
       enabled: true
-      fsGroup: 1001
-      runAsUser: 1001
+    containerSecurityContext:
+      enabled: true
