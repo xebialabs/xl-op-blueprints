@@ -97,13 +97,28 @@ spec:
         registry: {{ .CustomImageRegistryName }}
         repository: {{ .RepositoryName }}/kubectl
       {{- end }}
-
+  {{- if eq .K8sSetup "Openshift" }}
+  securityContextConstraints:
+    enabled: true    
+  {{- end }}
   centralConfiguration:
     replicaCount: 1
     image:
       repository: {{ .RepositoryName }}/{{ .ImageNameCc }}
       tag: "{{ .ImageTag }}"
       pullPolicy: IfNotPresent
+    persistence:
+      enabled: false
+      storageClass: "{{ .StorageClass }}"
+      accessModes:
+        - {{ .AccessModeDeploy }}
+      size: 1Gi
+    podSecurityContext:
+      enabled: true
+    containerSecurityContext:
+      enabled: true      
+    volumePermissions:
+      enabled: false
     diagnosticMode:
       enabled: false
 
@@ -114,6 +129,10 @@ spec:
       accessModes:
         - {{ .AccessModeDeploy }}
       size: {{ .PvcSizeDeploy }}Gi
+    podSecurityContext:
+      enabled: true
+    containerSecurityContext:
+      enabled: true
     volumePermissions:
       enabled: false
     image:
@@ -130,6 +149,10 @@ spec:
       accessModes:
         - {{ .AccessModeDeploy }}
       size: {{ .PvcSizeDeployTaskEngine }}Gi
+    podSecurityContext:
+      enabled: true
+    containerSecurityContext:
+      enabled: true      
     volumePermissions:
       enabled: false
     image:
@@ -362,9 +385,14 @@ spec:
       persistence:
         size: {{ .PostgresqlPvcSize }}Gi
         storageClass: "{{ .PostgresqlStorageClass }}"
-    securityContext:
-      enabled: true
-      fsGroup: 1001
+      podSecurityContext:
+        enabled: true
+      containerSecurityContext:
+        enabled: true
+      {{- if eq .K8sSetup "Openshift" }}
+      securityContextConstraints:
+        enabled: true
+      {{- end }}
     {{- if eq .IsCustomImageRegistry true }}
     volumePermissions:
       image:
@@ -391,6 +419,10 @@ spec:
       size: {{ .RabbitmqPvcSize }}Gi
       storageClass: {{ .RabbitmqStorageClass }}
     replicaCount: {{ .RabbitmqReplicaCount }}
+    {{- if eq .K8sSetup "Openshift" }}
+    securityContextConstraints:
+      enabled: true    
+    {{- end }}    
     volumePermissions:
       enabled: true
       {{- if eq .IsCustomImageRegistry true }}
@@ -398,10 +430,7 @@ spec:
         {{- /* registry name defined in global section */}}
         repository: {{ .RepositoryName }}/os-shell
       {{- end }}
-    securityContext:
-      enabled: true
-      fsGroup: 1001
     podSecurityContext:
       enabled: true
-      fsGroup: 1001
-      runAsUser: 1001
+    containerSecurityContext:
+      enabled: true
