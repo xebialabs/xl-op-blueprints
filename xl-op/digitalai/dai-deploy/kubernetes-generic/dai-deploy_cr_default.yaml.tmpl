@@ -106,6 +106,14 @@ spec:
       pullPolicy: IfNotPresent
     diagnosticMode:
       enabled: false
+    {{- if eq .ResourcesSource "preset" }}
+    resourcesPreset: {{ .ResourcesPresetDeployCc }}
+    {{- end }}
+    {{- if eq .ResourcesSource "editor" }}
+{{ .ResourcesEditorDeployCc | indent 4 }}
+    {{- else }}
+    resources: {}
+    {{- end }}
 
   master:
     replicaCount: {{ .XldMasterCount }}
@@ -122,6 +130,14 @@ spec:
       pullPolicy: IfNotPresent
     diagnosticMode:
       enabled: false
+    {{- if eq .ResourcesSource "preset" }}
+    resourcesPreset: {{ .ResourcesPresetDeploy }}
+    {{- end }}
+    {{- if eq .ResourcesSource "editor" }}
+{{ .ResourcesEditorDeploy | indent 4 }}
+    {{- else }}
+    resources: {}
+    {{- end }}
 
   worker:
     replicaCount: {{ .XldWorkerCount }}
@@ -138,6 +154,14 @@ spec:
       pullPolicy: IfNotPresent
     diagnosticMode:
       enabled: false
+    {{- if eq .ResourcesSource "preset" }}
+    resourcesPreset: {{ .ResourcesPresetDeployTaskEngine }}
+    {{- end }}
+    {{- if eq .ResourcesSource "editor" }}
+{{ .ResourcesEditorDeployTaskEngine | indent 4 }}
+    {{- else }}
+    resources: {}
+    {{- end }}    
 
   {{- if eq .IsCustomImageRegistry true }}
   busyBox:
