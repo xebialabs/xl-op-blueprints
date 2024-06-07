@@ -129,10 +129,11 @@ spec:
     size: {{ .PvcSizeRelease }}Gi
   {{- if eq .ResourcesSource "preset" }}
   resourcesPreset: {{ .ResourcesPresetRelease }}
-  {{- end }}
-  {{- if eq .ResourcesSource "editor" }}
+  resources: {}
+  {{- else if eq .ResourcesSource "editor" }}
 {{ .ResourcesEditorRelease | indent 2 }}
-  {{- else }}
+  {{- else if eq .ResourcesSource "none" }}
+  resourcesPreset: "none"
   resources: {}
   {{- end }}
   volumePermissions:
@@ -299,7 +300,11 @@ spec:
       {{- else }}
       ingressClass: haproxy-dai-xlr
       {{- end }}
+      {{- if eq .ResourcesSource "none" }}
+      resources: {}
+      {{- else }}
 {{ .HAProxyResourcesEditor | indent 6 }}
+      {{- end }}
     {{- if eq .IngressType "haproxy" }}
     install: true
     {{- else }}
@@ -314,12 +319,13 @@ spec:
       {{- end }}
       {{- if eq .ResourcesSource "preset" }}
       resourcesPreset: {{ .NginxResourcesPreset }}
-      {{- end }}
-      {{- if eq .ResourcesSource "editor" }}
-{{ .NginxResourcesEditor | indent 6 }}
-      {{- else }}
       resources: {}
-      {{- end }}    
+      {{- else if eq .ResourcesSource "editor" }}
+{{ .NginxResourcesEditor | indent 6 }}
+      {{- else if eq .ResourcesSource "none"}}
+      resourcesPreset: "none"
+      resources: {}
+      {{- end }}
     {{- if eq .UseCustomNamespace true }}
     extraArgs:
       ingress-class: "nginx-dai-xlr-{{ .Namespace }}"
@@ -356,10 +362,11 @@ spec:
     {{- end }}
     {{- if eq .ResourcesSource "preset" }}
     resourcesPreset: {{ .NginxResourcesPreset }}
-    {{- end }}
-    {{- if eq .ResourcesSource "editor" }}
+    resources: {}
+    {{- else if eq .ResourcesSource "editor" }}
 {{ .NginxResourcesEditor | indent 4 }}
-    {{- else }}
+    {{- else if eq .ResourcesSource "none" }}
+    resourcesPreset: "none"
     resources: {}
     {{- end }}
   postgresql:
@@ -382,12 +389,13 @@ spec:
     primary:
       {{- if eq .ResourcesSource "preset" }}
       resourcesPreset: {{ .PostgresqlResourcesPreset }}
-      {{- end }}
-      {{- if eq .ResourcesSource "editor" }}
-{{ .PostgresqlResourcesEditor | indent 6 }}
-      {{- else }}
       resources: {}
-      {{- end }}    
+      {{- else if eq .ResourcesSource "editor" }}
+{{ .PostgresqlResourcesEditor | indent 6 }}
+      {{- else if eq .ResourcesSource "none" }}
+      resourcesPreset: "none"
+      resources: {}
+      {{- end }}
       persistence:
         size: {{ .PostgresqlPvcSize }}Gi
         storageClass: "{{ .PostgresqlStorageClass }}"
@@ -422,10 +430,11 @@ spec:
     replicaCount: {{ .RabbitmqReplicaCount }}
     {{- if eq .ResourcesSource "preset" }}
     resourcesPreset: {{ .RabbitmqResourcesPreset }}
-    {{- end }}
-    {{- if eq .ResourcesSource "editor" }}
+    resources: {}
+    {{- else if eq .ResourcesSource "editor" }}
 {{ .RabbitmqResourcesEditor | indent 4 }}
-    {{- else }}
+    {{- else if eq .ResourcesSource "none" }}
+    resourcesPreset: "none"
     resources: {}
     {{- end }}
     volumePermissions:

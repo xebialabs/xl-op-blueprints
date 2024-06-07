@@ -244,13 +244,15 @@ spec:
           value: preset
         - label: Custom resource values
           value: editor
+        - label: None
+          value: none
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Select source of the resource values (CPU and memory):"
       promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install"
       description: "Provide source of the resources (CPU and memory) requests and limits values for various containers. This selection will be used for specifying resources for all the installation components"
-      default: editor
+      default: none
     - name: ResourcesPresetDeploy
       type: Select
       options:
@@ -274,7 +276,7 @@ spec:
       prompt: "Select one of the predefined resource values for Deploy master:"
       promptIf: !expr ServerType == 'dai-deploy' && ProcessType == "install" && ResourcesSource == "preset"
       description: "Select one of the predefined resource values for Deploy master"
-      default: nano         
+      default: nano
     - name: ResourcesEditorDeploy
       type: Editor
       saveInXlvals: true
@@ -286,11 +288,11 @@ spec:
       default: |-
         resources:
           requests:
-            cpu: ""
-            memory: ""
+            cpu:
+            memory:
           limits:
-            cpu: ""
-            memory: ""
+            cpu:
+            memory:
     - name: ResourcesPresetDeployCc
       type: Select
       options:
@@ -326,11 +328,11 @@ spec:
       default: |-
         resources:
           requests:
-            cpu: ""
-            memory: ""
+            cpu:
+            memory:
           limits:
-            cpu: ""
-            memory: ""
+            cpu:
+            memory:
     - name: ResourcesPresetDeployTaskEngine
       type: Select
       options:
@@ -366,11 +368,11 @@ spec:
       default: |-
         resources:
           requests:
-            cpu: ""
-            memory: ""
+            cpu:
+            memory:
           limits:
-            cpu: ""
-            memory: ""
+            cpu:
+            memory:
     - name: ResourcesPresetRelease
       type: Select
       options:
@@ -406,11 +408,11 @@ spec:
       default: |-
         resources:
           requests:
-            cpu: ""
-            memory: ""
+            cpu:
+            memory:
           limits:
-            cpu: ""
-            memory: ""
+            cpu:
+            memory:
     - name: HttpProtocolRelease
       type: Select
       options:
@@ -596,27 +598,27 @@ spec:
       default: |-
         resources:
           requests:
-            cpu: ""
-            memory: ""
+            cpu:
+            memory:
           limits:
-            cpu: ""
-            memory: ""
+            cpu:
+            memory:
     - name: HAProxyResourcesEditor
       type: Editor
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Provide resource allocation for HAProxy ingress:"
-      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && IngressType == "haproxy"
+      promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && IngressType == "haproxy" && ResourcesSource != "none"
       description: "Provide resource allocation for HAProxy ingress"
       default: |-
         resources:
           requests:
-            cpu: "100m"
-            memory: "64Mi"
+            cpu:
+            memory:
           limits:
-            cpu: "100m"
-            memory: "64Mi"
+            cpu:
+            memory:
     - name: ExternalIngressClass
       type: Select
       options:
@@ -992,11 +994,11 @@ spec:
       default: |-
         resources:
           requests:
-            cpu: ""
-            memory: ""
+            cpu:
+            memory:
           limits:
-            cpu: ""
-            memory: ""
+            cpu:
+            memory:
     - name: PostgresqlExternalConfigRelease
       type: Editor
       saveInXlvals: true
@@ -1114,11 +1116,11 @@ spec:
       default: |-
         resources:
           requests:
-            cpu: ""
-            memory: ""
+            cpu:
+            memory:
           limits:
-            cpu: ""
-            memory: ""
+            cpu:
+            memory:
     - name: RabbitmqExternalConfigRelease
       type: Editor
       saveInXlvals: true
@@ -1364,6 +1366,21 @@ spec:
         .spec.ssl: .
         .spec.hooks: .
         .spec.hooks.genSelfSigned.enabled: .
+        .spec.centralConfiguration.resourcesPreset: .
+        .spec.centralConfiguration.resources: .
+        .spec.master.resourcesPreset: .
+        .spec.master.resources: .
+        .spec.worker.resourcesPreset: .
+        .spec.worker.resources: .
+        .spec.haproxy-ingress.resources: .
+        .spec.nginx-ingress-controller.defaultBackend.resources: .
+        .spec.nginx-ingress-controller.defaultBackend.resourcesPreset: .
+        .spec.nginx-ingress-controller.resources: .
+        .spec.nginx-ingress-controller.resourcesPreset: .
+        .spec.postgresql.primary.resources: .
+        .spec.postgresql.primary.resourcesPreset: .
+        .spec.rabbitmq.resources: .
+        .spec.rabbitmq.resourcesPreset: .
     - name: PreserveCrValuesRelease
       type: Editor
       prompt: "Edit list of custom resource keys that will migrate to the new Release CR:"
@@ -1508,6 +1525,17 @@ spec:
         .spec.http2.enabled: .
         .spec.ssl: .
         .spec.hooks.genSelfSigned.enabled: .
+        .spec.resourcesPreset: .
+        .spec.resources: .
+        .spec.haproxy-ingress.resources: .
+        .spec.nginx-ingress-controller.defaultBackend.resources: .
+        .spec.nginx-ingress-controller.defaultBackend.resourcesPreset: .
+        .spec.nginx-ingress-controller.resources: .
+        .spec.nginx-ingress-controller.resourcesPreset: .
+        .spec.postgresql.primary.resources: .
+        .spec.postgresql.primary.resourcesPreset: .
+        .spec.rabbitmq.resources: .
+        .spec.rabbitmq.resourcesPreset: .
     - name: PreservePvc
       type: Confirm
       saveInXlvals: true
