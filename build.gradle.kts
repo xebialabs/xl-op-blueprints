@@ -27,7 +27,7 @@ buildscript {
 plugins {
     kotlin("jvm") version "1.8.10"
     id("nebula.release") version (properties["nebulaReleasePluginVersion"] as String)
-    id("com.github.node-gradle.node") version "4.0.0"
+    id("com.github.node-gradle.node") version "7.0.2"
     id("maven-publish")
     id("idea")
 }
@@ -190,27 +190,27 @@ tasks {
     }
 
     named<YarnTask>("yarn_install") {
-        group = "doc"
+        group = "docusaurus"
         args.set(listOf("--mutex", "network"))
         workingDir.set(file("${rootDir}/documentation"))
     }
 
     register<YarnTask>("yarnRunStart") {
-        group = "doc"
+        group = "docusaurus"
         dependsOn(named("yarn_install"))
         args.set(listOf("run", "start"))
         workingDir.set(file("${rootDir}/documentation"))
     }
 
     register<YarnTask>("yarnRunBuild") {
-        group = "doc"
+        group = "docusaurus"
         dependsOn(named("yarn_install"))
         args.set(listOf("run", "build"))
         workingDir.set(file("${rootDir}/documentation"))
     }
 
     register<Delete>("docCleanUp") {
-        group = "doc"
+        group = "docusaurus"
         delete(file("${rootDir}/docs"))
         delete(file("${rootDir}/documentation/build"))
         delete(file("${rootDir}/documentation/.docusaurus"))
@@ -218,14 +218,14 @@ tasks {
     }
 
     register<Copy>("docBuild") {
-        group = "doc"
+        group = "docusaurus"
         dependsOn(named("yarnRunBuild"), named("docCleanUp"))
         from(file("${rootDir}/documentation/build"))
         into(file("${rootDir}/docs"))
     }
 
     register<GenerateDocumentation>("updateDocs") {
-        group = "doc"
+        group = "docusaurus"
         dependsOn(named("docBuild"))
     }
 }
@@ -259,7 +259,7 @@ publishing {
 }
 
 node {
-    version.set("16.13.2")
-    yarnVersion.set("1.22.17")
+    version.set("20.14.0")
+    yarnVersion.set("1.22.22")
     download.set(true)
 }
