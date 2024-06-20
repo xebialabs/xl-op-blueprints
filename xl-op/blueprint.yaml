@@ -256,19 +256,19 @@ spec:
     - name: ResourcesPresetDeploy
       type: Select
       options:
-        - label: Request is 500m cpu and 1Gi memory. Limit is 1.0 cpu and 2Gi memory
+        - label: Request - 500m cpu, 1Gi memory. Limit - 1.0 cpu, 2Gi memory
           value: nano
-        - label: Request is 1.0 cpu and 2Gi memory. Limit is 2.0 cpu and 4Gi memory
+        - label: Request - 1.0 cpu, 2Gi memory. Limit - 2.0 cpu, 4Gi memory
           value: micro
-        - label: Request is 2.0 cpu and 5Gi memory. Limit is 4.0 cpu and 8Gi memory
+        - label: Request - 2.0 cpu, 5Gi memory. Limit - 4.0 cpu, 8Gi memory
           value: small
-        - label: Request is 5.0 cpu and 10Gi memory. Limit is 8.0 cpu and 16Gi memory
+        - label: Request - 5.0 cpu, 10Gi memory. Limit - 8.0 cpu, 16Gi memory
           value: medium
-        - label: Request is 10.0 cpu and 21Gi memory. Limit is 16.0 cpu and 32Gi memory
+        - label: Request - 10.0 cpu, 21Gi memory. Limit - 16.0 cpu, 32Gi memory
           value: large
-        - label: Request is 21.0 cpu and 42Gi memory. Limit is 32.0 cpu and 64Gi memory
+        - label: Request - 21.0 cpu, 42Gi memory. Limit - 32.0 cpu, 64Gi memory
           value: xlarge
-        - label: Request is 42.0 cpu and 85Gi memory. Limit is 64.0 cpu and 128Gi memory
+        - label: Request - 42.0 cpu, 85Gi memory. Limit - 64.0 cpu, 128Gi memory
           value: 2xlarge                                                                     
       saveInXlvals: true
       ignoreIfSkipped: true
@@ -277,6 +277,19 @@ spec:
       promptIf: !expr ServerType == 'dai-deploy' && ProcessType == "install" && ResourcesSource == "preset"
       description: "Select one of the predefined resource values for Deploy master"
       default: nano
+    - name: DefaultResourcesEditor
+      type: Input
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      value: |-
+        resources:
+          requests:
+            cpu:
+            memory:
+          limits:
+            cpu:
+            memory:      
+      description: Default values for resources editor      
     - name: ResourcesEditorDeploy
       type: Editor
       saveInXlvals: true
@@ -285,30 +298,23 @@ spec:
       prompt: "Provide resource allocation for Deploy master:"
       promptIf: !expr ServerType == 'dai-deploy' && ProcessType == "install" && ResourcesSource == "editor"
       description: "Provide resource allocation for Deploy master"
-      default: |-
-        resources:
-          requests:
-            cpu:
-            memory:
-          limits:
-            cpu:
-            memory:
+      default: !expr DefaultResourcesEditor
     - name: ResourcesPresetDeployCc
       type: Select
       options:
-        - label: Request is 100m cpu and 128Mi memory. Limit is 150m cpu and 192Mi memory
+        - label: Request - 100m cpu, 128Mi memory. Limit - 150m cpu, 192Mi memory
           value: nano
-        - label: Request is 250m cpu and 256Mi memory. Limit is 375m cpu and 384Mi memory
+        - label: Request - 250m cpu, 256Mi memory. Limit - 375m cpu, 384Mi memory
           value: micro
-        - label: Request is 500m cpu and 512Mi memory. Limit is 750m cpu and 768Mi memory
+        - label: Request - 500m cpu, 512Mi memory. Limit - 750m cpu, 768Mi memory
           value: small
-        - label: Request is 500m cpu and 1024Mi memory. Limit is 750m cpu and 1536Mi memory
+        - label: Request - 500m cpu, 1024Mi memory. Limit - 750m cpu, 1536Mi memory
           value: medium
-        - label: Request is 1.0 cpu and 2048Mi memory. Limit is 1.5 cpu and 3072Mi memory
+        - label: Request - 1.0 cpu, 2048Mi memory. Limit - 1.5 cpu, 3072Mi memory
           value: large
-        - label: Request is 1.5 cpu and 4096Mi memory. Limit is 3.0 cpu and 6144Mi memory
+        - label: Request - 1.5 cpu, 4096Mi memory. Limit - 3.0 cpu, 6144Mi memory
           value: xlarge
-        - label: Request is 1.5 cpu and 4096Mi memory. Limit is 6.0 cpu and 12288Mi memory
+        - label: Request - 1.5 cpu, 4096Mi memory. Limit - 6.0 cpu, 12288Mi memory
           value: 2xlarge                                                
       saveInXlvals: true
       ignoreIfSkipped: true
@@ -325,30 +331,23 @@ spec:
       prompt: "Provide resource allocation for Central Configuration:"
       promptIf: !expr ServerType == 'dai-deploy' && ProcessType == "install" && ResourcesSource == "editor"
       description: "Provide resource allocation for Central Configuration"
-      default: |-
-        resources:
-          requests:
-            cpu:
-            memory:
-          limits:
-            cpu:
-            memory:
+      default: !expr DefaultResourcesEditor
     - name: ResourcesPresetDeployTaskEngine
       type: Select
       options:
-        - label: Request is 500m cpu and 1Gi memory. Limit is 1.0 cpu and 2Gi memory
+        - label: Request - 500m cpu, 1Gi memory. Limit - 1.0 cpu, 2Gi memory
           value: nano
-        - label: Request is 1.0 cpu and 2Gi memory. Limit is 2.0 cpu and 4Gi memory
+        - label: Request - 1.0 cpu, 2Gi memory. Limit - 2.0 cpu, 4Gi memory
           value: micro
-        - label: Request is 2.0 cpu and 5Gi memory. Limit is 4.0 cpu and 8Gi memory
+        - label: Request - 2.0 cpu, 5Gi memory. Limit - 4.0 cpu, 8Gi memory
           value: small
-        - label: Request is 5.0 cpu and 10Gi memory. Limit is 8.0 cpu and 16Gi memory
+        - label: Request - 5.0 cpu, 10Gi memory. Limit - 8.0 cpu, 16Gi memory
           value: medium
-        - label: Request is 10.0 cpu and 21Gi memory. Limit is 16.0 cpu and 32Gi memory
+        - label: Request - 10.0 cpu, 21Gi memory. Limit - 16.0 cpu, 32Gi memory
           value: large
-        - label: Request is 21.0 cpu and 42Gi memory. Limit is 32.0 cpu and 64Gi memory
+        - label: Request - 21.0 cpu, 42Gi memory. Limit - 32.0 cpu, 64Gi memory
           value: xlarge
-        - label: Request is 42.0 cpu and 85Gi memory. Limit is 64.0 cpu and 128Gi memory
+        - label: Request - 42.0 cpu, 85Gi memory. Limit - 64.0 cpu, 128Gi memory
           value: 2xlarge                                                                     
       saveInXlvals: true
       ignoreIfSkipped: true
@@ -365,30 +364,23 @@ spec:
       prompt: "Provide resource allocation for the Deploy worker:"
       promptIf: !expr ServerType == 'dai-deploy' && ProcessType == "install" && ResourcesSource == "editor"
       description: "Provide resource allocation for Deploy worker"
-      default: |-
-        resources:
-          requests:
-            cpu:
-            memory:
-          limits:
-            cpu:
-            memory:
+      default: !expr DefaultResourcesEditor
     - name: ResourcesPresetRelease
       type: Select
       options:
-        - label: Request is 500m cpu and 1Gi memory. Limit is 1.0 cpu and 2Gi memory
+        - label: Request - 500m cpu, 1Gi memory. Limit - 1.0 cpu, 2Gi memory
           value: nano
-        - label: Request is 1.0 cpu and 2Gi memory. Limit is 2.0 cpu and 4Gi memory
+        - label: Request - 1.0 cpu, 2Gi memory. Limit - 2.0 cpu, 4Gi memory
           value: micro
-        - label: Request is 2.0 cpu and 5Gi memory. Limit is 4.0 cpu and 8Gi memory
+        - label: Request - 2.0 cpu, 5Gi memory. Limit - 4.0 cpu, 8Gi memory
           value: small
-        - label: Request is 5.0 cpu and 10Gi memory. Limit is 8.0 cpu and 16Gi memory
+        - label: Request - 5.0 cpu, 10Gi memory. Limit - 8.0 cpu, 16Gi memory
           value: medium
-        - label: Request is 10.0 cpu and 21Gi memory. Limit is 16.0 cpu and 32Gi memory
+        - label: Request - 10.0 cpu, 21Gi memory. Limit - 16.0 cpu, 32Gi memory
           value: large
-        - label: Request is 21.0 cpu and 42Gi memory. Limit is 32.0 cpu and 64Gi memory
+        - label: Request - 21.0 cpu, 42Gi memory. Limit - 32.0 cpu, 64Gi memory
           value: xlarge
-        - label: Request is 42.0 cpu and 85Gi memory. Limit is 64.0 cpu and 128Gi memory
+        - label: Request - 42.0 cpu, 85Gi memory. Limit - 64.0 cpu, 128Gi memory
           value: 2xlarge
       saveInXlvals: true
       ignoreIfSkipped: true
@@ -405,14 +397,7 @@ spec:
       prompt: "Provide resource allocation for Release server:"
       promptIf: !expr ServerType == 'dai-release' && ProcessType == "install" && ResourcesSource == "editor"
       description: "Provide resource allocation for Release server"
-      default: |-
-        resources:
-          requests:
-            cpu:
-            memory:
-          limits:
-            cpu:
-            memory:
+      default: !expr DefaultResourcesEditor
     - name: HttpProtocolRelease
       type: Select
       options:
@@ -566,20 +551,20 @@ spec:
     - name: NginxResourcesPreset
       type: Select
       options:
-        - label: Request is 100m cpu and 128Mi memory. Limit is 150m cpu and 192Mi memory
+        - label: Request - 100m cpu, 128Mi memory. Limit - 150m cpu, 192Mi memory
           value: nano
-        - label: Request is 250m cpu and 256Mi memory. Limit is 375m cpu and 384Mi memory
+        - label: Request - 250m cpu, 256Mi memory. Limit - 375m cpu, 384Mi memory
           value: micro
-        - label: Request is 500m cpu and 512Mi memory. Limit is 750m cpu and 768Mi memory
+        - label: Request - 500m cpu, 512Mi memory. Limit - 750m cpu, 768Mi memory
           value: small
-        - label: Request is 500m cpu and 1024Mi memory. Limit is 750m cpu and 1536Mi memory
+        - label: Request - 500m cpu, 1024Mi memory. Limit - 750m cpu, 1536Mi memory
           value: medium
-        - label: Request is 1.0 cpu and 2048Mi memory. Limit is 1.5 cpu and 3072Mi memory
+        - label: Request - 1.0 cpu, 2048Mi memory. Limit - 1.5 cpu, 3072Mi memory
           value: large
-        - label: Request is 1.5 cpu and 4096Mi memory. Limit is 3.0 cpu and 6144Mi memory
+        - label: Request - 1.5 cpu, 4096Mi memory. Limit - 3.0 cpu, 6144Mi memory
           value: xlarge
-        - label: Request is 1.5 cpu and 4096Mi memory. Limit is 6.0 cpu and 12288Mi memory
-          value: 2xlarge                                                                  
+        - label: Request - 1.5 cpu, 4096Mi memory. Limit - 6.0 cpu, 12288Mi memory
+          value: 2xlarge
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
@@ -595,14 +580,7 @@ spec:
       prompt: "Provide resource allocation for Nginx ingress:"
       promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && IngressType == "nginx" && ResourcesSource == "editor"
       description: "Provide resource allocation for Nginx ingress"
-      default: |-
-        resources:
-          requests:
-            cpu:
-            memory:
-          limits:
-            cpu:
-            memory:
+      default: !expr DefaultResourcesEditor
     - name: HAProxyResourcesEditor
       type: Editor
       saveInXlvals: true
@@ -611,14 +589,7 @@ spec:
       prompt: "Provide resource allocation for HAProxy ingress:"
       promptIf: !expr ServerType != 'dai-release-runner' && ProcessType == "install" && IngressType == "haproxy" && ResourcesSource != "none"
       description: "Provide resource allocation for HAProxy ingress"
-      default: |-
-        resources:
-          requests:
-            cpu:
-            memory:
-          limits:
-            cpu:
-            memory:
+      default: !expr DefaultResourcesEditor
     - name: ExternalIngressClass
       type: Select
       options:
@@ -962,19 +933,19 @@ spec:
     - name: PostgresqlResourcesPreset
       type: Select
       options:
-        - label: Request is 100m cpu and 128Mi memory. Limit is 150m cpu and 192Mi memory
+        - label: Request - 100m cpu, 128Mi memory. Limit - 150m cpu, 192Mi memory
           value: nano
-        - label: Request is 250m cpu and 256Mi memory. Limit is 375m cpu and 384Mi memory
+        - label: Request - 250m cpu, 256Mi memory. Limit - 375m cpu, 384Mi memory
           value: micro
-        - label: Request is 500m cpu and 512Mi memory. Limit is 750m cpu and 768Mi memory
+        - label: Request - 500m cpu, 512Mi memory. Limit - 750m cpu, 768Mi memory
           value: small
-        - label: Request is 500m cpu and 1024Mi memory. Limit is 750m cpu and 1536Mi memory
+        - label: Request - 500m cpu, 1024Mi memory. Limit - 750m cpu, 1536Mi memory
           value: medium
-        - label: Request is 1.0 cpu and 2048Mi memory. Limit is 1.5 cpu and 3072Mi memory
+        - label: Request - 1.0 cpu, 2048Mi memory. Limit - 1.5 cpu, 3072Mi memory
           value: large
-        - label: Request is 1.5 cpu and 4096Mi memory. Limit is 3.0 cpu and 6144Mi memory
+        - label: Request - 1.5 cpu, 4096Mi memory. Limit - 3.0 cpu, 6144Mi memory
           value: xlarge
-        - label: Request is 1.5 cpu and 4096Mi memory. Limit is 6.0 cpu and 12288Mi memory
+        - label: Request - 1.5 cpu, 4096Mi memory. Limit - 6.0 cpu, 12288Mi memory
           value: 2xlarge                                                                    
       saveInXlvals: true
       ignoreIfSkipped: true
@@ -991,14 +962,7 @@ spec:
       prompt: "Provide resource allocation for Postgresql:"
       promptIf: !expr ProcessType == "install" && EnablePostgresql && ResourcesSource == "editor"
       description: "Provide resource allocation for Postgresql"
-      default: |-
-        resources:
-          requests:
-            cpu:
-            memory:
-          limits:
-            cpu:
-            memory:
+      default: !expr DefaultResourcesEditor
     - name: PostgresqlExternalConfigRelease
       type: Editor
       saveInXlvals: true
@@ -1084,19 +1048,19 @@ spec:
     - name: RabbitmqResourcesPreset
       type: Select
       options:
-        - label: Request is 100m cpu and 128Mi memory. Limit is 150m cpu and 192Mi memory
+        - label: Request - 100m cpu, 128Mi memory. Limit - 150m cpu, 192Mi memory
           value: nano
-        - label: Request is 250m cpu and 256Mi memory. Limit is 375m cpu and 384Mi memory
+        - label: Request - 250m cpu, 256Mi memory. Limit - 375m cpu, 384Mi memory
           value: micro
-        - label: Request is 500m cpu and 512Mi memory. Limit is 750m cpu and 768Mi memory
+        - label: Request - 500m cpu, 512Mi memory. Limit - 750m cpu, 768Mi memory
           value: small
-        - label: Request is 500m cpu and 1024Mi memory. Limit is 750m cpu and 1536Mi memory
+        - label: Request - 500m cpu, 1024Mi memory. Limit - 750m cpu, 1536Mi memory
           value: medium
-        - label: Request is 1.0 cpu and 2048Mi memory. Limit is 1.5 cpu and 3072Mi memory
+        - label: Request - 1.0 cpu, 2048Mi memory. Limit - 1.5 cpu, 3072Mi memory
           value: large
-        - label: Request is 1.5 cpu and 4096Mi memory. Limit is 3.0 cpu and 6144Mi memory
+        - label: Request - 1.5 cpu, 4096Mi memory. Limit - 3.0 cpu, 6144Mi memory
           value: xlarge
-        - label: Request is 1.5 cpu and 4096Mi memory. Limit is 6.0 cpu and 12288Mi memory
+        - label: Request - 1.5 cpu, 4096Mi memory. Limit - 6.0 cpu, 12288Mi memory
           value: 2xlarge                                                                    
       saveInXlvals: true
       ignoreIfSkipped: true
@@ -1113,14 +1077,7 @@ spec:
       prompt: "Provide resource allocation for Rabbitmq:"
       promptIf: !expr ProcessType == "install" && EnableRabbitmq && ResourcesSource == "editor"
       description: "Provide resource allocation for Rabbitmq"
-      default: |-
-        resources:
-          requests:
-            cpu:
-            memory:
-          limits:
-            cpu:
-            memory:
+      default: !expr DefaultResourcesEditor
     - name: RabbitmqExternalConfigRelease
       type: Editor
       saveInXlvals: true
