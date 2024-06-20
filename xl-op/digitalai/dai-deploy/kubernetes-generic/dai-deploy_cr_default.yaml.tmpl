@@ -97,13 +97,28 @@ spec:
         registry: {{ .CustomImageRegistryName }}
         repository: {{ .RepositoryName }}/kubectl
       {{- end }}
-
+  {{- if eq .K8sSetup "Openshift" }}
+  securityContextConstraints:
+    enabled: true    
+  {{- end }}
   centralConfiguration:
     replicaCount: 1
     image:
       repository: {{ .RepositoryName }}/{{ .ImageNameCc }}
       tag: "{{ .ImageTag }}"
       pullPolicy: IfNotPresent
+    persistence:
+      enabled: false
+      storageClass: "{{ .StorageClass }}"
+      accessModes:
+        - {{ .AccessModeDeploy }}
+      size: 1Gi
+    podSecurityContext:
+      enabled: true
+    containerSecurityContext:
+      enabled: true      
+    volumePermissions:
+      enabled: false
     diagnosticMode:
       enabled: false
     {{- if eq .ResourcesSource "preset" }}
@@ -123,6 +138,10 @@ spec:
       accessModes:
         - {{ .AccessModeDeploy }}
       size: {{ .PvcSizeDeploy }}Gi
+    podSecurityContext:
+      enabled: true
+    containerSecurityContext:
+      enabled: true
     volumePermissions:
       enabled: false
     image:
@@ -148,6 +167,10 @@ spec:
       accessModes:
         - {{ .AccessModeDeploy }}
       size: {{ .PvcSizeDeployTaskEngine }}Gi
+    podSecurityContext:
+      enabled: true
+    containerSecurityContext:
+      enabled: true      
     volumePermissions:
       enabled: false
     image:
@@ -209,14 +232,14 @@ spec:
       {{- else }}
       kubernetes.io/ingress.class: haproxy-dai-xld
       {{- end }}
-      ingress.kubernetes.io/rewrite-target: /
-      ingress.kubernetes.io/affinity: cookie
-      ingress.kubernetes.io/session-cookie-name: SESSION_XLD
-      ingress.kubernetes.io/session-cookie-strategy: prefix
-      ingress.kubernetes.io/timeout-client: "120s"
-      ingress.kubernetes.io/timeout-http-request: "120s"
+      haproxy-ingress.github.io/rewrite-target: /
+      haproxy-ingress.github.io/affinity: cookie
+      haproxy-ingress.github.io/session-cookie-name: SESSION_XLD
+      haproxy-ingress.github.io/session-cookie-strategy: prefix
+      haproxy-ingress.github.io/timeout-client: "120s"
+      haproxy-ingress.github.io/timeout-http-request: "120s"
       {{- if eq .HttpProtocolDeploy "https" }}
-      ingress.kubernetes.io/config-backend: |
+      haproxy-ingress.github.io/config-backend: |
         option httpchk GET / HTTP/1.0
         http-check send hdr Host {{ .IngressHost }}
       haproxy-ingress.github.io/backend-protocol: "h1-ssl"
@@ -224,7 +247,7 @@ spec:
       haproxy-ingress.github.io/secure-sni: host
       {{- else }}
       haproxy-ingress.github.io/config-backend: |
-        option httpchk GET /ha/health HTTP/1.0
+        option httpchk GET / HTTP/1.0
       {{- end }}
       {{- if eq .HttpProtocolIngress "https" }}
       haproxy-ingress.github.io/ssl-redirect: "true"
@@ -262,11 +285,11 @@ spec:
     {{- end }}
     hostname: "{{ .IngressHost }}"
     path: /
-    {{- if and (not (eq .IngressKeystoreSource "passthrough")) (eq .HttpProtocolIngress "https") }}
+    {{- if (eq .HttpProtocolIngress "https") }}
     # If you want to use TLS configuration uncomment the following lines and provide correct values.
     # You need to create secret, and provide the name under "secretName"
     tls: true
-    {{- if eq .IngressKeystoreSource "generate" }}
+    {{- if or (eq .IngressKeystoreSource "generate") (eq .IngressKeystoreSource "passthrough") }}
     selfSigned: true
     {{- end }}
     {{- if eq .IngressKeystoreSource "secret" }}
@@ -421,9 +444,14 @@ spec:
       persistence:
         size: {{ .PostgresqlPvcSize }}Gi
         storageClass: "{{ .PostgresqlStorageClass }}"
-    securityContext:
-      enabled: true
-      fsGroup: 1001
+      podSecurityContext:
+        enabled: true
+      containerSecurityContext:
+        enabled: true
+      {{- if eq .K8sSetup "Openshift" }}
+      securityContextConstraints:
+        enabled: true
+      {{- end }}
     {{- if eq .IsCustomImageRegistry true }}
     volumePermissions:
       image:
@@ -450,6 +478,10 @@ spec:
       size: {{ .RabbitmqPvcSize }}Gi
       storageClass: {{ .RabbitmqStorageClass }}
     replicaCount: {{ .RabbitmqReplicaCount }}
+    {{- if eq .K8sSetup "Openshift" }}
+    securityContextConstraints:
+      enabled: true    
+    {{- end }}    
     {{- if eq .ResourcesSource "preset" }}
     resourcesPreset: {{ .RabbitmqResourcesPreset }}
     resources: {}
@@ -458,7 +490,7 @@ spec:
     {{- else if eq .ResourcesSource "none" }}
     resourcesPreset: "none"
     resources: {}
-    {{- end }}    
+    {{- end }}
     volumePermissions:
       enabled: true
       {{- if eq .IsCustomImageRegistry true }}
@@ -466,10 +498,7 @@ spec:
         {{- /* registry name defined in global section */}}
         repository: {{ .RepositoryName }}/os-shell
       {{- end }}
-    securityContext:
-      enabled: true
-      fsGroup: 1001
     podSecurityContext:
       enabled: true
-      fsGroup: 1001
-      runAsUser: 1001
+    containerSecurityContext:
+      enabled: true

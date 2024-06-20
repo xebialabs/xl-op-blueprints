@@ -608,8 +608,8 @@ spec:
         - label: HTTPS - enable an TLS/SSL ingress configuration
           value: https
       prompt: "Select ingress protocol:"
-      default: http
-      promptIf: !expr "ServerType != 'dai-release-runner' && ProcessType == 'install' && IngressType != 'none'"
+      default: !expr "ServerType == 'dai-release' ? HttpProtocolRelease : HttpProtocolDeploy"
+      promptIf: !expr "ServerType != 'dai-release-runner' && ProcessType == 'install' && IngressType != 'none' && HttpProtocolRelease == 'http' && HttpProtocolDeploy == 'http'"
       saveInXlvals: true
       ignoreIfSkipped: true
       overrideDefault: true
@@ -627,10 +627,25 @@ spec:
       ignoreIfSkipped: true
       overrideDefault: true
       prompt: "Select source of the ingress keystore:"
-      promptIf: !expr K8sSetup != 'Openshift' && ServerType != 'dai-release-runner' && ProcessType == "install" && IngressType != 'none' && HttpProtocolIngress != "http"
+      promptIf: !expr K8sSetup != 'Openshift' && ServerType != 'dai-release-runner'&& ProcessType == "install" && IngressType != 'haproxy' && IngressType != 'none' && HttpProtocolIngress != "http"
       description: "Provide source of the ingress keystore"
       default: "generate"
       validate: !expr "IngressKeystoreSourceGeneric == 'secret' ? (length(k8sResources(Namespace, 'secrets')) > '0') : (IngressKeystoreSourceGeneric == 'passthrough' ? (HttpProtocolRelease != 'http' || HttpProtocolDeploy != 'http') : true)"
+    - name: IngressKeystoreSourceHaproxy
+      type: Select
+      options:
+        - label: The ingress keystore will be automatically generated with self-signed key
+          value: generate
+        - label: Generic Secret containing ingress keystore file with key in PKCS12 (as ssl-keystore.p12) or JKS (as ssl-keystore.jks) format
+          value: secret
+      saveInXlvals: true
+      ignoreIfSkipped: true
+      overrideDefault: true
+      prompt: "Select source of the ingress keystore:"
+      promptIf: !expr K8sSetup != 'Openshift' && ServerType != 'dai-release-runner' && ProcessType == "install" && IngressType == 'haproxy' && HttpProtocolIngress != "http"
+      description: "Provide source of the ingress keystore"
+      default: "generate"
+      validate: !expr "IngressKeystoreSourceHaproxy == 'secret' ? (length(k8sResources(Namespace, 'secrets')) > '0') : true"
     - name: IngressKeystoreSourceOpenshift
       type: Select
       options:
@@ -654,7 +669,7 @@ spec:
       type: Input
       saveInXlvals: true
       ignoreIfSkipped: true
-      value: !expr "K8sSetup == 'Openshift' ? IngressKeystoreSourceOpenshift : IngressKeystoreSourceGeneric"
+      value: !expr "K8sSetup == 'Openshift' ? IngressKeystoreSourceOpenshift : (IngressKeystoreSourceGeneric : IngressKeystoreSourceHaproxy)"
       description: Select between supported ingress keystore sources.
     - name: IngressHost
       type: Input
