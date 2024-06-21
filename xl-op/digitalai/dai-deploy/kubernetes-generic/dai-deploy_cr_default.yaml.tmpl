@@ -121,6 +121,15 @@ spec:
       enabled: false
     diagnosticMode:
       enabled: false
+    {{- if eq .ResourcesSource "preset" }}
+    resourcesPreset: {{ .ResourcesPresetDeployCc }}
+    resources: {}
+    {{- else if eq .ResourcesSource "editor" }}
+{{ .ResourcesEditorDeployCc | indent 4 }}
+    {{- else if eq .ResourcesSource "none" }}
+    resourcesPreset: "none"
+    resources: {}
+    {{- end }}
 
   master:
     replicaCount: {{ .XldMasterCount }}
@@ -141,6 +150,15 @@ spec:
       pullPolicy: IfNotPresent
     diagnosticMode:
       enabled: false
+    {{- if eq .ResourcesSource "preset" }}
+    resourcesPreset: {{ .ResourcesPresetDeploy }}
+    resources: {}
+    {{- else if eq .ResourcesSource "editor" }}
+{{ .ResourcesEditorDeploy | indent 4 }}
+    {{- else if eq .ResourcesSource "none" }}
+    resourcesPreset: "none"
+    resources: {}
+    {{- end }}
 
   worker:
     replicaCount: {{ .XldWorkerCount }}
@@ -161,6 +179,15 @@ spec:
       pullPolicy: IfNotPresent
     diagnosticMode:
       enabled: false
+    {{- if eq .ResourcesSource "preset" }}
+    resourcesPreset: {{ .ResourcesPresetDeployTaskEngine }}
+    resources: {}
+    {{- else if eq .ResourcesSource "editor" }}
+{{ .ResourcesEditorDeployTaskEngine | indent 4 }}
+    {{- else if eq .ResourcesSource "none" }}
+    resourcesPreset: "none"
+    resources: {}
+    {{- end }}   
 
   {{- if eq .IsCustomImageRegistry true }}
   busyBox:
@@ -318,18 +345,32 @@ spec:
       {{- else }}
       ingressClass: haproxy-dai-xld
       {{- end }}
+      {{- if eq .ResourcesSource "none" }}
+      resources: {}
+      {{- else }}
+{{ .HAProxyResourcesEditor | indent 6 }}
+      {{- end }}
     {{- if eq .IngressType "haproxy" }}
     install: true
     {{- else }}
     install: false
     {{- end }}
   nginx-ingress-controller:
-    {{- if eq .IsCustomImageRegistry true }}
     defaultBackend:
+      {{- if eq .IsCustomImageRegistry true }}
       image:
         {{- /* registry name defined in global section */}}
         repository: {{ .RepositoryName }}/nginx
-    {{- end }}
+      {{- end }}
+      {{- if eq .ResourcesSource "preset" }}
+      resourcesPreset: {{ .NginxResourcesPreset }}
+      resources: {}
+      {{- else if eq .ResourcesSource "editor" }}
+{{ .NginxResourcesEditor | indent 6 }}
+      {{- else if eq .ResourcesSource "none"}}
+      resourcesPreset: "none"
+      resources: {}
+      {{- end }}
     {{- if eq .UseCustomNamespace true }}
     extraArgs:
       ingress-class: "nginx-dai-xld-{{ .Namespace }}"
@@ -364,6 +405,15 @@ spec:
     {{- else }}
     install: false
     {{- end }}
+    {{- if eq .ResourcesSource "preset" }}
+    resourcesPreset: {{ .NginxResourcesPreset }}
+    resources: {}
+    {{- else if eq .ResourcesSource "editor" }}
+{{ .NginxResourcesEditor | indent 4 }}
+    {{- else if eq .ResourcesSource "none" }}
+    resourcesPreset: "none"
+    resources: {}
+    {{- end }}    
   postgresql:
     global:
       {{- /*  global overrides the other occurences */}}
@@ -382,6 +432,15 @@ spec:
     {{- end }}
     install: {{ .EnablePostgresql }}
     primary:
+      {{- if eq .ResourcesSource "preset" }}
+      resourcesPreset: {{ .PostgresqlResourcesPreset }}
+      resources: {}
+      {{- else if eq .ResourcesSource "editor" }}
+{{ .PostgresqlResourcesEditor | indent 6 }}
+      {{- else if eq .ResourcesSource "none" }}
+      resourcesPreset: "none"
+      resources: {}
+      {{- end }}
       persistence:
         size: {{ .PostgresqlPvcSize }}Gi
         storageClass: "{{ .PostgresqlStorageClass }}"
@@ -423,6 +482,15 @@ spec:
     securityContextConstraints:
       enabled: true    
     {{- end }}    
+    {{- if eq .ResourcesSource "preset" }}
+    resourcesPreset: {{ .RabbitmqResourcesPreset }}
+    resources: {}
+    {{- else if eq .ResourcesSource "editor" }}
+{{ .RabbitmqResourcesEditor | indent 4 }}
+    {{- else if eq .ResourcesSource "none" }}
+    resourcesPreset: "none"
+    resources: {}
+    {{- end }}
     volumePermissions:
       enabled: true
       {{- if eq .IsCustomImageRegistry true }}
